@@ -1,0 +1,47 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.mf;
+
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertNotNull;
+
+public abstract class AbstractTest {
+
+  @BeforeAll
+  public static void init() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+  }
+
+  @BeforeEach
+  public void setup() {
+    Log.getFindings().clear();
+  }
+
+  protected static final String RELATIVE_MODEL_PATH = "src/test/resources";
+  protected static final String RELATIVE_VALID_MODEL_PATH = RELATIVE_MODEL_PATH + "/testinput/validGrammarModels";
+
+  public static String[] getParsableModels() {
+    File f = new File(RELATIVE_VALID_MODEL_PATH);
+    String[] filenames = f.list();
+    assertNotNull(filenames);
+    filenames = Arrays.stream(filenames)
+        .sorted()
+        .map(filename -> Paths.get(RELATIVE_VALID_MODEL_PATH, filename).toString())
+        .collect(Collectors.toList())
+        .toArray(filenames);
+
+    return filenames;
+  }
+
+
+}

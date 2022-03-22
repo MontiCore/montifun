@@ -1,0 +1,22 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.mf;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+component grammar MFLambdaExpressions extends
+                    de.monticore.expressions.ExpressionsBasis
+{
+
+  external MFParameter;
+
+  LambdaParameters =
+    MFParameter
+    | "(" (MFParameter || ",")+ ")"
+  ;
+
+  //todo priority?
+  LambdaExpression implements Expression =
+    LambdaParameters "->"
+    Expression
+  ;
+}

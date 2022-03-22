@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-data Tree a = Nil | Node a (Tree a) (Tree a);
-
-sum :: Num a => (Tree a) -> a;
-sum (Node x t1 t2) = x + sum t1 + sum t2;
-sum Nil = 0;
-

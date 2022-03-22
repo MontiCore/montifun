@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+constants {
+
+public Integer answer = 41 + 1;
+public Integer rec = 1 + rec;
+public Integer count = List{x*x | x in {1..5}}.count();
+
+
+//List<Integer> l = l.addBeginning(2).addBeginning(1);
+// -> l contains thunk/ is thunk, addBeginning sets thunk,
+//  l = { 1 : { 2 : { l } } }
+// l is ~thunk? -> get + next + addBeginning
+// l is expression, can be executed anytime
+// consistency with others -> all is Function?
+// but take values
+
+
+}

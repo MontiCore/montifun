@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.mf;
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+grammar MF extends
+                   de.monticore.literals.MCJavaLiterals,
+                   de.monticore.types.MCSimpleGenericTypes,
+				   de.monticore.mf.MFExpressions,
+                   de.monticore.statements.MCCommonStatements,
+                   de.monticore.symbols.BasicSymbols
+                   {
+  
+    /**
+   *  ASTMFCompilationUnit represents the entire content of an MF model
+   *    @attribute package
+   *               The package declaration of the component model
+   *    @attribute MCImportStatement
+   *               List of imported elements
+   *    @attribute MFArtifact
+   *               wrapper for the montifun statements
+   */
+  MFCompilationUnit =
+    ("package" package:(Name& || ".")+ ";")?
+    MCImportStatement*
+    MFArtifact
+  ;
+  
+  /**
+   * ASTMFArtifact represents a file that contains MF-statements.
+   *   @attribute Name
+   *              Name of MFFile (necessary for MCCompilationUnit)
+   *   @attribute MFConstraint
+   *              List of MF-constraints.
+   */
+  MFArtifact implements Diagram =
+    Name "{"
+      MFStatement*
+    "}"
+  ;
+
+  MFStatement =
+    MFFunctionDeclaration
+  ;
+//own parameter
+  //todo do we need a return type? should be able to derive it
+  MFFunctionDeclaration implements Function =
+    MCModifier* MCReturnType Name
+    ("(" (MFParameter || ",")+ ")")?
+    ("=" Expression)? ";"
+  ;
+
+}

@@ -1,0 +1,19 @@
+// (c) https://github.com/MontiCore/monticore
+package de.monticore.mf;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+component grammar MFCallExpressions extends
+                    de.monticore.expressions.ExpressionsBasis
+{
+
+  /*
+   * Like CallExpression, but it allows for anonymous functions,
+   * e.g. foo()(), a[1]() or lambdas
+   * as such no function name might be providable
+   * priority is higher than the one of CallExpression (240)
+   */
+    NamelessCallExpression implements Expression <250> =
+      Expression Arguments;
+
+}

@@ -41,8 +41,7 @@ grammar MF extends
   MFStatement =
     MFFunctionDeclaration
   ;
-//own parameter
-  //todo do we need a return type? should be able to derive it
+
   MFFunctionDeclaration implements Function =
     MCModifier* MCReturnType? Name
     ("(" (MFParameter || ",")+ ")")?

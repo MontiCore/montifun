@@ -6,12 +6,12 @@ package de.monticore.mf.mf;
 //import de.monticore.montifun._symboltable.MontiFunSymbols2Json;
 //import de.monticore.montifun.transform2core.*;
 //import de.monticore.montifun.montifun.prettyprinter.CorePrinter;
+
 import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MFCLI extends MFCLITOP {
 
@@ -41,7 +41,8 @@ public class MFCLI extends MFCLITOP {
       // -option developer logging
       if (cmd.hasOption("d")) {
         Log.initDEBUG();
-      } else {
+      }
+      else {
         Log.init();
       }
 
@@ -53,11 +54,10 @@ public class MFCLI extends MFCLITOP {
 
       //parse input file, now known to be available
       List<ASTMFCompilationUnit> inputMFs = new ArrayList<>();
-      for(String inputFileName : cmd.getOptionValues("i")) {
+      for (String inputFileName : cmd.getOptionValues("i")) {
         ASTMFCompilationUnit ast = parse(inputFileName);
         inputMFs.add(ast);
       }
-
 
       //String packageQName = montiFunAST.getMCPackageDeclaration().getMCQualifiedName().getQName();
 
@@ -90,14 +90,12 @@ public class MFCLI extends MFCLITOP {
       //  prettyPrint(ast, cmd.getOptionValue("pp", StringUtils.EMPTY));
       //}
 
-
-    } catch (org.apache.commons.cli.ParseException e) {
+    }
+    catch (org.apache.commons.cli.ParseException e) {
       // e.getMessage displays the incorrect input-parameters
       Log.error("0xA5C01x43786 Could not process CLI parameters: " + e.getMessage());
     }
   }
-
-
 
   //@Override
   //public org.apache.commons.cli.Options addAdditionalOptions(org.apache.commons.cli.Options options) {
@@ -124,9 +122,8 @@ public class MFCLI extends MFCLITOP {
 
   //@Override
   //public void prettyPrint(ASTMFCompilationUnit ast, String file) {
-    //String prettyPrintedAST = CorePrinter.toString(ast);
-    //print(prettyPrintedAST, file);
+  //String prettyPrintedAST = CorePrinter.toString(ast);
+  //print(prettyPrintedAST, file);
   //}
-
 
 }

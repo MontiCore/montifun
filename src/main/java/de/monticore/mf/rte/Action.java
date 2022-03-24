@@ -14,6 +14,7 @@ public class Action {
   public interface A1<Arg0>
       extends Consumer<Arg0> {
     void apply(Arg0 arg0);
+
     default void accept(Arg0 arg0) {
       apply(arg0);
     }
@@ -23,6 +24,7 @@ public class Action {
   public interface A2<Arg0, Arg1>
       extends BiConsumer<Arg0, Arg1> {
     void apply(Arg0 arg0, Arg1 arg1);
+
     default void accept(Arg0 arg0, Arg1 arg1) {
       apply(arg0, arg1);
     }
@@ -55,12 +57,14 @@ public class Action {
 
   @FunctionalInterface
   public interface A8<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7> {
-    void apply(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6, Arg7 arg7);
+    void apply(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6,
+        Arg7 arg7);
   }
 
   @FunctionalInterface
   public interface A9<Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8> {
-    void apply(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6, Arg7 arg7, Arg8 arg8);
+    void apply(Arg0 arg0, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Arg6 arg6,
+        Arg7 arg7, Arg8 arg8);
   }
 
 }

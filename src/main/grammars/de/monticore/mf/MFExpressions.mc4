@@ -6,6 +6,7 @@ package de.monticore.mf;
 component grammar MFExpressions extends
                     de.monticore.ocl.OCLExpressions,
                     de.monticore.ocl.OptionalOperators,
+                    de.monticore.ocl.SetExpressions,
                     de.monticore.expressions.BitExpressions,
                     de.monticore.mf.MFCallExpressions,
                     de.monticore.mf.MFLambdaExpressions,

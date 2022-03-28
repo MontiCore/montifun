@@ -1,17 +1,21 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf;
 
+import de.monticore.ocl.*;
+import de.monticore.expressions.BitExpressions;
+import de.monticore.statements.MCVarDeclarationStatements;
+import de.monticore.types.MCBasicTypes;
+
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
-component grammar MFExpressions extends
-                    de.monticore.ocl.OCLExpressions,
-                    de.monticore.ocl.OptionalOperators,
-                    de.monticore.ocl.SetExpressions,
-                    de.monticore.expressions.BitExpressions,
-                    de.monticore.mf.MFCallExpressions,
-                    de.monticore.mf.MFLambdaExpressions,
-                    de.monticore.statements.MCVarDeclarationStatements,
-                    de.monticore.types.MCBasicTypes {
+component grammar MFExpressions extends OCLExpressions,
+                                        OptionalOperators,
+                                        SetExpressions,
+                                        BitExpressions,
+                                        MFCallExpressions,
+                                        MFLambdaExpressions,
+                                        MCVarDeclarationStatements,
+                                        MCBasicTypes {
 
   MFParameter
        =   MCType? DeclaratorId;

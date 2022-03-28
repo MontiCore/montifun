@@ -11,8 +11,7 @@ component grammar MFExpressions extends
                     de.monticore.mf.MFCallExpressions,
                     de.monticore.mf.MFLambdaExpressions,
                     de.monticore.statements.MCVarDeclarationStatements,
-                    de.monticore.types.MCBasicTypes
-{
+                    de.monticore.types.MCBasicTypes {
 
   MFParameter
        =   MCType? DeclaratorId;

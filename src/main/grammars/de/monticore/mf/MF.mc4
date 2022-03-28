@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf;
+
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
 grammar MF extends
@@ -7,8 +8,7 @@ grammar MF extends
                    de.monticore.types.MCSimpleGenericTypes,
 				   de.monticore.mf.MFExpressions,
                    de.monticore.statements.MCCommonStatements,
-                   de.monticore.symbols.BasicSymbols
-                   {
+                   de.monticore.symbols.BasicSymbols {
   
     /**
    *  ASTMFCompilationUnit represents the entire content of an MF model

@@ -1,14 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf;
+
+import de.monticore.literals.MCCommonLiterals;
+import de.monticore.types.MCSimpleGenericTypes;
+import de.monticore.statements.MCCommonStatements;
+import de.monticore.symbols.BasicSymbols;
+
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
-grammar MF extends
-                   de.monticore.literals.MCCommonLiterals,
-                   de.monticore.types.MCSimpleGenericTypes,
-				   de.monticore.mf.MFExpressions,
-                   de.monticore.statements.MCCommonStatements,
-                   de.monticore.symbols.BasicSymbols
-                   {
+grammar MF extends MCCommonLiterals,
+                   MCSimpleGenericTypes,
+                   MFExpressions,
+                   MCCommonStatements,
+                   BasicSymbols {
   
     /**
    *  ASTMFCompilationUnit represents the entire content of an MF model

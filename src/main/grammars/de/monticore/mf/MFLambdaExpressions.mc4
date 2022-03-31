@@ -1,11 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf;
 
+import de.monticore.expressions.ExpressionsBasis;
+
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
-component grammar MFLambdaExpressions extends
-                    de.monticore.expressions.ExpressionsBasis
-{
+component grammar MFLambdaExpressions extends ExpressionsBasis {
 
   external MFParameter;
 

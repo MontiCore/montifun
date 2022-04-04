@@ -13,6 +13,7 @@ component grammar MFCallExpressions extends ExpressionsBasis {
    * as such no function name might be providable
    * priority is higher than the one of CallExpression (240)
    */
+   //todo try to remove after function symtype has been added to monticore
     NamelessCallExpression implements Expression <250> =
       Expression Arguments;
 

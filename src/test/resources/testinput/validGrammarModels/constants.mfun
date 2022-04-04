@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-constants {
+montifun constants {
 
-public Integer answer = 41 + 1;
-public Integer recursive = 1 + recursive;
-public Set<Integer> set0 = {};
-public Set<Integer> set1 = Set{5};
-public Set<Integer> set2 = Set{1..5};
-public Integer count = List{x*x | x in { 1 .. 5 } }.count();
+Integer answer = 41 + 1;
+Integer recursive = 1 + recursive;
+Set<Integer> set0 = {};
+Set<Integer> set1 = Set{5};
+Set<Integer> set2 = Set{1..5};
+Integer count = List{x*x | x in { 1 .. 5 } }.count();
 
 }

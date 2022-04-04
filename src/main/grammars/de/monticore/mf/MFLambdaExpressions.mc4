@@ -4,7 +4,7 @@ package de.monticore.mf;
 import de.monticore.expressions.ExpressionsBasis;
 
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
-
+//todo move to MC
 component grammar MFLambdaExpressions extends ExpressionsBasis {
 
   external MFParameter;

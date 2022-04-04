@@ -37,19 +37,15 @@ grammar MF extends MCCommonLiterals,
    *              List of MF-constraints.
    */
   MFArtifact implements Diagram =
-    Name "{"
-      MFStatement*
+    "montifun" Name "{"
+      MFFunctionDeclaration*
     "}"
   ;
 
-  MFStatement =
-    MFFunctionDeclaration
-  ;
-
   MFFunctionDeclaration implements Function =
-    MCModifier* MCReturnType? Name
+    MCReturnType? Name
     ("(" (MFParameter || ",")+ ")")?
-    ("=" Expression)? ";"
+    ("=" Expression) ";"
   ;
 
 }

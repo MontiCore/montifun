@@ -4,6 +4,6 @@ package a.b;
 import a.c.D;
 import a.b.W;
 
-imports {
+montifun imports {
   // no code
 }

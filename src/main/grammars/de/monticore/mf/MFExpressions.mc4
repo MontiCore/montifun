@@ -14,10 +14,9 @@ component grammar MFExpressions extends OCLExpressions,
                                         BitExpressions,
                                         MFCallExpressions,
                                         MFLambdaExpressions,
-                                        MCVarDeclarationStatements,
                                         MCBasicTypes {
  @Override
   MFParameter
-       =   MCType? DeclaratorId;
+       =   MCType? Name;
 
 }

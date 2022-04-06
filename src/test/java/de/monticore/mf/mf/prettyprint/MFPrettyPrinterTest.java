@@ -6,14 +6,13 @@ import de.monticore.mf.mf.MFMill;
 import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
 import de.monticore.mf.mf._parser.MFParser;
 import de.se_rwth.commons.logging.Log;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MFPrettyPrinterTest extends AbstractTest {
 
@@ -34,5 +33,6 @@ public class MFPrettyPrinterTest extends AbstractTest {
     Optional<ASTMFCompilationUnit> prettyASTOpt = parser.parse_String(prettyPrinted);
     assertTrue(prettyASTOpt.isPresent());
     assertTrue(astOpt.get().deepEquals(prettyASTOpt.get()));
+    assertTrue(Log.getFindings().isEmpty());
   }
 }

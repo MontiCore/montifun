@@ -11,7 +11,7 @@ component grammar MFLambdaExpressions extends ExpressionsBasis {
 
   LambdaParameters =
     MFParameter
-    | "(" (MFParameter || ",")* ")"
+    | parenthesis:"(" (MFParameter || ",")* ")"
   ;
 
   //todo priority?

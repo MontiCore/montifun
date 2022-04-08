@@ -1,0 +1,66 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.mf.mf.mf2CD;
+
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4code.CD4CodeMill;
+import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
+import de.monticore.mf.AbstractTest;
+import de.monticore.mf.mf.MFMill;
+import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
+import de.monticore.mf.mf._parser.MFParser;
+import de.se_rwth.commons.logging.Log;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertTrue;
+
+public class MF2CDTest extends AbstractTest {
+
+  protected final String OUTPUT_DIR = "target/gen";
+
+  protected final String TEMPLATE_PATH = "src/main/resources";
+
+  protected final MFParser parser = MFMill.parser();
+
+  protected final CD4CodeFullPrettyPrinter cd4cPrettyPrinter = new CD4CodeFullPrettyPrinter();
+
+  GlobalExtensionManagement glex;
+
+  GeneratorSetup generatorSetup;
+
+  @BeforeEach
+  public void setup() {
+    glex = new GlobalExtensionManagement();
+    generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    generatorSetup.setOutputDirectory(new File(OUTPUT_DIR));
+    //generatorSetup.setTracing(false);
+    generatorSetup.setTracing(true);
+    generatorSetup.setAdditionalTemplatePaths(Arrays.asList(new File(TEMPLATE_PATH)));
+    CD4C.init(generatorSetup);
+  }
+
+  @ParameterizedTest
+  @MethodSource("getParsableModels")
+  public void createValidCD(String fileName) throws IOException {
+    Log.initSlf4j();
+    CD4CodeMill.init();
+    ASTMFCompilationUnit mfCompilationUnit = parser.parse(fileName).get();
+    MF2CDConverter mf2CDConverter = new MF2CDConverter();
+
+    ASTCDCompilationUnit cdCompilationUnit = mf2CDConverter.convert(mfCompilationUnit,
+        generatorSetup.getGlex());
+    String prettyPrintedModel = cd4cPrettyPrinter.prettyprint(cdCompilationUnit);
+
+    assertTrue(Log.getFindings().isEmpty());
+  }
+}

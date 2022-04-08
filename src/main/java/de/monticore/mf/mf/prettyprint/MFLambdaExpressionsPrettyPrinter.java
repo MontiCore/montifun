@@ -2,9 +2,6 @@
 package de.monticore.mf.mf.prettyprint;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.mf.mfexpressions._ast.ASTMFParameter;
-import de.monticore.mf.mfexpressions._visitor.MFExpressionsHandler;
-import de.monticore.mf.mfexpressions._visitor.MFExpressionsTraverser;
 import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaExpression;
 import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaParameters;
 import de.monticore.mf.mflambdaexpressions._visitor.MFLambdaExpressionsHandler;

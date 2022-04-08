@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf.mf.mf2CD;
 
+import de.monticore.cd.codegen.CDGenerator;
+import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
@@ -18,10 +19,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MF2CDTest extends AbstractTest {
 
@@ -40,11 +40,11 @@ public class MF2CDTest extends AbstractTest {
   @BeforeEach
   public void setup() {
     glex = new GlobalExtensionManagement();
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(OUTPUT_DIR));
-    //generatorSetup.setTracing(false);
-    generatorSetup.setTracing(true);
+    generatorSetup.setTracing(false);
     generatorSetup.setAdditionalTemplatePaths(Arrays.asList(new File(TEMPLATE_PATH)));
     CD4C.init(generatorSetup);
   }
@@ -52,15 +52,19 @@ public class MF2CDTest extends AbstractTest {
   @ParameterizedTest
   @MethodSource("getParsableModels")
   public void createValidCD(String fileName) throws IOException {
-    Log.initSlf4j();
-    CD4CodeMill.init();
     ASTMFCompilationUnit mfCompilationUnit = parser.parse(fileName).get();
     MF2CDConverter mf2CDConverter = new MF2CDConverter();
 
     ASTCDCompilationUnit cdCompilationUnit = mf2CDConverter.convert(mfCompilationUnit,
         generatorSetup.getGlex());
+
+    CDGenerator cdGenerator = new CDGenerator(generatorSetup);
+    cdGenerator.generate(cdCompilationUnit);
+
     String prettyPrintedModel = cd4cPrettyPrinter.prettyprint(cdCompilationUnit);
 
+    // the content is to be checked manually at the moment
     assertTrue(Log.getFindings().isEmpty());
   }
+
 }

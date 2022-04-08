@@ -7,11 +7,14 @@ import de.monticore.cdbasis._ast.ASTCDClass;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnitBuilder;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
+import de.monticore.cdbasis._ast.ASTCDPackage;
+import de.monticore.cdbasis._ast.ASTCDPackageBuilder;
 import de.monticore.mf.mf._ast.ASTMFArtifact;
 import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
 import de.monticore.mf.mf._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.mf._visitor.MFVisitor2;
 import de.monticore.mf.mf.prettyprint.MFFullPrettyPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.umlmodifier.UMLModifierMill;
 import de.se_rwth.commons.logging.Log;
 
@@ -34,6 +37,23 @@ public class MF2CDVisitor implements MFVisitor2 {
 
   @Override
   public void endVisit(ASTMFCompilationUnit mfCompilationUnit) {
+    // (CD) package
+    ASTCDPackageBuilder cdPackageBuilder = CDBasisMill.cDPackageBuilder();
+    if (mfCompilationUnit.isPresentMCPackageDeclaration()) {
+      cdPackageBuilder.setMCQualifiedName(
+          mfCompilationUnit.getMCPackageDeclaration().getMCQualifiedName());
+    }
+    else {
+      cdPackageBuilder.setMCQualifiedName(new ASTMCQualifiedNameBuilder()
+          .addParts("de")
+          .addParts("monticore")
+          .addParts("mf")
+          .build()
+      );
+    }
+    cdPackageBuilder.addCDElement(getMainClass());
+    ASTCDPackage cdPackage = cdPackageBuilder.build();
+    // (CD) definition
     ASTCDDefinition cdDefinition = CDBasisMill.cDDefinitionBuilder()
         .setName(getMainClass().getName())
         .setModifier(
@@ -41,9 +61,9 @@ public class MF2CDVisitor implements MFVisitor2 {
                 .PUBLIC()
                 .build()
         )
-        .addCDElement(getMainClass())
+        .addCDElement(cdPackage)
         .build();
-
+    // (CD) compilation unit
     ASTCDCompilationUnitBuilder cdCompilationUnitBuilder = CDBasisMill.cDCompilationUnitBuilder();
     if (mfCompilationUnit.isPresentMCPackageDeclaration()) {
       cdCompilationUnitBuilder.setMCPackageDeclaration(mfCompilationUnit.getMCPackageDeclaration());

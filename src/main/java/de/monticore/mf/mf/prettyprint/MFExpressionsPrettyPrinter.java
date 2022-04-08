@@ -1,17 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.mf.prettyprint;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.mf.mfexpressions._ast.ASTMFParameter;
 import de.monticore.mf.mfexpressions._visitor.MFExpressionsHandler;
 import de.monticore.mf.mfexpressions._visitor.MFExpressionsTraverser;
-import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaExpression;
-import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaParameters;
-import de.monticore.mf.mflambdaexpressions._visitor.MFLambdaExpressionsHandler;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-
-import java.util.List;
 
 public class MFExpressionsPrettyPrinter implements MFExpressionsHandler {
 

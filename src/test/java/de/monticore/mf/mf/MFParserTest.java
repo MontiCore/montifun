@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MFParserTest extends AbstractTest {
 
-  private final MFParser parser = MFMill.parser();
+  protected final MFParser parser = MFMill.parser();
 
   @ParameterizedTest
   @MethodSource("getParsableModels")

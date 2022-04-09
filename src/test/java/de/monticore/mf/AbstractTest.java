@@ -3,7 +3,6 @@ package de.monticore.mf;
 
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -12,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractTest {
 
@@ -28,7 +27,9 @@ public abstract class AbstractTest {
   }
 
   protected static final String RELATIVE_MODEL_PATH = "src/test/resources";
-  protected static final String RELATIVE_VALID_MODEL_PATH = RELATIVE_MODEL_PATH + "/testinput/validGrammarModels";
+
+  protected static final String RELATIVE_VALID_MODEL_PATH =
+      RELATIVE_MODEL_PATH + "/testinput/validGrammarModels";
 
   public static String[] getParsableModels() {
     File f = new File(RELATIVE_VALID_MODEL_PATH);
@@ -42,6 +43,5 @@ public abstract class AbstractTest {
 
     return filenames;
   }
-
 
 }

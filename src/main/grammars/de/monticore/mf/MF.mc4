@@ -24,7 +24,7 @@ grammar MF extends MCCommonLiterals,
    *               wrapper for the montifun statements
    */
   MFCompilationUnit =
-    ("package" package:(Name& || ".")+ ";")?
+    MCPackageDeclaration?
     MCImportStatement*
     MFArtifact
   ;
@@ -44,8 +44,8 @@ grammar MF extends MCCommonLiterals,
 
   MFFunctionDeclaration implements Function =
     MCReturnType? Name
-    ("(" (MFParameter || ",")+ ")")?
-    ("=" Expression) ";"
+    (parenthesis:"(" (MFParameter || ",")* ")")?
+    "=" Expression ";"
   ;
 
 }

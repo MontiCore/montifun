@@ -13,7 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MFCLI extends MFCLITOP {
+public class MFTool extends MFToolTOP {
 
   /**
    * Processes user input from command line and delegates to the corresponding

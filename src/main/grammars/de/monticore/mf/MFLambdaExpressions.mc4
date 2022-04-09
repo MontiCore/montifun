@@ -13,8 +13,8 @@ component grammar MFLambdaExpressions extends ExpressionsBasis {
   external MFParameter;
 
   LambdaParameters =
-    singlePar:MFParameter
-    | "(" (MFParameter || ",")* ")"
+    MFParameter
+    | parenthesis:"(" (MFParameter || ",")* ")"
   ;
 
   //todo priority?  Welche Prio halten wir für sinnvoll. Was macht zB Java?

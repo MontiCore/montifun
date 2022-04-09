@@ -4,7 +4,7 @@ package de.monticore.mf;
 import de.monticore.mf.rte.Thunk;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class MFThunkTest {
 
@@ -33,7 +33,7 @@ public class MFThunkTest {
   @Test
   public void testThunkEvaluatesOnlyOnce() {
     //use array to allow passing non-final variable to lambda
-    Integer val[] = {0};
+    Integer[] val = { 0 };
     Thunk<Integer> thunk = Thunk.from(() -> {
       val[0]++; // side effect should happen once only
       return 1;
@@ -44,6 +44,5 @@ public class MFThunkTest {
     thunk.call();
     assertSame(val[0], 1);
   }
-
 
 }

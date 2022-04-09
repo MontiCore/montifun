@@ -14,7 +14,6 @@ component grammar MFExpressions extends OCLExpressions,
                                         BitExpressions,
                                         MFCallExpressions,
                                         MFLambdaExpressions,
-                                        MCVarDeclarationStatements,
                                         MCBasicTypes {
  
  // todo: MCVarDeclarationStatements is ein Statement.
@@ -22,6 +21,6 @@ component grammar MFExpressions extends OCLExpressions,
  // einfach zu expandieren 
  @Override
   MFParameter
-       =   MCType? DeclaratorId;
+       =   MCType? Name;
 
 }

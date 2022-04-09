@@ -1,9 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf;
 
-import de.monticore.expressions.ExpressionsBasis;
-
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+import de.monticore.expressions.ExpressionsBasis;
 
 component grammar MFCallExpressions extends ExpressionsBasis {
 
@@ -17,4 +17,9 @@ component grammar MFCallExpressions extends ExpressionsBasis {
     NamelessCallExpression implements Expression <250> =
       Expression Arguments;
 
+   // todo: NamelessCallExpression kann vollständig und restlos entfernt werden
+   // weil syntaktisch identisch zu CallExpression 
+   // obige Argumentation trifft auch nicht zu:
+   // syntaktisch geht das jetzt schon, nur die Typen dazu fehlen.
+   
 }

@@ -1,12 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf;
 
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
 import de.monticore.ocl.*;
 import de.monticore.expressions.BitExpressions;
 import de.monticore.statements.MCVarDeclarationStatements;
 import de.monticore.types.MCBasicTypes;
-
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
 component grammar MFExpressions extends OCLExpressions,
                                         OptionalOperators,
@@ -16,6 +16,10 @@ component grammar MFExpressions extends OCLExpressions,
                                         MFLambdaExpressions,
                                         MCVarDeclarationStatements,
                                         MCBasicTypes {
+ 
+ // todo: MCVarDeclarationStatements is ein Statement.
+ // Wir sind aber in der Expression-Welt. Besser ist es wohl diese Definition
+ // einfach zu expandieren 
  @Override
   MFParameter
        =   MCType? DeclaratorId;

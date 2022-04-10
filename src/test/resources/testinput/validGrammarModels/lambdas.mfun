@@ -16,6 +16,12 @@ times3 = arg -> arg * 3;
         else potntimes( (int x) -> f(f(x)), a-1)
    ;
 
+   /// und das sind dazu passende Fun-Unit Tests:
+   boolean testPotntimes1 = potntimes( (int d)  -> d+1 , 1 ) 12 == 12 + 2^0;
+   boolean testPotntimes2 = potntimes( (int d)  -> d+1 , 4 ) 12 == 12 + 2^3;
+   boolean testPotntimes3 = potntimes( (int d)  -> d*2 , 4 ) 12 == 12 * 2^3;
+
+   List<boolean> testLambdas = [ testPotntimes1, testPotntimes2, testPotntimes3, testTimes2 ] ;
 
 */
 

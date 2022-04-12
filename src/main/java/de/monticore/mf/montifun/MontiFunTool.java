@@ -1,19 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf.mf;
 
-//import de.monticore.montifun._ast.ASTMF_module;
+//import de.monticore.montifun._ast.ASTMontiFun_module;
 //import de.monticore.montifun._symboltable.IMontiFunArtifactScope;
 //import de.monticore.montifun._symboltable.MontiFunSymbols2Json;
 //import de.monticore.montifun.transform2core.*;
 //import de.monticore.montifun.montifun.prettyprinter.CorePrinter;
 
-import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
+import de.monticore.mf.mf._ast.ASTMontiFunCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MFTool extends MFToolTOP {
+public class MontiFunTool extends MontiFunToolTOP {
 
   /**
    * Processes user input from command line and delegates to the corresponding
@@ -53,10 +53,10 @@ public class MFTool extends MFToolTOP {
       }
 
       //parse input file, now known to be available
-      List<ASTMFCompilationUnit> inputMFs = new ArrayList<>();
+      List<ASTMontiFunCompilationUnit> inputMontiFuns = new ArrayList<>();
       for (String inputFileName : cmd.getOptionValues("i")) {
-        ASTMFCompilationUnit ast = parse(inputFileName);
-        inputMFs.add(ast);
+        ASTMontiFunCompilationUnit ast = parse(inputFileName);
+        inputMontiFuns.add(ast);
       }
 
       //String packageQName = montiFunAST.getMCPackageDeclaration().getMCQualifiedName().getQName();
@@ -121,7 +121,7 @@ public class MFTool extends MFToolTOP {
   //}
 
   //@Override
-  //public void prettyPrint(ASTMFCompilationUnit ast, String file) {
+  //public void prettyPrint(ASTMontiFunCompilationUnit ast, String file) {
   //String prettyPrintedAST = CorePrinter.toString(ast);
   //print(prettyPrintedAST, file);
   //}

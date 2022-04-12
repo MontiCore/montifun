@@ -12,15 +12,15 @@ import de.monticore.cdbasis._ast.ASTCDPackageBuilder;
 import de.monticore.mf.mf._ast.ASTMFArtifact;
 import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
 import de.monticore.mf.mf._ast.ASTMFFunctionDeclaration;
-import de.monticore.mf.mf._visitor.MFVisitor2;
-import de.monticore.mf.mf.prettyprint.MFFullPrettyPrinter;
+import de.monticore.mf.mf._visitor.MontiFunVisitor2;
+import de.monticore.mf.mf.prettyprint.MontiFunFullPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.umlmodifier.UMLModifierMill;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.stream.Collectors;
 
-public class MF2CDVisitor implements MFVisitor2 {
+public class MF2CDVisitor implements MontiFunVisitor2 {
   protected final static String ERROR_CODE_NO_MAINCLASS = "0xFF055";
 
   protected final static String TEMPLATE_STATIC_METHOD = "de.monticore.mf2cd.StaticMethod";
@@ -88,7 +88,7 @@ public class MF2CDVisitor implements MFVisitor2 {
 
   @Override
   public void visit(ASTMFFunctionDeclaration mfFunctionDeclaration) {
-    MFFullPrettyPrinter prettyPrinter = new MFFullPrettyPrinter();
+    MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter();
 
     //do: no type inference yet
     String returnType;

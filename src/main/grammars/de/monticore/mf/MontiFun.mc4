@@ -42,6 +42,11 @@ grammar MF extends MCCommonLiterals,
     "}"
   ;
 
+  MFParameter =
+    MCType? Name
+  ;
+
+
   MFFunctionDeclaration implements Function =
     MCReturnType? Name
     (parenthesis:"(" (MFParameter || ",")* ")")?

@@ -7,10 +7,10 @@ import de.monticore.expressions.prettyprint.BitExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
-import de.monticore.mf.mf.MFMill;
+import de.monticore.mf.mf.MontiFunMill;
 import de.monticore.mf.mf._ast.ASTMFArtifact;
 import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._visitor.MFTraverser;
+import de.monticore.mf.mf._visitor.MontiFunTraverser;
 import de.monticore.ocl.oclexpressions.prettyprint.OCLExpressionsPrettyPrinter;
 import de.monticore.ocl.optionaloperators.prettyprint.OptionalOperatorsPrettyPrinter;
 import de.monticore.ocl.setexpressions.prettyprint.SetExpressionsPrettyPrinter;
@@ -20,20 +20,20 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
-public class MFFullPrettyPrinter {
+public class MontiFunFullPrettyPrinter {
   protected IndentPrinter printer;
 
-  protected MFTraverser traverser;
+  protected MontiFunTraverser traverser;
 
-  public MFFullPrettyPrinter() {
+  public MontiFunFullPrettyPrinter() {
     this(new IndentPrinter());
   }
 
-  public MFFullPrettyPrinter(IndentPrinter printer) {
+  public MontiFunFullPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
-    traverser = MFMill.traverser();
+    traverser = MontiFunMill.traverser();
 
-    MFPrettyPrinter mfPP = new MFPrettyPrinter(printer);
+    MontiFunPrettyPrinter mfPP = new MontiFunPrettyPrinter(printer);
     MCSimpleGenericTypesPrettyPrinter genericPP = new MCSimpleGenericTypesPrettyPrinter(printer);
     SetExpressionsPrettyPrinter setPP = new SetExpressionsPrettyPrinter(printer);
     MFExpressionsPrettyPrinter mfExpPP = new MFExpressionsPrettyPrinter(printer);
@@ -50,7 +50,7 @@ public class MFFullPrettyPrinter {
     CommonExpressionsPrettyPrinter cePP = new CommonExpressionsPrettyPrinter(printer);
     BitExpressionsPrettyPrinter bePP = new BitExpressionsPrettyPrinter(printer);
 
-    traverser.setMFHandler(mfPP);
+    traverser.setMontiFunHandler(mfPP);
     traverser.add4MCSimpleGenericTypes(genericPP);
     traverser.setMCSimpleGenericTypesHandler(genericPP);
     traverser.setMFExpressionsHandler(mfExpPP);
@@ -101,11 +101,11 @@ public class MFFullPrettyPrinter {
     this.printer = printer;
   }
 
-  public MFTraverser getTraverser() {
+  public MontiFunTraverser getTraverser() {
     return traverser;
   }
 
-  public void setTraverser(MFTraverser traverser) {
+  public void setTraverser(MontiFunTraverser traverser) {
     this.traverser = traverser;
   }
 }

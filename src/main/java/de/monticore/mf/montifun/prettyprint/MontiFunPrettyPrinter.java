@@ -4,22 +4,22 @@ package de.monticore.mf.mf.prettyprint;
 import de.monticore.ast.ASTNode;
 import de.monticore.mf.mf._ast.ASTMFArtifact;
 import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._ast.ASTMFFunctionDeclaration;
-import de.monticore.mf.mf._visitor.MFHandler;
-import de.monticore.mf.mf._visitor.MFTraverser;
+import de.monticore.mf.mf._ast.ASTFunctionDeclaration;
+import de.monticore.mf.mf._visitor.MontiFunHandler;
+import de.monticore.mf.mf._visitor.MontiFunTraverser;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 
 import java.util.List;
 
-public class MFPrettyPrinter implements MFHandler {
+public class MontiFunPrettyPrinter implements MontiFunHandler {
 
   protected IndentPrinter printer;
 
-  protected MFTraverser traverser;
+  protected MontiFunTraverser traverser;
 
-  public MFPrettyPrinter(IndentPrinter printer) {
+  public MontiFunPrettyPrinter(IndentPrinter printer) {
     this.printer = printer;
   }
 
@@ -91,11 +91,11 @@ public class MFPrettyPrinter implements MFHandler {
     this.printer = printer;
   }
 
-  @Override public MFTraverser getTraverser() {
+  @Override public MontiFunTraverser getTraverser() {
     return traverser;
   }
 
-  @Override public void setTraverser(MFTraverser traverser) {
+  @Override public void setTraverser(MontiFunTraverser traverser) {
     this.traverser = traverser;
   }
 }

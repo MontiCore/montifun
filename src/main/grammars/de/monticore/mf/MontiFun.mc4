@@ -14,7 +14,7 @@ grammar MF extends MCCommonLiterals,
                    MCCommonStatements,
                    BasicSymbols {
   
-    /**
+  /**
    *  ASTMFCompilationUnit represents the entire content of an MF model
    *    @attribute package
    *               The package declaration of the component model
@@ -42,11 +42,30 @@ grammar MF extends MCCommonLiterals,
     "}"
   ;
 
+  /** 
+   * ASTMFParameter describes how function parameters are defined:
+   * The use of an explicit type is optional, because MontiFun attempts to
+   * derive the arguments type implicitly
+   * (in the Spirit of other functional languages, like Haskell)
+   *
+   * Howver, from a Software Engineering Point of view, making the 
+   * type explicit is a kind of quality check and thus often useful.
+   */
   MFParameter =
     MCType? Name
   ;
 
 
+  /**
+   * ASTMFFunctionDeclaration describes a first way of defining functions.
+   * (and also constants)
+   *
+   * Examples:   int foo(int a, String b) = ...
+   * If brackets are omitted, the defined value is a normal constant.
+   *
+   * This nonterminal introduces FunctionSymbols.
+   *
+   */
   MFFunctionDeclaration implements Function =
     MCReturnType? Name
     (parenthesis:"(" (MFParameter || ",")* ")")?

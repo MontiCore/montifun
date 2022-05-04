@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.mf.mf.mf2CD;
+package de.monticore.mf.montifun.mf2CD;
 
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
@@ -9,9 +9,9 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.mf.MFMill;
-import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._parser.MFParser;
+import de.monticore.mf.montifun.MontiFunMill;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._parser.MontiFunParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +29,7 @@ public class MF2CDTest extends AbstractTest {
 
   protected final String TEMPLATE_PATH = "src/main/resources";
 
-  protected final MFParser parser = MFMill.parser();
+  protected final MontiFunParser parser = MontiFunMill.parser();
 
   protected final CD4CodeFullPrettyPrinter cd4cPrettyPrinter = new CD4CodeFullPrettyPrinter();
 

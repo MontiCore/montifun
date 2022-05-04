@@ -2,24 +2,24 @@
 package de.monticore.mf;
 
 import de.monticore.expressions.ExpressionsBasis;
+import de.monticore.types.MCBasicTypes;
 
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 //todo, later, when TypeCheck & SymTab Repräsentation dafür geklärt ist:  move to MC
 
-component grammar MFLambdaExpressions extends ExpressionsBasis {
+component grammar MFLambdaExpressions extends ExpressionsBasis,
+                                              MCBasicTypes {
 
-  // todo: ist das sinnvoll? / notwendig?  Ist wahrschenlich wäre auch gut:
-  //        LambdaParameter = MCType? Name
-  external MFParameter;
+  LambdaParameter = MCType? Name;
 
   LambdaParameters =
-    MFParameter
-    | parenthesis:"(" (MFParameter || ",")* ")"
+    LambdaParameter
+    | parenthesis:"(" (LambdaParameter || ",")* ")"
   ;
 
   //todo priority?  Welche Prio halten wir für sinnvoll. Was macht zB Java?
-  // auf jeden Fall rechts klammern?   a -> b -> c    ist  a -> (b -> c)
   LambdaExpression implements Expression =
+    <rightassoc>
     LambdaParameters "->"
     Expression
   ;

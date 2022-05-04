@@ -1,10 +1,10 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.mf.prettyprint;
+package de.monticore.mf.montifun.prettyprint;
 
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.mf.MFMill;
-import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._parser.MFParser;
+import de.monticore.mf.montifun.MontiFunMill;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._parser.MontiFunParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MFPrettyPrinterTest extends AbstractTest {
 
-  protected final MFParser parser = MFMill.parser();
+  protected final MontiFunParser parser = MontiFunMill.parser();
 
   @ParameterizedTest
   @MethodSource("getParsableModels")
@@ -24,7 +24,7 @@ public class MFPrettyPrinterTest extends AbstractTest {
     // given
     final Optional<ASTMFCompilationUnit> astOpt = parser.parse(fileName);
     assertTrue(astOpt.isPresent());
-    final MFFullPrettyPrinter prettyPrinter = new MFFullPrettyPrinter();
+    final MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter();
 
     // when
     String prettyPrinted = prettyPrinter.prettyprint(astOpt.get());

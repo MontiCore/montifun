@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.mf.mf2CD;
+package de.monticore.mf.montifun.mf2CD;
 
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis.CDBasisMill;
@@ -9,11 +9,11 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnitBuilder;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDPackageBuilder;
-import de.monticore.mf.mf._ast.ASTMFArtifact;
-import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._ast.ASTMFFunctionDeclaration;
-import de.monticore.mf.mf._visitor.MontiFunVisitor2;
-import de.monticore.mf.mf.prettyprint.MontiFunFullPrettyPrinter;
+import de.monticore.mf.montifun._ast.ASTMFArtifact;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
+import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
+import de.monticore.mf.montifun.prettyprint.MontiFunFullPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.umlmodifier.UMLModifierMill;
 import de.se_rwth.commons.logging.Log;

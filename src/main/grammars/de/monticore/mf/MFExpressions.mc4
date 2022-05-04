@@ -5,22 +5,13 @@ package de.monticore.mf;
 
 import de.monticore.ocl.*;
 import de.monticore.expressions.BitExpressions;
-import de.monticore.statements.MCVarDeclarationStatements;
 import de.monticore.types.MCBasicTypes;
 
 component grammar MFExpressions extends OCLExpressions,
                                         OptionalOperators,
                                         SetExpressions,
                                         BitExpressions,
-                                        MFCallExpressions,
                                         MFLambdaExpressions,
                                         MCBasicTypes {
  
- // todo: MCVarDeclarationStatements is ein Statement.
- // Wir sind aber in der Expression-Welt. Besser ist es wohl diese Definition
- // einfach zu expandieren 
- @Override
-  MFParameter
-       =   MCType? Name;
-
 }

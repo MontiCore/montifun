@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.mf.prettyprint;
+package de.monticore.mf.montifun.prettyprint;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaExpression;
@@ -35,11 +35,11 @@ public class MFLambdaExpressionsPrettyPrinter implements MFLambdaExpressionsHand
     CommentPrettyPrinter.printPreComments(lambdaParameters, getPrinter());
     if (lambdaParameters.isPresentParenthesis()) {
       getPrinter().print("(");
-      printList(lambdaParameters.getMFParameterList(), ", ");
+      printList(lambdaParameters.getLambdaParameterList(), ", ");
       getPrinter().print(")");
     }
     else {
-      lambdaParameters.getMFParameter(0).accept(getTraverser());
+      lambdaParameters.getLambdaParameter(0).accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(lambdaParameters, getPrinter());
   }

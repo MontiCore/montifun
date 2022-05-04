@@ -8,7 +8,7 @@ import de.monticore.symbols.BasicSymbols;
 
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
-grammar MF extends MCCommonLiterals,
+grammar MontiFun extends MCCommonLiterals,
                    MCSimpleGenericTypes,
                    MFExpressions,
                    MCCommonStatements,

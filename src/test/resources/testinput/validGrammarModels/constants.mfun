@@ -7,6 +7,6 @@ Integer recursive = 1 + recursive;
 Set<Integer> set0 = {};
 Set<Integer> set1 = Set{5};
 Set<Integer> set2 = Set{1..5};
-Integer count = List{x*x | x in { 1 .. 5 } }.count();
+Integer count = [x*x | x in { 1 .. 5 } ].count();
 
 }

@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.mf.mf;
+package de.monticore.mf.montifun;
 
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.mf._parser.MFParser;
+import de.monticore.mf.montifun._parser.MontiFunParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MFParserTest extends AbstractTest {
 
-  protected final MFParser parser = MFMill.parser();
+  protected final MontiFunParser parser = MontiFunMill.parser();
 
   @ParameterizedTest
   @MethodSource("getParsableModels")

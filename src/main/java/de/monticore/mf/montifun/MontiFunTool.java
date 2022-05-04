@@ -1,13 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.mf.mf;
+package de.monticore.mf.montifun;
 
-//import de.monticore.montifun._ast.ASTMontiFun_module;
-//import de.monticore.montifun._symboltable.IMontiFunArtifactScope;
-//import de.monticore.montifun._symboltable.MontiFunSymbols2Json;
-//import de.monticore.montifun.transform2core.*;
-//import de.monticore.montifun.montifun.prettyprinter.CorePrinter;
-
-import de.monticore.mf.mf._ast.ASTMontiFunCompilationUnit;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -53,9 +47,9 @@ public class MontiFunTool extends MontiFunToolTOP {
       }
 
       //parse input file, now known to be available
-      List<ASTMontiFunCompilationUnit> inputMontiFuns = new ArrayList<>();
+      List<ASTMFCompilationUnit> inputMontiFuns = new ArrayList<>();
       for (String inputFileName : cmd.getOptionValues("i")) {
-        ASTMontiFunCompilationUnit ast = parse(inputFileName);
+        ASTMFCompilationUnit ast = parse(inputFileName);
         inputMontiFuns.add(ast);
       }
 

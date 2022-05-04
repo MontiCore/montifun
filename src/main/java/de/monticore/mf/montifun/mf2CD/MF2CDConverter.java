@@ -1,12 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.mf.mf2CD;
+package de.monticore.mf.montifun.mf2CD;
 
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.mf.mf.MontiFunMill;
-import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._visitor.MFTraverser;
+import de.monticore.mf.montifun.MontiFunMill;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 
 public class MF2CDConverter {
 

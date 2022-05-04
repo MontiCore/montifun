@@ -1,12 +1,13 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.mf.prettyprint;
+package de.monticore.mf.montifun.prettyprint;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.mf.mf._ast.ASTMFArtifact;
-import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._ast.ASTFunctionDeclaration;
-import de.monticore.mf.mf._visitor.MontiFunHandler;
-import de.monticore.mf.mf._visitor.MontiFunTraverser;
+import de.monticore.mf.montifun._ast.ASTMFArtifact;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
+import de.monticore.mf.montifun._ast.ASTMFParameter;
+import de.monticore.mf.montifun._visitor.MontiFunHandler;
+import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -72,6 +73,15 @@ public class MontiFunPrettyPrinter implements MontiFunHandler {
     getPrinter().println(";");
 
     CommentPrettyPrinter.printPostComments(functionDeclaration, getPrinter());
+  }
+
+  @Override
+  public void handle(ASTMFParameter parameter) {
+    if (parameter.isPresentMCType()) {
+      parameter.getMCType().accept(getTraverser());
+      getPrinter().print(" ");
+    }
+    getPrinter().print(parameter.getName());
   }
 
   protected void printList(List<? extends ASTNode> listToPrint, String separator) {

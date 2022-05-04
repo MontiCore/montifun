@@ -1,16 +1,15 @@
 // (c) https://github.com/MontiCore/monticore
-
-package de.monticore.mf.mf.prettyprint;
+package de.monticore.mf.montifun.prettyprint;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.prettyprint.BitExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
-import de.monticore.mf.mf.MontiFunMill;
-import de.monticore.mf.mf._ast.ASTMFArtifact;
-import de.monticore.mf.mf._ast.ASTMFCompilationUnit;
-import de.monticore.mf.mf._visitor.MontiFunTraverser;
+import de.monticore.mf.montifun.MontiFunMill;
+import de.monticore.mf.montifun._ast.ASTMFArtifact;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.ocl.oclexpressions.prettyprint.OCLExpressionsPrettyPrinter;
 import de.monticore.ocl.optionaloperators.prettyprint.OptionalOperatorsPrettyPrinter;
 import de.monticore.ocl.setexpressions.prettyprint.SetExpressionsPrettyPrinter;
@@ -36,7 +35,6 @@ public class MontiFunFullPrettyPrinter {
     MontiFunPrettyPrinter mfPP = new MontiFunPrettyPrinter(printer);
     MCSimpleGenericTypesPrettyPrinter genericPP = new MCSimpleGenericTypesPrettyPrinter(printer);
     SetExpressionsPrettyPrinter setPP = new SetExpressionsPrettyPrinter(printer);
-    MFExpressionsPrettyPrinter mfExpPP = new MFExpressionsPrettyPrinter(printer);
     MFLambdaExpressionsPrettyPrinter mfLExpPP = new MFLambdaExpressionsPrettyPrinter(printer);
     OCLExpressionsPrettyPrinter oclexPP = new OCLExpressionsPrettyPrinter(printer);
     OptionalOperatorsPrettyPrinter optPP = new OptionalOperatorsPrettyPrinter(printer);
@@ -53,7 +51,6 @@ public class MontiFunFullPrettyPrinter {
     traverser.setMontiFunHandler(mfPP);
     traverser.add4MCSimpleGenericTypes(genericPP);
     traverser.setMCSimpleGenericTypesHandler(genericPP);
-    traverser.setMFExpressionsHandler(mfExpPP);
     traverser.setMFLambdaExpressionsHandler(mfLExpPP);
     traverser.setSetExpressionsHandler(setPP);
     traverser.setOCLExpressionsHandler(oclexPP);

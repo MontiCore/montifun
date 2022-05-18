@@ -48,7 +48,7 @@ grammar MontiFun extends MCCommonLiterals,
    * derive the arguments type implicitly
    * (in the Spirit of other functional languages, like Haskell)
    *
-   * Howver, from a Software Engineering Point of view, making the 
+   * However, from a Software Engineering Point of view, making the
    * type explicit is a kind of quality check and thus often useful.
    */
   MFParameter =

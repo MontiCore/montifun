@@ -51,7 +51,7 @@ grammar MontiFun extends MCCommonLiterals,
    * However, from a Software Engineering Point of view, making the
    * type explicit is a kind of quality check and thus often useful.
    */
-  MFParameter =
+  MFParameter implements Variable =
     MCType? Name
   ;
 

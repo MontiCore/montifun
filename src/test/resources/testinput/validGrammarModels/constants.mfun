@@ -3,10 +3,11 @@
 montifun constants {
 
 Integer answer = 41 + 1;
-Integer recursive = 1 + recursive;
-Set<Integer> set0 = {};
+Integer recursive = 1 + recursive();
 Set<Integer> set1 = Set{5};
 Set<Integer> set2 = Set{1..5};
-Integer count = [x*x | x in { 1 .. 5 } ].count();
+List<Integer> list1 = [5];
+List<Integer> list2 = [1..5];
+List<Integer> list3 = [x*x | x in { 1 .. 5 } ];
 
 }

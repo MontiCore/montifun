@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun overloading {
+
+Integer id(Integer value) = value;
+String  id(String  value) = value;
+Float   id(Float   value) = value;
+
+}

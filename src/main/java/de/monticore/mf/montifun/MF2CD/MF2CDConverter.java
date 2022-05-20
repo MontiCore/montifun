@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.montifun.mf2CD;
+package de.monticore.mf.montifun.MF2CD;
 
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
@@ -7,12 +7,17 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
 public class MF2CDConverter {
 
   public ASTCDCompilationUnit convert(ASTMFCompilationUnit mfCompilationUnit,
       GlobalExtensionManagement glex) {
+
+    // switch to CD4Code
+    CD4CodeMill.reset();
     CD4CodeMill.init();
+    BasicSymbolsMill.initializePrimitives();
 
     MontiFunTraverser traverser = MontiFunMill.traverser();
     MF2CDVisitor mf2CDVisitor = new MF2CDVisitor();
@@ -20,8 +25,6 @@ public class MF2CDConverter {
     mfCompilationUnit.accept(traverser);
 
     return mf2CDVisitor.getCdCompilationUnit();
-    //switch to CD4Code language?
-    //CD4CodeMill.init();
-
   }
+
 }

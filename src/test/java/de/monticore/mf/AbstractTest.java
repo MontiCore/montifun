@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf;
 
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractTest {
 
@@ -42,6 +44,14 @@ public abstract class AbstractTest {
         .toArray(filenames);
 
     return filenames;
+  }
+
+  public static void assertNoFindings() {
+    assertTrue(Log.getFindings().isEmpty(),
+        Log.getFindings().stream()
+            .map(Finding::buildMsg)
+            .collect(Collectors.joining(System.lineSeparator()))
+    );
   }
 
 }

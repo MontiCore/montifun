@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.montifun.mf2CD;
+package de.monticore.mf.montifun.MF2CD;
 
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis.CDBasisMill;
@@ -9,6 +9,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnitBuilder;
 import de.monticore.cdbasis._ast.ASTCDDefinition;
 import de.monticore.cdbasis._ast.ASTCDPackage;
 import de.monticore.cdbasis._ast.ASTCDPackageBuilder;
+import de.monticore.mf.mfexpressions.Expressions2JavaPrinter.MontiFunExpressions2JavaPrinter;
 import de.monticore.mf.montifun._ast.ASTMFArtifact;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
@@ -90,37 +91,37 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
   public void visit(ASTMFFunctionDeclaration mfFunctionDeclaration) {
     MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter();
 
-    //do: no type inference yet
     String returnType;
-    if (mfFunctionDeclaration.isPresentMCReturnType()) {
-      returnType = prettyPrinter.prettyprint(mfFunctionDeclaration.getMCReturnType());
+    if (mfFunctionDeclaration.getSymbol().getType() != null) {
+      returnType = mfFunctionDeclaration.getSymbol().getType().printFullName();
     }
     else {
       Log.error("0xFF056 no return type given");
-      returnType = "TypeNotInfered";
+      returnType = "TypeNotInferred";
     }
 
     //do: move to template?
     final String arguments = mfFunctionDeclaration.getMFParameterList().stream()
-        //do: add type inference
         .map(parameter -> {
-              if (!parameter.isPresentMCType()) {
+              if (parameter.getSymbol().getType() == null) {
                 Log.error("0xFF057 no parameter type given");
-                return "TypeNotInfered " + parameter.getName();
+                return "TypeNotInferred " + parameter.getName();
               }
-              return prettyPrinter.prettyprint(parameter.getMCType())
+              return parameter.getSymbol().getType().printFullName()
                   + " "
                   + parameter.getName();
             }
         ).collect(Collectors.joining(", "));
 
+    String javaExpr = new MontiFunExpressions2JavaPrinter().print2Java(
+        mfFunctionDeclaration.getExpression());
     getCd4C().addMethod(
         getMainClass(),
         TEMPLATE_STATIC_METHOD,
         mfFunctionDeclaration.getName(),
         returnType,
         arguments,
-        "//todo add code"
+        javaExpr
     );
   }
 

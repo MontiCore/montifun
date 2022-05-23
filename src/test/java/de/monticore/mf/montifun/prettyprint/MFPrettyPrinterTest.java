@@ -22,17 +22,16 @@ public class MFPrettyPrinterTest extends AbstractTest {
   @MethodSource("getParsableModels")
   public void prettyPrintsEquivalent(String fileName) throws IOException {
     // given
-    final Optional<ASTMFCompilationUnit> astOpt = parser.parse(fileName);
-    assertTrue(astOpt.isPresent());
+    final ASTMFCompilationUnit ast = parse(fileName);
     final MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter();
 
     // when
-    String prettyPrinted = prettyPrinter.prettyprint(astOpt.get());
+    String prettyPrinted = prettyPrinter.prettyprint(ast);
 
     // then
     Optional<ASTMFCompilationUnit> prettyASTOpt = parser.parse_String(prettyPrinted);
     assertTrue(prettyASTOpt.isPresent());
-    assertTrue(astOpt.get().deepEquals(prettyASTOpt.get()));
+    assertTrue(ast.deepEquals(prettyASTOpt.get()));
     assertTrue(Log.getFindings().isEmpty());
   }
 }

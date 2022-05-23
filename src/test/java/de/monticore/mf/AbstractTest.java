@@ -1,6 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf;
 
+import de.monticore.mf.montifun.MontiFunMill;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -8,8 +10,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,6 +56,12 @@ public abstract class AbstractTest {
             .map(Finding::buildMsg)
             .collect(Collectors.joining(System.lineSeparator()))
     );
+  }
+
+  public static ASTMFCompilationUnit parse(String fileName) throws IOException {
+    Optional<ASTMFCompilationUnit> compilationUnitOpt = MontiFunMill.parser().parse(fileName);
+    assertTrue(compilationUnitOpt.isPresent());
+    return compilationUnitOpt.get();
   }
 
 }

@@ -4,14 +4,11 @@ package de.monticore.mf.montifun.MF2CD;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code.prettyprint.CD4CodeFullPrettyPrinter;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
-import de.monticore.mf.montifun._parser.MontiFunParser;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,10 +41,6 @@ public class MF2CDTest extends AbstractTest {
 
   protected final String TEMPLATE_PATH = "src/main/resources";
 
-  protected final MontiFunParser parser = MontiFunMill.parser();
-
-  protected final CD4CodeFullPrettyPrinter cd4cPrettyPrinter = new CD4CodeFullPrettyPrinter();
-
   GlobalExtensionManagement glex;
 
   GeneratorSetup generatorSetup;
@@ -74,7 +67,7 @@ public class MF2CDTest extends AbstractTest {
     assumeFalse(fileName.contains("lambdas"));
 
     // load model
-    ASTMFCompilationUnit mfCompilationUnit = loadASTWithSymbols(new File(fileName));
+    ASTMFCompilationUnit mfCompilationUnit = loadASTWithSymbols(fileName);
 
     // MontiFun -> CD, CD -> Java
     // note: creating CDGenerator BEFORE MF2CDConverter::convert!
@@ -92,13 +85,11 @@ public class MF2CDTest extends AbstractTest {
     assertNoFindings();
   }
 
-  protected ASTMFCompilationUnit loadASTWithSymbols(File input) throws IOException {
-    MontiFunParser parser = new MontiFunParser();
-    Optional<ASTMFCompilationUnit> ast = parser.parse(input.toString());
-    assertTrue(ast.isPresent());
-    MFSymbolTableUtil.runSymTabGenitor(ast.get());
-    MFSymbolTableUtil.runSymTabCompleter(ast.get());
-    return ast.get();
+  protected ASTMFCompilationUnit loadASTWithSymbols(String fileName) throws IOException {
+    ASTMFCompilationUnit ast = parse(fileName);
+    MFSymbolTableUtil.runSymTabGenitor(ast);
+    MFSymbolTableUtil.runSymTabCompleter(ast);
+    return ast;
   }
 
   /**

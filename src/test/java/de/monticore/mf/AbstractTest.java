@@ -3,6 +3,7 @@ package de.monticore.mf;
 
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._parser.MontiFunParser;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,7 +61,9 @@ public abstract class AbstractTest {
   }
 
   public static ASTMFCompilationUnit parse(String fileName) throws IOException {
-    Optional<ASTMFCompilationUnit> compilationUnitOpt = MontiFunMill.parser().parse(fileName);
+    MontiFunParser parser = MontiFunMill.parser();
+    Optional<ASTMFCompilationUnit> compilationUnitOpt = parser.parse(fileName);
+    assertFalse(parser.hasErrors());
     assertTrue(compilationUnitOpt.isPresent());
     return compilationUnitOpt.get();
   }

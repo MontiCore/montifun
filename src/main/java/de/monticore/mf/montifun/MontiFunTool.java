@@ -1,8 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf.montifun;
 
+import de.monticore.cd.codegen.CDGenerator;
+import de.monticore.cd.codegen.CdUtilsPrinter;
+import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
+import de.monticore.generating.GeneratorSetup;
+import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.monticore.mf.montifun.MF2CD.MF2CDConverter;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunArtifactScope;
@@ -13,6 +20,7 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -21,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +47,7 @@ public class MontiFunTool extends MontiFunToolTOP {
    * Processes user input from command line and delegates to the corresponding
    * tools.
    *
-   * @param args The input parameters for configuring the JSON tool.
+   * @param args The input parameters for configuring the tool.
    */
   @Override
   public void run(String[] args) {
@@ -104,7 +113,7 @@ public class MontiFunTool extends MontiFunToolTOP {
       MCPath symbolPath = new MCPath(Paths.get(""));
       if (cmd.hasOption("p")) {
         symbolPath = new MCPath(Arrays.stream(cmd.getOptionValues("p"))
-            .map(x -> Paths.get(x))
+            .map(Paths::get)
             .collect(Collectors.toList())
         );
       }
@@ -116,13 +125,17 @@ public class MontiFunTool extends MontiFunToolTOP {
 
       // do: add cocos and only export symbols if cocos successful
 
-      // store symbols
-      if (cmd.hasOption("s")) {
+      if (cmd.hasOption("s") ||
+          cmd.hasOption("gen")) {
         // Complete symbol table
         for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
           MFSymbolTableUtil.runSymTabGenitor(compilationUnit);
           MFSymbolTableUtil.runSymTabCompleter(compilationUnit);
         }
+      }
+
+      // store symbols
+      if (cmd.hasOption("s")) {
         if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
           inputMontiFuns.forEach(this::storeSymbols);
         }
@@ -143,6 +156,17 @@ public class MontiFunTool extends MontiFunToolTOP {
         }
       }
 
+      // -option generate to CD
+      if (cmd.hasOption("gen")) {
+        String path = cmd.getOptionValue("gen", "");
+        String templatePath = cmd.getOptionValue("fp", "");
+        String handcodedPath = cmd.getOptionValue("hcp", "");
+
+        for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+          generateJava(compilationUnit, path, templatePath, handcodedPath);
+        }
+      }
+
     }
     catch (ParseException e) {
       // e.getMessage displays the incorrect input-parameters
@@ -158,7 +182,7 @@ public class MontiFunTool extends MontiFunToolTOP {
   /**
    * Stores the symbols for ast in the symbol file filename.
    *
-   * @param compilationUnit The ast of the SD.
+   * @param compilationUnit The ast.
    * @param filename        The name of the produced symbol file.
    */
   public void storeSymbols(ASTMFCompilationUnit compilationUnit, String filename) {
@@ -198,6 +222,117 @@ public class MontiFunTool extends MontiFunToolTOP {
   public void prettyPrint(ASTMFCompilationUnit ast, String file) {
     String prettyPrintedAST = new MontiFunFullPrettyPrinter().prettyprint(ast);
     print(prettyPrintedAST, file);
+  }
+
+  public void generateJava(ASTMFCompilationUnit ast,
+      String outputDirectory,
+      String templatePath,
+      String handcodedPath) {
+
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
+    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
+    GeneratorSetup generatorSetup = new GeneratorSetup();
+    generatorSetup.setGlex(glex);
+    generatorSetup.setOutputDirectory(new File(outputDirectory));
+    generatorSetup.setTracing(false);
+    if (!handcodedPath.isEmpty()) {
+      generatorSetup.setHandcodedPath(new MCPath(handcodedPath));
+    }
+    if (!templatePath.isEmpty()) {
+      generatorSetup.setAdditionalTemplatePaths(
+          Collections.singletonList((new File(templatePath))));
+    }
+    if (!outputDirectory.isEmpty()) {
+      File targetDir = new File(outputDirectory);
+      if (!targetDir.exists()) {
+        targetDir.mkdirs();
+      }
+      generatorSetup.setOutputDirectory(targetDir);
+    }
+
+    CD4C.init(generatorSetup);
+
+    CDGenerator cdGenerator = new CDGenerator(generatorSetup);
+    MF2CDConverter mf2CDConverter = new MF2CDConverter();
+    ASTCDCompilationUnit cdCompilationUnit = mf2CDConverter.convert(ast, generatorSetup.getGlex());
+    cdGenerator.generate(cdCompilationUnit);
+  }
+
+  @Override
+  public Options addStandardOptions(Options options) {
+
+    // help dialog
+    Option help = new Option("h", "Prints this help dialog");
+    help.setLongOpt("help");
+    options.addOption(help);
+
+    // parse input file
+    Option parse = Option.builder("i")
+        .longOpt("input")
+        .argName("files")
+        .hasArgs()
+        .desc("Processes the list of input artifacts. " +
+            "Argument list is space separated. CoCos are not checked automatically (see -c).")
+        .build();
+    options.addOption(parse);
+
+    // model paths
+    Option path = new Option("p", "Sets the artifact path for imported symbols. "
+        + "Directory will be searched recursively for files with the ending "
+        + "\".*sym\" (for example \".mfsym\" or \".sym\"). Defaults to the current folder.");
+    path.setLongOpt("path");
+    path.setArgName("directory");
+    path.setOptionalArg(true);
+    path.setArgs(1);
+    options.addOption(path);
+
+    // pretty print
+    Option prettyprint = new Option("pp",
+        "Prints the model to stdout or the specified file(s) (optional). "
+            + "Multiple files should be separated by spaces and will be used in the same order "
+            + "in which the input files (-i option) are provided.");
+    prettyprint.setLongOpt("prettyprint");
+    prettyprint.setArgName("files");
+    prettyprint.setOptionalArg(true);
+    prettyprint.setArgs(Option.UNLIMITED_VALUES);
+    options.addOption(prettyprint);
+
+    // create and store symboltable
+    Option symboltable = Option.builder("s")
+        .longOpt("symboltable")
+        .optionalArg(true)
+        .argName("files")
+        .hasArgs()
+        .desc("Stores the symbol tables of the input artifacts in the specified files. "
+            + "For each input artifact (-i option) please provide one output symbol file "
+            + "(using same order in which the input artifacts are provided) to store its symbols in. "
+            + "Arguments are separated by spaces. "
+            + "If no arguments are given, output is stored to "
+            + "'target/symbols/{packageName}/{artifactName}.mfsym'.")
+        .build();
+    options.addOption(symboltable);
+    return options;
+  }
+
+  /**
+   * Initializes the additional options for the tool.
+   *
+   * @return The CLI options with arguments.
+   */
+  @Override
+  public Options addAdditionalOptions(Options options) {
+
+    // convert to state pattern CD
+    options.addOption(Option.builder("gen")
+        .longOpt("generate")
+        .argName("dir")
+        .optionalArg(true)
+        .numberOfArgs(1)
+        .desc(
+            "Prints the montifun model to stdout or the generated java classes to the specified folder (optional)")
+        .build());
+
+    return options;
   }
 
 }

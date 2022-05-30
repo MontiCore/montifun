@@ -14,7 +14,6 @@ import de.monticore.mf.montifun._ast.ASTMFArtifact;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
-import de.monticore.mf.montifun.prettyprint.MontiFunFullPrettyPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.umlmodifier.UMLModifierMill;
 import de.se_rwth.commons.logging.Log;
@@ -22,7 +21,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.stream.Collectors;
 
 public class MF2CDVisitor implements MontiFunVisitor2 {
-  protected final static String ERROR_CODE_NO_MAINCLASS = "0xFF055";
 
   protected final static String TEMPLATE_STATIC_METHOD = "de.monticore.mf2cd.StaticMethod";
 
@@ -89,8 +87,6 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
 
   @Override
   public void visit(ASTMFFunctionDeclaration mfFunctionDeclaration) {
-    MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter();
-
     String returnType;
     if (mfFunctionDeclaration.getSymbol().getType() != null) {
       returnType = mfFunctionDeclaration.getSymbol().getType().printFullName();

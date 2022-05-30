@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+import java.nio.file.Path;
+//import java.nio.file.Paths;
+
+montifun javaImport {
+
+// not side effect free
+getNanoTime = System.nanoTime();
+getNanoTime(System s) = s.nanoTime();
+toFile(Path p) = p.toFile();
+sqrt(double x) = java.lang.Math.sqrt(x);
+//todo enable after fix of
+//https://git.rwth-aachen.de/monticore/monticore/-/issues/3176
+//getPath(String p) = Paths.get(p);
+
+}

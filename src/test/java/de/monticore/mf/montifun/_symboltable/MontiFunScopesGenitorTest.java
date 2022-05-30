@@ -189,8 +189,6 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
       Assertions.assertEquals(ast.getEnclosingScope(),
           ast.getSpannedScope().getSpanningSymbol().getEnclosingScope(),
           "The enclosing scope of the symbol of the function declaration does not match the enclosing scope of its ast.");
-      assertNotNull(ast.getSymbol().getType(),
-          "The symbol of the function declaration is missing its type.");
       assertTrue(enclosingScope.getLocalFunctionSymbols().contains(ast.getSymbol()),
           "The enclosing scope of the function declaration does not contain the spanning symbol as local symbol.");
     });

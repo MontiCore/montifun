@@ -8,7 +8,6 @@ import de.monticore.ocl.types.check.OCLSynthesizer;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.AbstractSynthesize;
-import de.monticore.types.check.TypeCheckResult;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -99,22 +98,6 @@ public class MontiFunScopesGenitor extends MontiFunScopesGenitorTOP {
     symbol.setSpannedScope(scope);
 
     putOnStack(scope);
-  }
-
-  @Override
-  public void endVisit(final ASTMFFunctionDeclaration node) {
-    // set type of symbol
-    TypeCheckResult type = new TypeCheckResult();
-    if (node.isPresentMCReturnType()) {
-      type = getSynthesizer().synthesizeType(node.getMCReturnType());
-    }
-    if (type.isPresentResult()) {
-      node.getSymbol().setType(type.getResult());
-    }
-    else {
-      Log.error("0xFD391 return type unknown", node.get_SourcePositionStart());
-    }
-    super.endVisit(node);
   }
 
   public AbstractSynthesize getSynthesizer() {

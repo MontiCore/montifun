@@ -28,16 +28,20 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
    * @param node the function
    */
   @Override
-  public void visit(ASTMFFunctionDeclaration node) {
+  public void endVisit(ASTMFFunctionDeclaration node) {
     // return value
+    TypeCheckResult type;
     if (node.isPresentMCReturnType()) {
-      TypeCheckResult type = getSynthesizer().synthesizeType(node.getMCReturnType());
-      if (type.isPresentResult()) {
-        node.getSymbol().setType(type.getResult());
-      }
-      else {
-        Log.error(UNKNOWN_TYPE_ERROR, node.getMCReturnType().get_SourcePositionStart());
-      }
+      type = getSynthesizer().synthesizeType(node.getMCReturnType());
+    }
+    else {
+      type = getDeriver().deriveType(node.getExpression());
+    }
+    if (type.isPresentResult()) {
+      node.getSymbol().setType(type.getResult());
+    }
+    else {
+      Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart());
     }
   }
 

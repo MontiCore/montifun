@@ -5,7 +5,6 @@ import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._parser.MontiFunParser;
-import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -32,6 +31,6 @@ public class MFPrettyPrinterTest extends AbstractTest {
     Optional<ASTMFCompilationUnit> prettyASTOpt = parser.parse_String(prettyPrinted);
     assertTrue(prettyASTOpt.isPresent());
     assertTrue(ast.deepEquals(prettyASTOpt.get()));
-    assertTrue(Log.getFindings().isEmpty());
+    assertNoFindings();
   }
 }

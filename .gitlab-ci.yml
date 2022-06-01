@@ -1,0 +1,36 @@
+# (c) https://github.com/MontiCore/monticore
+
+# Build JAVA applications using Apache Maven (http://maven.apache.org)
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+cache:
+  paths:
+    - .m2/repository/
+  key: "$CI_COMMIT_SHA" # Cache across branch and stage
+
+stages:
+  - build
+  - test
+  - post-test
+
+Validate Gradle:
+  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
+  stage: build
+  allow_failure: true
+  script:
+    - gradle clean assemble
+  artifacts:
+    paths:
+      - ./target/
+    expire_in: 1 week
+
+Unit Test Gradle:
+  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
+  stage: test
+  allow_failure: true
+  needs: ["Validate Gradle"]
+  dependencies:
+    - Validate Gradle #download artifacts from build
+  script:
+    - gradle test

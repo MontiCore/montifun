@@ -45,6 +45,7 @@ public class MFLambdaExpressionsPrettyPrinter implements MFLambdaExpressionsHand
     CommentPrettyPrinter.printPostComments(lambdaParameters, getPrinter());
   }
 
+  @Override
   public void handle(ASTLambdaParameter node) {
     CommentPrettyPrinter.printPreComments(node, getPrinter());
     if (node.isPresentMCType()) {

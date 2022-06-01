@@ -3,6 +3,7 @@ package de.monticore.mf.montifun.prettyprint;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaExpression;
+import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaParameter;
 import de.monticore.mf.mflambdaexpressions._ast.ASTLambdaParameters;
 import de.monticore.mf.mflambdaexpressions._visitor.MFLambdaExpressionsHandler;
 import de.monticore.mf.mflambdaexpressions._visitor.MFLambdaExpressionsTraverser;
@@ -42,6 +43,16 @@ public class MFLambdaExpressionsPrettyPrinter implements MFLambdaExpressionsHand
       lambdaParameters.getLambdaParameter(0).accept(getTraverser());
     }
     CommentPrettyPrinter.printPostComments(lambdaParameters, getPrinter());
+  }
+
+  public void handle(ASTLambdaParameter node) {
+    CommentPrettyPrinter.printPreComments(node, getPrinter());
+    if (node.isPresentMCType()) {
+      node.getMCType().accept(getTraverser());
+      getPrinter().print(" ");
+    }
+    getPrinter().print(node.getName());
+    CommentPrettyPrinter.printPostComments(node, getPrinter());
   }
 
   protected void printList(List<? extends ASTNode> listToPrint, String separator) {

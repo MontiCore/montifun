@@ -38,6 +38,8 @@ public class MFSymbolTableUtil {
 
     BasicSymbolsMill.initializePrimitives();
 
+    MontiFunMill.globalScope().setFileExt("mfsym");
+
     OOSymbolsMill.globalScope().setSymbolPath(new MCPath(Paths.get("")));
     OOSymbolsMill.globalScope().addAdaptedOOTypeSymbolResolver(resolver);
     MontiFunMill.globalScope().addAdaptedTypeSymbolResolver(resolver);

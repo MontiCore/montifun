@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class MF2CDTest extends AbstractTest {
 
-  protected final String OUTPUT_DIR = "target/generated-test-sources/MF2CDTest";
+  protected final String OUTPUT_DIR = RELATIVE_JAVA_OUTPUT_PATH + "/MF2CDTest";
 
   protected final String TEMPLATE_PATH = "src/main/resources";
 

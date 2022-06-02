@@ -39,6 +39,10 @@ public abstract class AbstractTest {
   protected static final String RELATIVE_VALID_MODEL_PATH =
       RELATIVE_MODEL_PATH + "/testinput/validGrammarModels";
 
+  protected static final String RELATIVE_SYMBOL_OUTPUT_PATH = "target/generated-test-symbols";
+
+  protected static final String RELATIVE_JAVA_OUTPUT_PATH = "target/generated-test-sources";
+
   public static String[] getParsableModels() {
     File f = new File(RELATIVE_VALID_MODEL_PATH);
     String[] filenames = f.list();

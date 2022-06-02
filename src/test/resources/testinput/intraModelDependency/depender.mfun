@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pkg; // same package as dependers
+import pkg.dependee;
+
+montifun depender {
+
+// with import
+getDependency() = dependee.dependency();
+// fully qualified, no import
+getDependency2() = pkg.dependee2.dependency2();
+
+}

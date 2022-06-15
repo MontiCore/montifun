@@ -17,7 +17,7 @@ public class MFListType extends ListType {
     typeVarSymbol = MontiFunMill.typeVarSymbolBuilder().setName("X").build();
 
     SymTypeOfGenerics superType = SymTypeExpressionFactory
-        .createGenerics(SymTypeExpressionFactory.createTypeConstant("Collection").getTypeInfo(),
+        .createGenerics(SymTypeExpressionFactory.createPrimitive("Collection").getTypeInfo(),
             SymTypeExpressionFactory.createTypeVariable(typeVarSymbol));
 
     listSymbol = MontiFunMill.typeSymbolBuilder()

@@ -17,7 +17,7 @@ public class MFSetType extends SetType {
     typeVarSymbol = MontiFunMill.typeVarSymbolBuilder().setName("X").build();
 
     SymTypeOfGenerics superType = SymTypeExpressionFactory
-        .createGenerics(SymTypeExpressionFactory.createTypeConstant("Collection").getTypeInfo(),
+        .createGenerics(SymTypeExpressionFactory.createPrimitive("Collection").getTypeInfo(),
             SymTypeExpressionFactory.createTypeVariable(typeVarSymbol));
 
     setSymbol = MontiFunMill.typeSymbolBuilder()

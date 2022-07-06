@@ -3,8 +3,6 @@ package de.monticore.mf.montifun;
 
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
-import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +14,7 @@ public class MontiFunImportTest extends AbstractTest {
   protected MCPath symbolPath = new MCPath(Paths.get(RELATIVE_SYMBOL_OUTPUT_PATH));
 
   @BeforeAll
-  public static void init() {
+  public static void init2() {
     //generate symbols to load
     MontiFunTool.main(new String[] {
         "-i",
@@ -24,35 +22,45 @@ public class MontiFunImportTest extends AbstractTest {
         RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/dependee2.mfun",
         "-sym",
         RELATIVE_SYMBOL_OUTPUT_PATH + "/pkg/dependee.mfsym",
-        RELATIVE_SYMBOL_OUTPUT_PATH + "/pkg/dependee2.mfsym"
+        RELATIVE_SYMBOL_OUTPUT_PATH + "/pkg/dependee2.mfsym",
     });
   }
 
   @Test
   public void unidirectionalImportSamePackageTest() throws IOException {
     // given
-    String fileName = RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender.mfun";
-    createASTWithSymTab(fileName);
+    createASTWithSymTab(
+        RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender.mfun",
+        symbolPath
+    );
     //then
     assertNoFindings();
   }
 
   @Test
   public void unidirectionalImportDifferentPackageTest() throws IOException {
-    // given
-    String fileName = RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender2.mfun";
-    createASTWithSymTab(fileName);
+    // given / when
+    createASTWithSymTab(
+        RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender2.mfun",
+        symbolPath
+    );
     //then
     assertNoFindings();
   }
 
-  protected ASTMFCompilationUnit createASTWithSymTab(String fileName) throws IOException {
-    ASTMFCompilationUnit ast = parse(fileName);
-    MFSymbolTableUtil.prepareMill();
-    MontiFunMill.globalScope().setSymbolPath(symbolPath);
-    MFSymbolTableUtil.runSymTabGenitor(ast);
-    MFSymbolTableUtil.runSymTabCompleter(ast);
-    return ast;
+  @Test
+  public void circularDependencyImportTest() throws IOException {
+    // given / when
+    MontiFunTool.main(new String[] {
+        "-i",
+        RELATIVE_MODEL_PATH + "/testinput/circularDependency/a.mfun",
+        RELATIVE_MODEL_PATH + "/testinput/circularDependency/b.mfun",
+        "-sym",
+        RELATIVE_SYMBOL_OUTPUT_PATH + "/circularDependency/a.mfun",
+        RELATIVE_SYMBOL_OUTPUT_PATH + "/circularDependency/b.mfun"
+    });
+    //then
+    assertNoFindings();
   }
 
 }

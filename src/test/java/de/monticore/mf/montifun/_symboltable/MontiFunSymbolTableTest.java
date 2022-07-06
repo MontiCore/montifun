@@ -20,13 +20,8 @@ public class MontiFunSymbolTableTest extends AbstractTest {
     assumeFalse(fileName.contains("genericFunctions"));
     assumeFalse(fileName.contains("lambdas"));
 
-    // given
-    ASTMFCompilationUnit ast = parse(fileName);
-
-    // when
-    MFSymbolTableUtil.prepareMill();
-    MFSymbolTableUtil.runSymTabGenitor(ast);
-    MFSymbolTableUtil.runSymTabCompleter(ast);
+    // given / when
+    createASTWithSymTab(fileName);
 
     //then
     assertNoFindings();

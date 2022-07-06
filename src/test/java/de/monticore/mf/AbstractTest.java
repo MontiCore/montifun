@@ -1,9 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf;
 
+import de.monticore.io.paths.MCPath;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._parser.MontiFunParser;
+import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -43,7 +45,7 @@ public abstract class AbstractTest {
 
   protected static final String RELATIVE_JAVA_OUTPUT_PATH = "target/generated-test-sources";
 
-  public static String[] getParsableModels() {
+  protected static String[] getParsableModels() {
     File f = new File(RELATIVE_VALID_MODEL_PATH);
     String[] filenames = f.list();
     assertNotNull(filenames);
@@ -56,7 +58,7 @@ public abstract class AbstractTest {
     return filenames;
   }
 
-  public static void assertNoFindings() {
+  protected static void assertNoFindings() {
     assertTrue(Log.getFindings().isEmpty(),
         Log.getFindings().stream()
             .map(Finding::buildMsg)
@@ -64,12 +66,26 @@ public abstract class AbstractTest {
     );
   }
 
-  public static ASTMFCompilationUnit parse(String fileName) throws IOException {
+  protected static ASTMFCompilationUnit parse(String fileName) throws IOException {
     MontiFunParser parser = MontiFunMill.parser();
     Optional<ASTMFCompilationUnit> compilationUnitOpt = parser.parse(fileName);
     assertFalse(parser.hasErrors());
     assertTrue(compilationUnitOpt.isPresent());
     return compilationUnitOpt.get();
+  }
+
+  protected ASTMFCompilationUnit createASTWithSymTab(String fileName) throws IOException {
+    return createASTWithSymTab(fileName, new MCPath());
+  }
+
+  protected ASTMFCompilationUnit createASTWithSymTab(String fileName, MCPath symbolPath)
+      throws IOException {
+    ASTMFCompilationUnit ast = parse(fileName);
+    MFSymbolTableUtil.prepareMill();
+    MontiFunMill.globalScope().setSymbolPath(symbolPath);
+    MFSymbolTableUtil.runSymTabGenitor(ast);
+    MFSymbolTableUtil.runSymTabCompleter(ast);
+    return ast;
   }
 
 }

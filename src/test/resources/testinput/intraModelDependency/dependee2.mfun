@@ -2,6 +2,6 @@
 package pkg;
 montifun dependee2 {
 
-dependency2 = 42;
+  dependency2 = 42;
 
 }

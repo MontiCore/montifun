@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import a;
+
+montifun b {
+
+dependencyB = 42;
+getDependecy() = dependencyA;
+
+}

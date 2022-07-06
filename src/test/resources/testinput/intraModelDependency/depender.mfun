@@ -4,9 +4,9 @@ import pkg.dependee;
 
 montifun depender {
 
-// with import
-getDependency() = dependee.dependency();
-// fully qualified, no import
-getDependency2() = pkg.dependee2.dependency2();
+  // with import
+  getDependency() = dependee.dependency();
+  // fully qualified, no import
+  getDependency2() = pkg.dependee2.dependency2();
 
 }

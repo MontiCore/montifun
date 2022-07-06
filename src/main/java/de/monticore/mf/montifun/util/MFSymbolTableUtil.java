@@ -5,6 +5,7 @@ import de.monticore.class2mc.Class2MCResolver;
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunScopesGenitorDelegator;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbolTableCompleter;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbols2Json;
@@ -41,8 +42,6 @@ public class MFSymbolTableUtil {
 
     BasicSymbolsMill.initializePrimitives();
 
-    MontiFunMill.globalScope().setFileExt("mfsym");
-
     OOSymbolsMill.globalScope().setSymbolPath(new MCPath(Paths.get("")));
     OOSymbolsMill.globalScope().addAdaptedOOTypeSymbolResolver(resolver);
     MontiFunMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
@@ -62,9 +61,9 @@ public class MFSymbolTableUtil {
     s.addMethodsAndFields();
   }
 
-  static public void runSymTabGenitor(ASTMFCompilationUnit ast) {
+  static public IMontiFunArtifactScope runSymTabGenitor(ASTMFCompilationUnit ast) {
     MontiFunScopesGenitorDelegator genitor = MontiFunMill.scopesGenitorDelegator();
-    genitor.createFromAST(ast);
+    return genitor.createFromAST(ast);
   }
 
   static public void runSymTabCompleter(ASTMFCompilationUnit ast) {

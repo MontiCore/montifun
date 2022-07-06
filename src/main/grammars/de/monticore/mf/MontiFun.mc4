@@ -3,7 +3,6 @@ package de.monticore.mf;
 
 import de.monticore.literals.MCCommonLiterals;
 import de.monticore.types.MCSimpleGenericTypes;
-import de.monticore.statements.MCCommonStatements;
 import de.monticore.symbols.BasicSymbols;
 
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */

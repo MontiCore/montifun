@@ -11,6 +11,8 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.montifun.MF2CD.MF2CDConverter;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._cocos.MontiFunCoCoChecker;
+import de.monticore.mf.montifun._cocos.MontiFunCoCos;
 import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbols2Json;
@@ -36,6 +38,10 @@ import java.util.stream.Collectors;
 public class MontiFunTool extends MontiFunToolTOP {
 
   protected static final String SYMBOLS_OUT_DIRECTORY = "target" + File.separator + "symbols";
+
+  public static final String MODEL_FILE_EXT = "mfun";
+
+  public static final String SYMBOL_FILE_EXT = "mfsym";
 
   @Override
   public void init() {
@@ -109,64 +115,82 @@ public class MontiFunTool extends MontiFunToolTOP {
         }
       }
 
-      // we need the global scope for symbols and cocos
-      MCPath symbolPath = new MCPath(Paths.get(""));
-      if (cmd.hasOption("p")) {
-        symbolPath = new MCPath(Arrays.stream(cmd.getOptionValues("p"))
-            .map(Paths::get)
-            .collect(Collectors.toList())
-        );
-      }
-
       //
       // Parsing and pretty printing can be done without a symbol table
       // but executing the following options requires a symbol table
       //
 
-      // do: add cocos and only export symbols if cocos successful
+      if (cmd.hasOption("c")
+          || cmd.hasOption("s")
+          || cmd.hasOption("gen")
+      ) {
 
-      if (cmd.hasOption("s") ||
-          cmd.hasOption("gen")) {
+        // we need the global scope for symbols and cocos
+        MCPath symbolPath = new MCPath(Paths.get(""));
+        if (cmd.hasOption("p")) {
+          symbolPath = new MCPath(Arrays.stream(cmd.getOptionValues("p"))
+              .map(Paths::get)
+              .collect(Collectors.toList())
+          );
+        }
+
+        if (cmd.hasOption("cd4c")) {
+          MFSymbolTableUtil.addCD4CSymbols();
+        }
+
         // Complete symbol table
         for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
           MFSymbolTableUtil.runSymTabGenitor(compilationUnit);
           MFSymbolTableUtil.runSymTabCompleter(compilationUnit);
         }
-      }
 
-      // store symbols
-      if (cmd.hasOption("s")) {
-        if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
-          inputMontiFuns.forEach(this::storeSymbols);
+        // CoCos
+        Log.enableFailQuick(false);
+        for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
+          MontiFunCoCoChecker checker = MontiFunCoCos.getCheckerForAllCoCos();
+          checker.checkAll(compUnit);
         }
-        else if (cmd.getOptionValues("s").length != inputMontiFuns.size()) {
-          Log.error(String.format("Received '%s' output files for the storesymbols option. "
-                  + "Expected that '%s' many output files are specified. "
-                  + "If output files for the storesymbols option are specified, then the number "
-                  + " of specified output files must be equal to the number of specified input files.",
-              cmd.getOptionValues("s").length, inputMontiFuns.size()));
+        //to not proceed if CoCos fail
+        if (Log.getErrorCount() > 0) {
+          Log.warn("encountered errors, will not generate symbol tables/java code/etc.");
+          return;
         }
-        else {
-          for (int i = 0; i < inputMontiFuns.size(); i++) {
-            storeSymbols(
-                (MontiFunArtifactScope) inputMontiFuns.get(i).getEnclosingScope(),
-                cmd.getOptionValues("s")[i]
-            );
+        Log.enableFailQuick(true);
+
+        // store symbols
+        if (cmd.hasOption("s")) {
+          if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
+            inputMontiFuns.forEach(this::storeSymbols);
+          }
+          else if (cmd.getOptionValues("s").length != inputMontiFuns.size()) {
+            Log.error(String.format("Received '%s' output files for the storesymbols option. "
+                    + "Expected that '%s' many output files are specified. "
+                    + "If output files for the storesymbols option are specified, then the number "
+                    + " of specified output files must be equal to the number of specified input files.",
+                cmd.getOptionValues("s").length, inputMontiFuns.size()));
+          }
+          else {
+            for (int i = 0; i < inputMontiFuns.size(); i++) {
+              storeSymbols(
+                  (MontiFunArtifactScope) inputMontiFuns.get(i).getEnclosingScope(),
+                  cmd.getOptionValues("s")[i]
+              );
+            }
           }
         }
-      }
 
-      // -option generate to CD
-      if (cmd.hasOption("gen")) {
-        String path = cmd.getOptionValue("gen", "");
-        String templatePath = cmd.getOptionValue("fp", "");
-        String handcodedPath = cmd.getOptionValue("hcp", "");
+        // -option generate to CD
+        if (cmd.hasOption("gen")) {
+          String path = cmd.getOptionValue("gen", "");
+          String templatePath = cmd.getOptionValue("fp", "");
+          String handcodedPath = cmd.getOptionValue("hcp", "");
 
-        for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-          generateJava(compilationUnit, path, templatePath, handcodedPath);
+          for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+            generateJava(compilationUnit, path, templatePath, handcodedPath);
+          }
         }
-      }
 
+      }
     }
     catch (ParseException e) {
       // e.getMessage displays the incorrect input-parameters
@@ -198,7 +222,7 @@ public class MontiFunTool extends MontiFunToolTOP {
    * @param compilationUnit The ast of the SD.
    */
   protected void storeSymbols(ASTMFCompilationUnit compilationUnit) {
-    String fileName = compilationUnit.getMFArtifact().getName().concat(".mfsym");
+    String fileName = compilationUnit.getMFArtifact().getName().concat(".").concat(SYMBOL_FILE_EXT);
     String packagePath = compilationUnit.isPresentMCPackageDeclaration() ?
         compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getQName()
             .replace('.', '/') :
@@ -322,6 +346,13 @@ public class MontiFunTool extends MontiFunToolTOP {
   @Override
   public Options addAdditionalOptions(Options options) {
 
+    // check CoCos
+    Option cocos = Option.builder("c")
+        .longOpt("coco")
+        .desc("Checks the CoCos for the input.")
+        .build();
+    options.addOption(cocos);
+
     // convert to state pattern CD
     options.addOption(Option.builder("gen")
         .longOpt("generate")
@@ -331,6 +362,14 @@ public class MontiFunTool extends MontiFunToolTOP {
         .desc(
             "Prints the montifun model to stdout or the generated java classes to the specified folder (optional)")
         .build());
+
+    // developer level logging
+    Option cd4c = new Option("cd4c",
+        "Load symbol kinds from CD4C. Shortcut for loading CDTypeSymbol as TypeSymbol, "
+            + "CDMethodSignatureSymbol as FunctionSymbol, and FieldSymbol as VariableSymbol. "
+    );
+    cd4c.setLongOpt("cd4code");
+    options.addOption(cd4c);
 
     return options;
   }

@@ -93,6 +93,24 @@ public class MFSymbolTableUtil {
     ast.accept(t);
   }
 
+  protected static void addTypeSymbol(String symbolFqn) {
+    MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new TypeSymbolDeSer());
+  }
+
+  protected static void addFunctionSymbol(String symbolFqn) {
+    MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new FunctionSymbolDeSer());
+  }
+
+  protected static void addVariableSymbol(String symbolFqn) {
+    MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new VariableSymbolDeSer());
+  }
+
+  public static void addCD4CSymbols() {
+    addTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
+    addFunctionSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
+    addVariableSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
+  }
+
   public static void loadSymbolFile(String filePath) {
     Log.debug("Read symbol file \"" + filePath + "\"", "MFSymbolTableUtil");
     MontiFunSymbols2Json deSer = new MontiFunSymbols2Json();

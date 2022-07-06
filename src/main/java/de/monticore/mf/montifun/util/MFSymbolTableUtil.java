@@ -17,6 +17,9 @@ import de.monticore.ocl.setexpressions._symboltable.SetExpressionsSymbolTableCom
 import de.monticore.ocl.types.check.OCLDeriver;
 import de.monticore.ocl.types.check.OCLSynthesizer;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
+import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbolDeSer;
+import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.se_rwth.commons.logging.Log;
 

@@ -179,7 +179,7 @@ public class MontiFunTool extends MontiFunToolTOP {
           }
         }
 
-        // -option generate to CD
+        // -option generate to Java (using CD)
         if (cmd.hasOption("gen")) {
           String path = cmd.getOptionValue("gen", "");
           String templatePath = cmd.getOptionValue("fp", "");

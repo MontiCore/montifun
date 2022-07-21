@@ -43,7 +43,6 @@ public class MFSymbolTableUtil {
     BasicSymbolsMill.initializePrimitives();
 
     OOSymbolsMill.globalScope().setSymbolPath(new MCPath(Paths.get("")));
-    OOSymbolsMill.globalScope().addAdaptedOOTypeSymbolResolver(resolver);
     MontiFunMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
 
     addCollectionTypes();

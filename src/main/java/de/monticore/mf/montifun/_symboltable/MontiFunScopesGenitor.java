@@ -54,7 +54,7 @@ public class MontiFunScopesGenitor extends MontiFunScopesGenitorTOP {
 
     getCurrentScope().get().setAstNode(compilationUnit);
 
-    final MontiFunArtifactScope enclosingScope = (MontiFunArtifactScope) compilationUnit.getEnclosingScope();
+    final IMontiFunArtifactScope enclosingScope = (IMontiFunArtifactScope) compilationUnit.getEnclosingScope();
     enclosingScope.setImportsList(imports);
     if (compilationUnit.isPresentMCPackageDeclaration()) {
       enclosingScope.setPackageName(compilationUnit.getMCPackageDeclaration()

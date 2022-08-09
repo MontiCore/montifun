@@ -6,8 +6,7 @@ montifun depender {
 
 // with import
 getDependency() = dependency();
-// not allowed?
 // fully qualified, no import
-//getDependency2() = pkg.dependee2.dependency2();
+getDependency2() = pkg.dependee2.dependency2();
 
 }

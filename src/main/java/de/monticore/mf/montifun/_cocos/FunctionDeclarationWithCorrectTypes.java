@@ -31,7 +31,7 @@ public class FunctionDeclarationWithCorrectTypes implements MontiFunASTMFFunctio
   @Override
   public void check(ASTMFFunctionDeclaration node) {
     TypeCheckResult right = deriver.deriveType(node.getExpression());
-    if (!right.isPresentResult()) {
+    if (!right.isPresentResult() || right.getResult().isObscureType()) {
       Log.error(ERROR_UNABLE_TO_CALC_TYPE,
           node.getExpression().get_SourcePositionStart(),
           node.getExpression().get_SourcePositionEnd()
@@ -39,7 +39,7 @@ public class FunctionDeclarationWithCorrectTypes implements MontiFunASTMFFunctio
     }
     if (node.isPresentMCReturnType()) {
       TypeCheckResult left = synthesizer.synthesizeType(node.getMCReturnType());
-      if (!left.isPresentResult()) {
+      if (!left.isPresentResult() || left.getResult().isObscureType()) {
         Log.error(ERROR_UNABLE_TO_CALC_TYPE,
             node.getMCReturnType().get_SourcePositionStart(),
             node.getMCReturnType().get_SourcePositionEnd()

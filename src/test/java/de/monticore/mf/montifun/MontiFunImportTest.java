@@ -3,6 +3,8 @@ package de.monticore.mf.montifun;
 
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.AbstractTest;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +16,8 @@ public class MontiFunImportTest extends AbstractTest {
   protected MCPath symbolPath = new MCPath(Paths.get(RELATIVE_SYMBOL_OUTPUT_PATH));
 
   @BeforeAll
-  public static void init2() {
-    //generate symbols to load
+  public static void createDependeeSymFiles() {
+    // generate symbols to load
     MontiFunTool.main(new String[] {
         "-i",
         RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/dependee.mfun",
@@ -24,6 +26,9 @@ public class MontiFunImportTest extends AbstractTest {
         RELATIVE_SYMBOL_OUTPUT_PATH + "/pkg/dependee.mfsym",
         RELATIVE_SYMBOL_OUTPUT_PATH + "/pkg/dependee2.mfsym",
     });
+    // calling main resets the log, so we reset again
+    LogStub.init();
+    Log.enableFailQuick(false);
   }
 
   @Test

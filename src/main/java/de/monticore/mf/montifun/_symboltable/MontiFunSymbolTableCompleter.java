@@ -37,7 +37,7 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
     else {
       type = getDeriver().deriveType(node.getExpression());
     }
-    if (type.isPresentResult()) {
+    if (type.isPresentResult() && !type.getResult().isObscureType()) {
       node.getSymbol().setType(type.getResult());
     }
     else {
@@ -49,7 +49,7 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
   public void visit(ASTMFParameter node) {
     if (node.isPresentMCType()) {
       TypeCheckResult type = getSynthesizer().synthesizeType(node.getMCType());
-      if (type.isPresentResult()) {
+      if (type.isPresentResult() && !type.getResult().isObscureType()) {
         node.getSymbol().setType(type.getResult());
       }
     }
@@ -74,7 +74,7 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
       for (ASTMFFunctionDeclaration fun : node.getMFFunctionDeclarationList()) {
         if (fun.getSymbol().getType() == null) {
           TypeCheckResult type = deriver.deriveType(fun.getExpression());
-          if (type.isPresentResult()) {
+          if (type.isPresentResult() && !type.getResult().isObscureType()) {
             fun.getSymbol().setType(type.getResult());
             derivedNewType = true;
           }

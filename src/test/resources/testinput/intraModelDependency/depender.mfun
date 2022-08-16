@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package pkg; // same package as dependers
-import pkg.dependee.*;
+import pkg.dependee.dependency;
 
 montifun depender {
 
   // with import
   // todo: reactivate after fix of
   // https://git.rwth-aachen.de/monticore/monticore/-/issues/3221
-  // getDependency() = dependency();
+  getDependency() = dependency();
   // fully qualified, no import
   getDependency2() = pkg.dependee2.dependency2();
 

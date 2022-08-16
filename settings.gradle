@@ -5,10 +5,10 @@ pluginManagement {
     maven {
       credentials.username mavenUser
       credentials.password mavenPassword
-      url repo
+      url sePublicRepo
     }
     gradlePluginPortal()
   }
 }
 
-rootProject.name = 'functional-language'
+rootProject.name = 'montifun'

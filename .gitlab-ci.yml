@@ -34,3 +34,11 @@ Unit Test Gradle:
     - Validate Gradle #download artifacts from build
   script:
     - gradle test
+
+Deploy Nexus:
+  image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
+  stage: post-test
+  only:
+    - dev
+  script:
+    - gradle publish -PmavenPassword=$pass -PmavenUser=$user

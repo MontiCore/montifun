@@ -7,7 +7,7 @@ montifun depender {
   // with import
   // todo: reactivate after fix of
   // https://git.rwth-aachen.de/monticore/monticore/-/issues/3221
-  getDependency() = dependency();
+  // getDependency() = dependency();
   // fully qualified, no import
   getDependency2() = pkg.dependee2.dependency2();
 

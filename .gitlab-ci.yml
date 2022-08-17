@@ -17,7 +17,6 @@ stages:
 Validate Gradle:
   image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
   stage: build
-  allow_failure: true
   script:
     - gradle clean assemble
   artifacts:
@@ -28,7 +27,6 @@ Validate Gradle:
 Unit Test Gradle:
   image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
   stage: test
-  allow_failure: true
   needs: ["Validate Gradle"]
   dependencies:
     - Validate Gradle #download artifacts from build

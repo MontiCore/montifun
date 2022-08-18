@@ -4,14 +4,14 @@ package de.monticore.mf;
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
 import de.monticore.ocl.*;
-import de.monticore.expressions.BitExpressions;
+import de.monticore.expressions.*;
 import de.monticore.types.MCBasicTypes;
 
 component grammar MFExpressions extends OCLExpressions,
                                         OptionalOperators,
                                         SetExpressions,
                                         BitExpressions,
-                                        MFLambdaExpressions,
+                                        LambdaExpressions,
                                         MCBasicTypes {
  
 }

@@ -5,6 +5,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.expressions.prettyprint.BitExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
 import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
+import de.monticore.expressions.prettyprint.LambdaExpressionsPrettyPrinter;
 import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFArtifact;
@@ -35,7 +36,7 @@ public class MontiFunFullPrettyPrinter {
     MontiFunPrettyPrinter mfPP = new MontiFunPrettyPrinter(printer);
     MCSimpleGenericTypesPrettyPrinter genericPP = new MCSimpleGenericTypesPrettyPrinter(printer);
     SetExpressionsPrettyPrinter setPP = new SetExpressionsPrettyPrinter(printer);
-    MFLambdaExpressionsPrettyPrinter mfLExpPP = new MFLambdaExpressionsPrettyPrinter(printer);
+    LambdaExpressionsPrettyPrinter lExpPP = new LambdaExpressionsPrettyPrinter(printer);
     OCLExpressionsPrettyPrinter oclexPP = new OCLExpressionsPrettyPrinter(printer);
     OptionalOperatorsPrettyPrinter optPP = new OptionalOperatorsPrettyPrinter(printer);
     BitExpressionsPrettyPrinter bitPP = new BitExpressionsPrettyPrinter(printer);
@@ -51,7 +52,7 @@ public class MontiFunFullPrettyPrinter {
     traverser.setMontiFunHandler(mfPP);
     traverser.add4MCSimpleGenericTypes(genericPP);
     traverser.setMCSimpleGenericTypesHandler(genericPP);
-    traverser.setMFLambdaExpressionsHandler(mfLExpPP);
+    traverser.setLambdaExpressionsHandler(lExpPP);
     traverser.setSetExpressionsHandler(setPP);
     traverser.setOCLExpressionsHandler(oclexPP);
     traverser.setOptionalOperatorsHandler(optPP);

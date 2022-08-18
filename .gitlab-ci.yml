@@ -12,7 +12,6 @@ cache:
 stages:
   - build
   - test
-  - post-test
 
 Validate Gradle:
   image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11

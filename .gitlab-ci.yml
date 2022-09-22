@@ -33,7 +33,7 @@ Unit Test Gradle:
   script:
     - gradle test
 
-.Deploy Nexus:
+Deploy Nexus:
   image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk11
   stage: post-test
   needs: ["Validate Gradle"]

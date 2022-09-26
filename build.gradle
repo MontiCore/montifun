@@ -143,6 +143,7 @@ publishing {
         }
     }
     repositories.maven {
+	    name = "$SE_Nexus_ID"
         credentials.username mavenUser
         credentials.password mavenPassword
         def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"

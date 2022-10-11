@@ -110,7 +110,12 @@ tasks.withType(JavaCompile) {
 
 // all in one cli-jar
 shadowJar {
-    archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
+    manifest {
+        attributes "Main-Class": "de.monticore.mf.montifun.MontiFunTool"
+    }
+    archiveFileName = "MCMontiFun.${archiveExtension.get()}"
+    archiveClassifier = "mc-tool"
+    minimize()
 }
 
 test {

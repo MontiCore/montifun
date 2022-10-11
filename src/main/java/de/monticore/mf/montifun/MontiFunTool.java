@@ -87,9 +87,11 @@ public class MontiFunTool extends MontiFunToolTOP {
       }
 
       //parse input file, now known to be available
+      List<String> inputNames =
+          getInputFileNamesFromInputParameter(List.of(cmd.getOptionValues("i")));
       List<ASTMFCompilationUnit> inputMontiFuns = new ArrayList<>();
-      for (String inputFileName : cmd.getOptionValues("i")) {
-        ASTMFCompilationUnit ast = parse(inputFileName);
+      for (String inputName : inputNames) {
+        ASTMFCompilationUnit ast = parse(inputName);
         inputMontiFuns.add(ast);
       }
 
@@ -162,20 +164,26 @@ public class MontiFunTool extends MontiFunToolTOP {
           if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
             inputMontiFuns.forEach(this::storeSymbols);
           }
-          else if (cmd.getOptionValues("s").length != inputMontiFuns.size()) {
-            Log.error(String.format("Received '%s' output files for the storesymbols option. "
-                    + "Expected that '%s' many output files are specified. "
-                    + "If output files for the storesymbols option are specified, then the number "
-                    + " of specified output files must be equal to the number of specified input files.",
-                cmd.getOptionValues("s").length, inputMontiFuns.size()));
+          else if (cmd.getOptionValues("s").length == 1 && inputMontiFuns.size() != 1) {
+            inputMontiFuns.forEach(
+                compUnit -> this.storeSymbolsInFolder(compUnit, cmd.getOptionValue("s")));
           }
-          else {
+          else if (cmd.getOptionValues("s").length == inputMontiFuns.size()
+              && cmd.getOptionValues("s").length == cmd.getOptionValues("i").length) {
             for (int i = 0; i < inputMontiFuns.size(); i++) {
               storeSymbols(
                   (MontiFunArtifactScope) inputMontiFuns.get(i).getEnclosingScope(),
                   cmd.getOptionValues("s")[i]
               );
             }
+          }
+          else {
+            Log.error(String.format("Received '%s' output files for the storesymbols option. "
+                    + "Expected that '%s' many output files are specified. "
+                    + "If output files for the storesymbols option are specified, then the number "
+                    + "of specified output files must be equal to the number of specified input files, "
+                    + "or one outputfolder should be specified.",
+                cmd.getOptionValues("s").length, inputMontiFuns.size()));
           }
         }
 
@@ -198,9 +206,33 @@ public class MontiFunTool extends MontiFunToolTOP {
     }
   }
 
-  public IMontiFunArtifactScope createSymbolTable(ASTMFCompilationUnit compilationUnit) {
-    MFSymbolTableUtil.runSymTabGenitor(compilationUnit);
-    return (IMontiFunArtifactScope) compilationUnit.getEnclosingScope();
+  /**
+   * CLI-parameter "-i" can take file and directory names
+   * this function returns only file names
+   *
+   * @param inputNames the input given to "-i"
+   * @return list of file names
+   */
+  protected List<String> getInputFileNamesFromInputParameter(List<String> inputNames) {
+    List<String> fileNames = new ArrayList<>();
+    for (String inputName : inputNames) {
+      File input = new File(inputName);
+      if (input.isDirectory()) {
+        List<File> modelFilesinDir =
+            List.of(input.listFiles((dir, name) -> name.endsWith(MODEL_FILE_EXT)));
+        for (File modelFile : modelFilesinDir) {
+          fileNames.add(modelFile.getAbsolutePath());
+        }
+      }
+      else if (input.isFile()) {
+        fileNames.add(input.getAbsolutePath());
+      }
+      else {
+        Log.error("input provided by -i does not seem to be a file or directory: "
+            + input.getAbsolutePath());
+      }
+    }
+    return fileNames;
   }
 
   /**
@@ -222,12 +254,22 @@ public class MontiFunTool extends MontiFunToolTOP {
    * @param compilationUnit The ast of the SD.
    */
   protected void storeSymbols(ASTMFCompilationUnit compilationUnit) {
+    storeSymbolsInFolder(compilationUnit, SYMBOLS_OUT_DIRECTORY);
+  }
+
+  /**
+   * Stores the symbols for ast in the specified folder.
+   *
+   * @param compilationUnit The ast of the SD
+   * @param folderPath      The folder to store the symbols in
+   */
+  protected void storeSymbolsInFolder(ASTMFCompilationUnit compilationUnit, String folderPath) {
     String fileName = compilationUnit.getMFArtifact().getName().concat(".").concat(SYMBOL_FILE_EXT);
     String packagePath = compilationUnit.isPresentMCPackageDeclaration() ?
         compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getQName()
             .replace('.', '/') :
         "";
-    Path filePath = Paths.get(SYMBOLS_OUT_DIRECTORY, packagePath, fileName);
+    Path filePath = Paths.get(folderPath, packagePath, fileName);
     storeSymbols(compilationUnit, filePath.toString());
   }
 

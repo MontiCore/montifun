@@ -164,7 +164,8 @@ public class MontiFunTool extends MontiFunToolTOP {
           if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
             inputMontiFuns.forEach(this::storeSymbols);
           }
-          else if (cmd.getOptionValues("s").length == 1 && inputMontiFuns.size() != 1) {
+          else if (cmd.getOptionValues("s").length == 1 &&
+              (!cmd.getOptionValue("s").endsWith(SYMBOL_FILE_EXT))) {
             inputMontiFuns.forEach(
                 compUnit -> this.storeSymbolsInFolder(compUnit, cmd.getOptionValue("s")));
           }

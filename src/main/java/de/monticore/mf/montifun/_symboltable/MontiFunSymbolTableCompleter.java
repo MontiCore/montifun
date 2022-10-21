@@ -7,8 +7,8 @@ import de.monticore.mf.montifun._ast.ASTMFParameter;
 import de.monticore.mf.montifun._visitor.MontiFunHandler;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
-import de.monticore.ocl.types.check.OCLDeriver;
-import de.monticore.ocl.types.check.OCLSynthesizer;
+import de.monticore.types.check.IDerive;
+import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.TypeCheckResult;
 import de.se_rwth.commons.logging.Log;
 
@@ -18,9 +18,9 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
 
   protected MontiFunTraverser traverser;
 
-  protected OCLDeriver deriver;
+  protected IDerive deriver;
 
-  protected OCLSynthesizer synthesizer;
+  protected ISynthesize synthesizer;
 
   /**
    * sets the return types for functions that do have them set explicitly
@@ -83,19 +83,19 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
     } while (derivedNewType);
   }
 
-  public OCLDeriver getDeriver() {
+  public IDerive getDeriver() {
     return deriver;
   }
 
-  public void setDeriver(OCLDeriver deriver) {
+  public void setDeriver(IDerive deriver) {
     this.deriver = deriver;
   }
 
-  public OCLSynthesizer getSynthesizer() {
+  public ISynthesize getSynthesizer() {
     return synthesizer;
   }
 
-  public void setSynthesizer(OCLSynthesizer synthesizer) {
+  public void setSynthesizer(ISynthesize synthesizer) {
     this.synthesizer = synthesizer;
   }
 

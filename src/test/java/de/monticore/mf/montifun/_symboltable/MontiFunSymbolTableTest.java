@@ -18,7 +18,6 @@ public class MontiFunSymbolTableTest extends AbstractTest {
   public void shouldCreateSymTabForValidModels(String fileName) throws IOException {
     // not yet supported
     assumeFalse(fileName.contains("genericFunctions"));
-    assumeFalse(fileName.contains("lambdas"));
 
     // given / when
     createASTWithSymTab(fileName);

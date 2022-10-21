@@ -2,8 +2,10 @@
 
 montifun lambdas {
 
-Fun<Integer, Integer> times2 = (Integer arg) -> arg * 2;
-times3 = arg -> arg * 3;
+() -> int getInt = () -> 2;
+
+(int) -> int times2 = (int arg) -> arg * 2;
+//times3 = arg -> arg * 3;
 
 // todo:
 // besser wäre Syntaktsiche Repräsentation des Lambda-Types, zB als:):

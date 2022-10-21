@@ -64,6 +64,7 @@ public class MF2CDTest extends AbstractTest {
   public void createValidCD(String fileName) throws IOException {
     //not yet supported
     assumeFalse(fileName.contains("genericFunctions"));
+    //todo: https://git.rwth-aachen.de/monticore/monticore/-/issues/3280
     assumeFalse(fileName.contains("lambdas"));
 
     // load model

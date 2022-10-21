@@ -18,6 +18,7 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
+import de.monticore.types.prettyprint.MCFunctionTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
 
 public class MontiFunFullPrettyPrinter {
@@ -45,6 +46,7 @@ public class MontiFunFullPrettyPrinter {
     MCBasicsPrettyPrinter mcbPP = new MCBasicsPrettyPrinter(printer);
     MCCollectionTypesPrettyPrinter ctPP = new MCCollectionTypesPrettyPrinter(printer);
     MCBasicTypesPrettyPrinter btPP = new MCBasicTypesPrettyPrinter(printer);
+    MCFunctionTypesPrettyPrinter ftPP = new MCFunctionTypesPrettyPrinter(printer);
     MCCommonLiteralsPrettyPrinter clPP = new MCCommonLiteralsPrettyPrinter(printer);
     CommonExpressionsPrettyPrinter cePP = new CommonExpressionsPrettyPrinter(printer);
     BitExpressionsPrettyPrinter bePP = new BitExpressionsPrettyPrinter(printer);
@@ -65,6 +67,8 @@ public class MontiFunFullPrettyPrinter {
     traverser.setMCCollectionTypesHandler(ctPP);
     traverser.add4MCBasicTypes(btPP);
     traverser.setMCBasicTypesHandler(btPP);
+    traverser.add4MCFunctionTypes(ftPP);
+    traverser.setMCFunctionTypesHandler(ftPP);
     traverser.add4MCCommonLiterals(clPP);
     traverser.setMCCommonLiteralsHandler(clPP);
     traverser.add4CommonExpressions(cePP);

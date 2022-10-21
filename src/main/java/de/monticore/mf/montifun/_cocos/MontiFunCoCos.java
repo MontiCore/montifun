@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.montifun._cocos;
 
+import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.ocl.ocl._cocos.ExpressionValidCoCo;
 import de.monticore.ocl.oclexpressions._cocos.IterateExpressionVariableUsageIsCorrect;
 import de.monticore.ocl.setexpressions._cocos.SetComprehensionHasGenerator;
@@ -17,12 +18,11 @@ public class MontiFunCoCos {
   public static MontiFunCoCoChecker getCheckerForAllCoCos() {
     final MontiFunCoCoChecker checker = new MontiFunCoCoChecker();
     final IDerive derive = new OCLDeriver();
-    final ISynthesize synthesize = new OCLSynthesizer();
+    final ISynthesize synthesize = new FullSynthesizeFromMontiFun();
 
     checker.addCoCo(new FunctionDeclarationWithCorrectTypes(derive, synthesize));
 
-    //todo remove cast as soon as the change of ExpressionValidCoCo is online
-    checker.addCoCo(new ExpressionValidCoCo((OCLDeriver) derive));
+    checker.addCoCo(new ExpressionValidCoCo(derive));
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new SetComprehensionHasGenerator());
 

@@ -10,13 +10,13 @@ import de.monticore.mf.montifun._symboltable.MontiFunScopesGenitorDelegator;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbolTableCompleter;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbols2Json;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
+import de.monticore.mf.montifun.types.check.FullDeriveFromMontiFun;
+import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.mf.montifun.util.library.MFCollectionType;
 import de.monticore.mf.montifun.util.library.MFListType;
 import de.monticore.mf.montifun.util.library.MFSetType;
 import de.monticore.ocl.oclexpressions._symboltable.OCLExpressionsSymbolTableCompleter;
 import de.monticore.ocl.setexpressions._symboltable.SetExpressionsSymbolTableCompleter;
-import de.monticore.ocl.types.check.OCLDeriver;
-import de.monticore.ocl.types.check.OCLSynthesizer;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
@@ -67,20 +67,22 @@ public class MFSymbolTableUtil {
 
   static public void runSymTabCompleter(ASTMFCompilationUnit ast) {
     MontiFunSymbolTableCompleter stCompleter = new MontiFunSymbolTableCompleter();
-    stCompleter.setSynthesizer(new OCLSynthesizer());
-    stCompleter.setDeriver(new OCLDeriver());
+    stCompleter.setDeriver(new FullDeriveFromMontiFun());
+    stCompleter.setSynthesizer(new FullSynthesizeFromMontiFun());
+
     OCLExpressionsSymbolTableCompleter stCompleter2 = new OCLExpressionsSymbolTableCompleter(
         ast.getMCImportStatementList(),
         "unused"
     );
-    stCompleter2.setDeriver(new OCLDeriver());
-    stCompleter2.setSynthesizer(new OCLSynthesizer());
+    stCompleter2.setDeriver(new FullDeriveFromMontiFun());
+    stCompleter2.setSynthesizer(new FullSynthesizeFromMontiFun());
+
     SetExpressionsSymbolTableCompleter stCompleter3 = new SetExpressionsSymbolTableCompleter(
         ast.getMCImportStatementList(),
         "unused"
     );
-    stCompleter3.setDeriver(new OCLDeriver());
-    stCompleter3.setSynthesizer(new OCLSynthesizer());
+    stCompleter3.setDeriver(new FullDeriveFromMontiFun());
+    stCompleter3.setSynthesizer(new FullSynthesizeFromMontiFun());
 
     MontiFunTraverser t = MontiFunMill.traverser();
     t.add4MontiFun(stCompleter);

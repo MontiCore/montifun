@@ -3,6 +3,7 @@ package de.monticore.mf;
 
 import de.monticore.literals.MCCommonLiterals;
 import de.monticore.types.MCSimpleGenericTypes;
+import de.monticore.types.MCFunctionTypes;
 import de.monticore.symbols.BasicSymbols;
 // note OOSymbols need to be imported such that
 // some Class2MC imported Symbols like Object do have a spanned scope
@@ -13,6 +14,7 @@ import de.monticore.symbols.OOSymbols;
 
 grammar MontiFun extends MCCommonLiterals,
                    MCSimpleGenericTypes,
+                   MCFunctionTypes,
                    MFExpressions,
                    OOSymbols,
                    BasicSymbols {

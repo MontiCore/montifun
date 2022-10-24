@@ -322,7 +322,7 @@ public class MontiFunTool extends MontiFunToolTOP {
     // note that "a/b/.c" is expected to be a folder,
     // "a/b/c.d" is not expected to be a folder,
     // so we skip the first character
-    return path.getFileName().toString().substring(1).contains(".");
+    return !path.getFileName().toString().substring(1).contains(".");
   }
 
   /**

@@ -61,8 +61,7 @@ public class MontiFunImportTest extends AbstractTest {
         RELATIVE_MODEL_PATH + "/testinput/circularDependency/a.mfun",
         RELATIVE_MODEL_PATH + "/testinput/circularDependency/b.mfun",
         "-sym",
-        RELATIVE_SYMBOL_OUTPUT_PATH + "/circularDependency/a.mfun",
-        RELATIVE_SYMBOL_OUTPUT_PATH + "/circularDependency/b.mfun"
+        RELATIVE_SYMBOL_OUTPUT_PATH + "/circularDependency",
     });
     //then
     assertNoFindings();

@@ -39,6 +39,9 @@ public class MontiFunTool extends MontiFunToolTOP {
 
   protected static final String SYMBOLS_OUT_DIRECTORY = "target" + File.separator + "symbols";
 
+  protected static final String PRETTYPRINTED_OUT_DIRECTORY =
+      "target" + File.separator + "prettyprinted";
+
   public static final String MODEL_FILE_EXT = "mfun";
 
   public static final String SYMBOL_FILE_EXT = "mfsym";
@@ -97,23 +100,30 @@ public class MontiFunTool extends MontiFunToolTOP {
 
       // -option pretty print
       if (cmd.hasOption("pp")) {
-        int ppArgs = cmd.getOptionValues("pp") == null ? 0 : cmd.getOptionValues("pp").length;
-        int iArgs = cmd.getOptionValues("i") == null ? 0 : cmd.getOptionValues("i").length;
-        if (ppArgs != 0 && ppArgs != iArgs) {
-          Log.error("0xOCL31 Number of arguments of -pp (which is " + ppArgs
-              + ") must match number of arguments of -i (which is " + iArgs + "). "
-              + "Or provide no arguments to print to stdout.");
-        }
-
-        String[] paths = cmd.getOptionValues("pp");
-        int i = 0;
-        for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
-          String currentPath = "";
-          if (cmd.getOptionValues("pp") != null && cmd.getOptionValues("pp").length != 0) {
-            currentPath = paths[i];
-            i++;
+        if (cmd.getOptionValues("pp") == null || cmd.getOptionValues("pp").length == 0) {
+          for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+            prettyPrintInFolder(compilationUnit, PRETTYPRINTED_OUT_DIRECTORY);
           }
-          prettyPrint(compUnit, currentPath);
+        }
+        else if (cmd.getOptionValues("pp").length == 1 &&
+            isLikelyFolderPath(cmd.getOptionValue("pp"))) {
+          for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+            prettyPrintInFolder(compilationUnit, cmd.getOptionValue("pp"));
+          }
+        }
+        else if (cmd.getOptionValues("pp").length == inputMontiFuns.size()
+            && cmd.getOptionValues("pp").length == cmd.getOptionValues("pp").length) {
+          for (int i = 0; i < inputMontiFuns.size(); i++) {
+            prettyPrint(inputMontiFuns.get(i), cmd.getOptionValues("pp")[i]);
+          }
+        }
+        else {
+          Log.error(String.format("Received '%s' output files for the prettyprint option. "
+                  + "Expected that '%s' many output files are specified. "
+                  + "If output files for the prettyprint option are specified, then the number "
+                  + "of specified output files must be equal to the number of specified input files, "
+                  + "or one outputfolder should be specified.",
+              cmd.getOptionValues("pp").length, inputMontiFuns.size()));
         }
       }
 
@@ -162,10 +172,12 @@ public class MontiFunTool extends MontiFunToolTOP {
         // store symbols
         if (cmd.hasOption("s")) {
           if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
-            inputMontiFuns.forEach(this::storeSymbols);
+            for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+              storeSymbolsInFolder(compilationUnit, SYMBOLS_OUT_DIRECTORY);
+            }
           }
           else if (cmd.getOptionValues("s").length == 1 &&
-              (!cmd.getOptionValue("s").endsWith(SYMBOL_FILE_EXT))) {
+              isLikelyFolderPath(cmd.getOptionValue("s"))) {
             inputMontiFuns.forEach(
                 compUnit -> this.storeSymbolsInFolder(compUnit, cmd.getOptionValue("s")));
           }
@@ -250,27 +262,15 @@ public class MontiFunTool extends MontiFunToolTOP {
   }
 
   /**
-   * Stores the symbols for ast in the symbol file default location.
-   *
-   * @param compilationUnit The ast of the SD.
-   */
-  protected void storeSymbols(ASTMFCompilationUnit compilationUnit) {
-    storeSymbolsInFolder(compilationUnit, SYMBOLS_OUT_DIRECTORY);
-  }
-
-  /**
    * Stores the symbols for ast in the specified folder.
    *
    * @param compilationUnit The ast of the SD
    * @param folderPath      The folder to store the symbols in
    */
   protected void storeSymbolsInFolder(ASTMFCompilationUnit compilationUnit, String folderPath) {
-    String fileName = compilationUnit.getMFArtifact().getName().concat(".").concat(SYMBOL_FILE_EXT);
-    String packagePath = compilationUnit.isPresentMCPackageDeclaration() ?
-        compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getQName()
-            .replace('.', '/') :
-        "";
-    Path filePath = Paths.get(folderPath, packagePath, fileName);
+    String relativeFilePath = getRelativeFilePath(compilationUnit).concat(".")
+        .concat(SYMBOL_FILE_EXT);
+    Path filePath = Paths.get(folderPath, relativeFilePath);
     storeSymbols(compilationUnit, filePath.toString());
   }
 
@@ -289,6 +289,57 @@ public class MontiFunTool extends MontiFunToolTOP {
   public void prettyPrint(ASTMFCompilationUnit ast, String file) {
     String prettyPrintedAST = new MontiFunFullPrettyPrinter().prettyprint(ast);
     print(prettyPrintedAST, file);
+  }
+
+  /**
+   * Stores the prettyprinted model for ast in the specified folder.
+   *
+   * @param compilationUnit The ast of the model
+   * @param folderPath      The folder to store the symbols in
+   */
+  protected void prettyPrintInFolder(ASTMFCompilationUnit compilationUnit, String folderPath) {
+    String relativeFilePath = getRelativeFilePath(compilationUnit).concat(".")
+        .concat(MODEL_FILE_EXT);
+    Path filePath = Paths.get(folderPath, relativeFilePath);
+    prettyPrint(compilationUnit, filePath.toString());
+  }
+
+  /**
+   * heuristic to test if the path seems to be a folder path
+   *
+   * @param pathStr the path to check
+   * @return wether we assume it is a path to a folder
+   */
+  protected boolean isLikelyFolderPath(String pathStr) {
+    // if it already exists, check:
+    Path path = Paths.get(pathStr);
+    File file = path.toFile();
+    if (file.exists()) {
+      return file.isDirectory();
+    }
+    // if it does not exist yet,
+    // check if the last part ends with an extension
+    // note that "a/b/.c" is expected to be a folder,
+    // "a/b/c.d" is not expected to be a folder,
+    // so we skip the first character
+    return path.getFileName().toString().substring(1).contains(".");
+  }
+
+  /**
+   * finds the file (without extension) for ast,
+   * given its package and name.
+   * E.g.: model with qualiefied name a.b.c
+   * "a/b/c"
+   *
+   * @param compilationUnit The ast of the model
+   */
+  protected String getRelativeFilePath(ASTMFCompilationUnit compilationUnit) {
+    String packagePath = compilationUnit.isPresentMCPackageDeclaration() ?
+        compilationUnit.getMCPackageDeclaration().getMCQualifiedName().getQName()
+            .replace('.', File.separatorChar) :
+        "";
+    Path relativeFilePath = Paths.get(packagePath, compilationUnit.getMFArtifact().getName());
+    return relativeFilePath.toString();
   }
 
   public void generateJava(ASTMFCompilationUnit ast,

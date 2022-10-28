@@ -5,18 +5,14 @@ montifun lambdas {
 () -> int getInt = () -> 2;
 
 (int) -> int times2 = (int arg) -> arg * 2;
-//times3 = arg -> arg * 3;
+times3 = (int arg) -> arg * 3;
 
-// todo:
-// besser wäre Syntaktsiche Repräsentation des Lambda-Types, zB als:):
-// (Integer -> Integer) times2 = (Integer arg) -> arg * 2;
-
-/* todo: oder auch: 
-   (int -> int) potntimes (int -> int f, int a) =
-     (int b) -> if a == 1 
-        then f(b) 
-        else potntimes( (int x) -> f(f(x)), a-1)
-   ;
+/* todo: oder auch:
+(int) -> int potntimes ((int) -> int f, int a) =
+  (int b) -> if   a == 1
+             then f(b)
+             else potntimes ((int x) -> f(f(x)), a - 1)
+  ;
 
    /// und das sind dazu passende Fun-Unit Tests:
    boolean testPotntimes1 = potntimes( (int d)  -> d+1 , 1 ) 12 == 12 + 2^0;

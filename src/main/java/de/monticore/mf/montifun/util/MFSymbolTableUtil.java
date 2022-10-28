@@ -2,6 +2,7 @@
 package de.monticore.mf.montifun.util;
 
 import de.monticore.class2mc.Class2MCResolver;
+import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes;
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
@@ -22,6 +23,8 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.types.check.IDerive;
+import de.monticore.types.check.ISynthesize;
 import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
@@ -66,34 +69,41 @@ public class MFSymbolTableUtil {
   }
 
   static public void runSymTabCompleter(ASTMFCompilationUnit ast) {
-    MontiFunSymbolTableCompleter stCompleter = new MontiFunSymbolTableCompleter();
-    stCompleter.setDeriver(new FullDeriveFromMontiFun());
-    stCompleter.setSynthesizer(new FullSynthesizeFromMontiFun());
+    MontiFunTraverser symTabCompleter = MontiFunMill.traverser();
+    IDerive deriver = new FullDeriveFromMontiFun();
+    ISynthesize synthesizer = new FullSynthesizeFromMontiFun();
 
-    OCLExpressionsSymbolTableCompleter stCompleter2 = new OCLExpressionsSymbolTableCompleter(
+    MontiFunSymbolTableCompleter montiFunCompleter = new MontiFunSymbolTableCompleter();
+    montiFunCompleter.setDeriver(deriver);
+    montiFunCompleter.setSynthesizer(synthesizer);
+    symTabCompleter.add4MontiFun(montiFunCompleter);
+    symTabCompleter.setMontiFunHandler(montiFunCompleter);
+
+    OCLExpressionsSymbolTableCompleter oclExprCompleter = new OCLExpressionsSymbolTableCompleter(
         ast.getMCImportStatementList(),
         "unused"
     );
-    stCompleter2.setDeriver(new FullDeriveFromMontiFun());
-    stCompleter2.setSynthesizer(new FullSynthesizeFromMontiFun());
+    oclExprCompleter.setDeriver(deriver);
+    oclExprCompleter.setSynthesizer(synthesizer);
+    symTabCompleter.setOCLExpressionsHandler(oclExprCompleter);
+    symTabCompleter.add4BasicSymbols(oclExprCompleter);
+    symTabCompleter.add4OCLExpressions(oclExprCompleter);
 
-    SetExpressionsSymbolTableCompleter stCompleter3 = new SetExpressionsSymbolTableCompleter(
+    SetExpressionsSymbolTableCompleter setExprCompleter = new SetExpressionsSymbolTableCompleter(
         ast.getMCImportStatementList(),
         "unused"
     );
-    stCompleter3.setDeriver(new FullDeriveFromMontiFun());
-    stCompleter3.setSynthesizer(new FullSynthesizeFromMontiFun());
+    setExprCompleter.setDeriver(deriver);
+    setExprCompleter.setSynthesizer(synthesizer);
+    symTabCompleter.setSetExpressionsHandler(setExprCompleter);
+    symTabCompleter.add4BasicSymbols(setExprCompleter);
+    symTabCompleter.add4SetExpressions(setExprCompleter);
 
-    MontiFunTraverser t = MontiFunMill.traverser();
-    t.add4MontiFun(stCompleter);
-    t.setMontiFunHandler(stCompleter);
-    t.setOCLExpressionsHandler(stCompleter2);
-    t.add4BasicSymbols(stCompleter2);
-    t.add4OCLExpressions(stCompleter2);
-    t.setSetExpressionsHandler(stCompleter3);
-    t.add4BasicSymbols(stCompleter3);
-    t.add4SetExpressions(stCompleter3);
-    ast.accept(t);
+    LambdaExpressionsSTCompleteTypes lambdaExprCompleter =
+        new LambdaExpressionsSTCompleteTypes(new FullSynthesizeFromMontiFun());
+    symTabCompleter.add4LambdaExpressions(lambdaExprCompleter);
+
+    ast.accept(symTabCompleter);
   }
 
   protected static void addTypeSymbol(String symbolFqn) {

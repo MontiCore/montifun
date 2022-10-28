@@ -4,10 +4,10 @@ montifun constants {
 
 Integer answer = 41 + 1;
 Integer recursive = 1 + recursive();
-Set<Integer> set1 = Set{5};
-Set<Integer> set2 = Set{1..5};
-List<Integer> list1 = [5];
-List<Integer> list2 = [1..5];
-List<Integer> list3 = [x*x | x in { 1 .. 5 }, x % 2 == 1];
+Set<Integer> set1 = Set{(Integer)5};
+Set<Integer> set2 = Set{(Integer)1..5};
+List<Integer> list1 = [(Integer)5];
+List<Integer> list2 = [(Integer)1..5];
+List<Integer> list3 = [(Integer)x | x in { 1 .. 5 }, x % 2 == 1];
 
 }

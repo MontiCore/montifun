@@ -36,6 +36,7 @@ public class FunctionDeclarationWithCorrectTypes implements MontiFunASTMFFunctio
           node.getExpression().get_SourcePositionStart(),
           node.getExpression().get_SourcePositionEnd()
       );
+      return;
     }
     if (node.isPresentMCReturnType()) {
       TypeCheckResult left = synthesizer.synthesizeType(node.getMCReturnType());
@@ -44,6 +45,7 @@ public class FunctionDeclarationWithCorrectTypes implements MontiFunASTMFFunctio
             node.getMCReturnType().get_SourcePositionStart(),
             node.getMCReturnType().get_SourcePositionEnd()
         );
+        return;
       }
       else {
         if (!TypeCheck.compatible(left.getResult(), right.getResult())) {

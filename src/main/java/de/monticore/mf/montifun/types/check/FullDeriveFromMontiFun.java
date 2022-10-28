@@ -8,9 +8,12 @@ import de.monticore.ocl.types.check.DeriveSymTypeOfOCLExpressions;
 import de.monticore.ocl.types.check.DeriveSymTypeOfOptionalOperators;
 import de.monticore.ocl.types.check.DeriveSymTypeOfSetExpressions;
 import de.monticore.types.check.AbstractDerive;
+import de.monticore.types.check.AbstractSynthesize;
 import de.monticore.types.check.DeriveSymTypeOfExpression;
+import de.monticore.types.check.DeriveSymTypeOfLambdaExpressions;
 import de.monticore.types.check.DeriveSymTypeOfLiterals;
 import de.monticore.types.check.DeriveSymTypeOfMCCommonLiterals;
+import de.monticore.types.check.ISynthesize;
 import de.monticore.types.check.SynthesizeSymTypeFromMCBasicTypes;
 import de.monticore.types.check.SynthesizeSymTypeFromMCCollectionTypes;
 import de.monticore.types.check.SynthesizeSymTypeFromMCFunctionTypes;
@@ -28,6 +31,8 @@ public class FullDeriveFromMontiFun extends AbstractDerive {
   }
 
   public void init(MontiFunTraverser traverser) {
+    AbstractSynthesize synthesizer = new FullSynthesizeFromMontiFun();
+
     DeriveSymTypeOfExpression deriveSymTypeOfExpression = new DeriveSymTypeOfExpression();
     deriveSymTypeOfExpression.setTypeCheckResult(typeCheckResult);
     traverser.add4ExpressionsBasis(deriveSymTypeOfExpression);
@@ -46,6 +51,11 @@ public class FullDeriveFromMontiFun extends AbstractDerive {
     DeriveSymTypeOfOCLExpressions deriveSymTypeOfOCLExpressions = new DeriveSymTypeOfOCLExpressions();
     deriveSymTypeOfOCLExpressions.setTypeCheckResult(typeCheckResult);
     traverser.setOCLExpressionsHandler(deriveSymTypeOfOCLExpressions);
+
+    DeriveSymTypeOfLambdaExpressions deriveSymTypeOfLambdaExpressions = new DeriveSymTypeOfLambdaExpressions();
+    deriveSymTypeOfLambdaExpressions.setSynthesize(synthesizer);
+    deriveSymTypeOfLambdaExpressions.setTypeCheckResult(typeCheckResult);
+    traverser.setLambdaExpressionsHandler(deriveSymTypeOfLambdaExpressions);
 
     DeriveSymTypeOfLiterals deriveSymTypeOfLiterals = new DeriveSymTypeOfLiterals();
     deriveSymTypeOfLiterals.setTypeCheckResult(typeCheckResult);

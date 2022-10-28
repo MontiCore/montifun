@@ -4,7 +4,7 @@ package de.monticore.mf.montifun._symboltable;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
-import de.monticore.ocl.types.check.OCLSynthesizer;
+import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.AbstractSynthesize;
@@ -18,7 +18,7 @@ public class MontiFunScopesGenitor extends MontiFunScopesGenitorTOP {
   protected AbstractSynthesize synthesizer;
 
   public MontiFunScopesGenitor() {
-    this.synthesizer = new OCLSynthesizer();
+    this.synthesizer = new FullSynthesizeFromMontiFun();
   }
 
   @Override

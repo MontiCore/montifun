@@ -1,6 +1,7 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.montifun._cocos;
 
+import de.monticore.mf.montifun.types.check.FullDeriveFromMontiFun;
 import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.ocl.ocl._cocos.ExpressionValidCoCo;
 import de.monticore.ocl.oclexpressions._cocos.IterateExpressionVariableUsageIsCorrect;
@@ -17,7 +18,7 @@ public class MontiFunCoCos {
    */
   public static MontiFunCoCoChecker getCheckerForAllCoCos() {
     final MontiFunCoCoChecker checker = new MontiFunCoCoChecker();
-    final IDerive derive = new OCLDeriver();
+    final IDerive derive = new FullDeriveFromMontiFun();
     final ISynthesize synthesize = new FullSynthesizeFromMontiFun();
 
     checker.addCoCo(new FunctionDeclarationWithCorrectTypes(derive, synthesize));

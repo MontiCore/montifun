@@ -29,7 +29,8 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
     return Stream.of(
         "boolean getTrue() = true;",
         "boolean not(boolean val) = !val;",
-        "int plus(int a, int b) = a + b;"
+        "int plus(int a, int b) = a + b;",
+        "() -> int getInt = () -> 2;"
     );
   }
 

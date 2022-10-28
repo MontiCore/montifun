@@ -138,6 +138,7 @@ public class MontiFunTool extends MontiFunToolTOP {
       ) {
 
         // we need the global scope for symbols and cocos
+        //todo unused var
         MCPath symbolPath = new MCPath(Paths.get(""));
         if (cmd.hasOption("p")) {
           symbolPath = new MCPath(Arrays.stream(cmd.getOptionValues("p"))

@@ -6,14 +6,16 @@ import de.monticore.expressions.prettyprint.ExpressionsBasisPrettyPrinter;
 import de.monticore.literals.prettyprint.MCCommonLiteralsPrettyPrinter;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
+import de.monticore.mf.montifun.types.check.FullDeriveFromMontiFun;
+import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.ocl.codegen.util.VariableNaming;
 import de.monticore.ocl.codegen.visitors.CommonExpressionsPrinter;
 import de.monticore.ocl.codegen.visitors.OCLExpressionsPrinter;
 import de.monticore.ocl.codegen.visitors.SetExpressionsPrinter;
-import de.monticore.ocl.types.check.OCLDeriver;
-import de.monticore.ocl.types.check.OCLSynthesizer;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.prettyprint.MCBasicsPrettyPrinter;
+import de.monticore.types.check.IDerive;
+import de.monticore.types.check.ISynthesize;
 import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCCollectionTypesPrettyPrinter;
 import de.monticore.types.prettyprint.MCSimpleGenericTypesPrettyPrinter;
@@ -40,29 +42,29 @@ public class MontiFunExpressions2JavaPrinter {
   }
 
   protected MontiFunExpressions2JavaPrinter(IndentPrinter printer, VariableNaming naming) {
-    this(printer, naming, new OCLDeriver(), new OCLSynthesizer());
+    this(printer, naming, new FullDeriveFromMontiFun(), new FullSynthesizeFromMontiFun());
   }
 
   protected MontiFunExpressions2JavaPrinter(IndentPrinter printer, VariableNaming naming,
-      OCLDeriver oclDeriver, OCLSynthesizer oclSynthesizer) {
+      IDerive deriver, ISynthesize synthesizer) {
 
     this.printer = printer;
     this.traverser = MontiFunMill.traverser();
 
     // Expressions
     CommonExpressionsPrinter comExprPrinter = new CommonExpressionsPrinter(printer, naming,
-        oclDeriver, oclSynthesizer);
+        deriver, synthesizer);
     this.traverser.setCommonExpressionsHandler(comExprPrinter);
     this.traverser.add4CommonExpressions(comExprPrinter);
     ExpressionsBasisPrettyPrinter exprBasPrinter = new ExpressionsBasisPrettyPrinter(printer);
     this.traverser.setExpressionsBasisHandler(exprBasPrinter);
     this.traverser.add4ExpressionsBasis(exprBasPrinter);
     OCLExpressionsPrinter oclExprPrinter = new OCLExpressionsPrinter(printer, naming,
-        oclDeriver, oclSynthesizer);
+        deriver, synthesizer);
     this.traverser.setOCLExpressionsHandler(oclExprPrinter);
     this.traverser.add4OCLExpressions(oclExprPrinter);
-    SetExpressionsPrinter setExprPrinter = new SetExpressionsPrinter(printer, naming, oclDeriver,
-        oclSynthesizer);
+    SetExpressionsPrinter setExprPrinter = new SetExpressionsPrinter(printer, naming, deriver,
+        synthesizer);
     this.traverser.setSetExpressionsHandler(setExprPrinter);
     this.traverser.add4SetExpressions(setExprPrinter);
 

@@ -29,9 +29,11 @@ public class MontiFunPrettyPrinter implements MontiFunHandler {
     CommentPrettyPrinter.printPreComments(compilationUnit, getPrinter());
     if (compilationUnit.isPresentMCPackageDeclaration()) {
       compilationUnit.getMCPackageDeclaration().accept(getTraverser());
+      getPrinter().println(2);
     }
     for (ASTMCImportStatement importStatement : compilationUnit.getMCImportStatementList()) {
       importStatement.accept(getTraverser());
+      getPrinter().println();
     }
     compilationUnit.getMFArtifact().accept(getTraverser());
     CommentPrettyPrinter.printPostComments(compilationUnit, getPrinter());

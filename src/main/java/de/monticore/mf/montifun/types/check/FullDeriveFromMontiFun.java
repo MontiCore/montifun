@@ -3,7 +3,7 @@ package de.monticore.mf.montifun.types.check;
 
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
-import de.monticore.ocl.types.check.DeriveSymTypeOfCommonExpressions;
+import de.monticore.types.check.DeriveSymTypeOfCommonExpressions;
 import de.monticore.ocl.types.check.DeriveSymTypeOfOCLExpressions;
 import de.monticore.ocl.types.check.DeriveSymTypeOfOptionalOperators;
 import de.monticore.ocl.types.check.DeriveSymTypeOfSetExpressions;

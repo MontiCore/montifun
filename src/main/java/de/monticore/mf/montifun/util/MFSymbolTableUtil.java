@@ -23,6 +23,8 @@ import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
+import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
+import de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.ISynthesize;
 import de.se_rwth.commons.logging.Log;
@@ -114,14 +116,22 @@ public class MFSymbolTableUtil {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new FunctionSymbolDeSer());
   }
 
+  protected static void addMethodSymbol(String symbolFqn) {
+    MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new MethodSymbolDeSer());
+  }
+
   protected static void addVariableSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new VariableSymbolDeSer());
   }
 
+  protected static void addFieldSymbol(String symbolFqn) {
+    MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new FieldSymbolDeSer());
+  }
+
   public static void addCD4CSymbols() {
     addTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
-    addFunctionSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
-    addVariableSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
+    addMethodSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
+    addFieldSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
   }
 
   public static void loadSymbolFile(String filePath) {

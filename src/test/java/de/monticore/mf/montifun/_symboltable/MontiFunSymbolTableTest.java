@@ -2,8 +2,6 @@
 package de.monticore.mf.montifun._symboltable;
 
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
-import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -18,6 +16,9 @@ public class MontiFunSymbolTableTest extends AbstractTest {
   public void shouldCreateSymTabForValidModels(String fileName) throws IOException {
     // not yet supported
     assumeFalse(fileName.contains("genericFunctions"));
+    //todo enable after fix of
+    //https://git.rwth-aachen.de/monticore/monticore/-/issues/3302
+    assumeFalse(fileName.contains("javaImport"));
 
     // given / when
     createASTWithSymTab(fileName);

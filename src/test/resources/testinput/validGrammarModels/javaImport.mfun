@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 import java.nio.file.Path;
+import System;
 //import java.nio.file.Paths;
 
 montifun javaImport {

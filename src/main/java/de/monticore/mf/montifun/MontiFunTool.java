@@ -309,7 +309,7 @@ public class MontiFunTool extends MontiFunToolTOP {
    * heuristic to test if the path seems to be a folder path
    *
    * @param pathStr the path to check
-   * @return wether we assume it is a path to a folder
+   * @return whether we assume it is a path to a folder
    */
   protected boolean isLikelyFolderPath(String pathStr) {
     // if it already exists, check:
@@ -329,7 +329,7 @@ public class MontiFunTool extends MontiFunToolTOP {
   /**
    * finds the file (without extension) for ast,
    * given its package and name.
-   * E.g.: model with qualiefied name a.b.c
+   * E.g.: model with qualified name a.b.c
    * "a/b/c"
    *
    * @param compilationUnit The ast of the model

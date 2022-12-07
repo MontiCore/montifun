@@ -27,6 +27,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -45,6 +47,8 @@ public class MontiFunTool extends MontiFunToolTOP {
   public static final String MODEL_FILE_EXT = "mfun";
 
   public static final String SYMBOL_FILE_EXT = "mfsym";
+
+  protected static final String INPUT_FILE_EXT_END = "sym";
 
   @Override
   public void init() {
@@ -92,6 +96,35 @@ public class MontiFunTool extends MontiFunToolTOP {
       //parse input file, now known to be available
       List<String> inputNames =
           getInputFileNamesFromInputParameter(List.of(cmd.getOptionValues("i")));
+      // did we get an input folder?
+      if (inputNames.size() == 1 && Paths.get(inputNames.get(0)).toFile().isDirectory()) {
+        try {
+          inputNames = Files.walk(Paths.get(inputNames.get(0)))
+              .filter(path -> path.toString().endsWith("." + MODEL_FILE_EXT)
+                  || path.toString().endsWith(INPUT_FILE_EXT_END))
+              .map(Path::toString)
+              .collect(Collectors.toList());
+        }
+        catch (IOException e) {
+          Log.error("0xAC783 Unable to collect MontiFun input files", e);
+        }
+      }
+      // split input into models and symbol files
+      List<String> modelInputNames = new ArrayList<>();
+      List<String> symbolInputNames = new ArrayList<>();
+      for (String inputName : inputNames) {
+        if (isLikelySymbolInputFilePath(inputName)) {
+          symbolInputNames.add(inputName);
+        }
+        else {
+          modelInputNames.add(inputName);
+        }
+      }
+      if (modelInputNames.isEmpty()) {
+        Log.error("0xAC984 -i does not seem to contain any montifun models");
+      }
+
+      //parse input files, now known to be available
       List<ASTMFCompilationUnit> inputMontiFuns = new ArrayList<>();
       for (String inputName : inputNames) {
         ASTMFCompilationUnit ast = parse(inputName);
@@ -138,7 +171,6 @@ public class MontiFunTool extends MontiFunToolTOP {
       ) {
 
         // we need the global scope for symbols and cocos
-        //todo unused var
         MCPath symbolPath = new MCPath(Paths.get(""));
         if (cmd.hasOption("p")) {
           symbolPath = new MCPath(Arrays.stream(cmd.getOptionValues("p"))
@@ -146,9 +178,15 @@ public class MontiFunTool extends MontiFunToolTOP {
               .collect(Collectors.toList())
           );
         }
+        MontiFunMill.globalScope().setSymbolPath(symbolPath);
 
         if (cmd.hasOption("cd4c")) {
           MFSymbolTableUtil.addCD4CSymbols();
+        }
+
+        //load input symbol tables
+        for (String symbolInputName : symbolInputNames) {
+          loadSymbols(symbolInputName);
         }
 
         // Complete symbol table
@@ -324,6 +362,23 @@ public class MontiFunTool extends MontiFunToolTOP {
     // "a/b/c.d" is not expected to be a folder,
     // so we skip the first character
     return !path.getFileName().toString().substring(1).contains(".");
+  }
+
+  /**
+   * heuristic to test if the path seems to be a file containing a symbol
+   *
+   * @param pathStr the path to check
+   * @return whether we assume it is a path to a folder
+   */
+  protected boolean isLikelySymbolInputFilePath(String pathStr) {
+    // if it already exists, check that it is a file:
+    Path path = Paths.get(pathStr);
+    File file = path.toFile();
+    if (file.exists() && !file.isFile()) {
+      return false;
+    }
+    // check if the last part ends with a corresponding extension
+    return path.getFileName().toString().endsWith(INPUT_FILE_EXT_END);
   }
 
   /**

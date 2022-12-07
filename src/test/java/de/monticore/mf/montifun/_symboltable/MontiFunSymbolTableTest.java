@@ -16,9 +16,6 @@ public class MontiFunSymbolTableTest extends AbstractTest {
   public void shouldCreateSymTabForValidModels(String fileName) throws IOException {
     // not yet supported
     assumeFalse(fileName.contains("genericFunctions"));
-    //todo enable after fix of
-    //https://git.rwth-aachen.de/monticore/monticore/-/issues/3302
-    assumeFalse(fileName.contains("javaImport"));
 
     // given / when
     createASTWithSymTab(fileName);

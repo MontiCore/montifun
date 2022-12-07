@@ -38,9 +38,6 @@ public class MontiFunSymbols2JsonTest extends AbstractTest {
   public void shouldSerializeAndDeserializeSymTab(String fileName) throws IOException {
     // not yet supported
     assumeFalse(fileName.contains("genericFunctions"));
-    //todo enable after fix of
-    //https://git.rwth-aachen.de/monticore/monticore/-/issues/3302
-    assumeFalse(fileName.contains("javaImport"));
     ASTMFCompilationUnit ast = createASTWithSymTab(fileName);
 
     // given

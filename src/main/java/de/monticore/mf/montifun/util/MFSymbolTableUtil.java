@@ -66,6 +66,8 @@ public class MFSymbolTableUtil {
   }
 
   static public IMontiFunArtifactScope runSymTabGenitor(ASTMFCompilationUnit ast) {
+    //todo remove if java.lang.* is default imported in cd4a again
+    addDefaultImports(ast);
     MontiFunScopesGenitorDelegator genitor = MontiFunMill.scopesGenitorDelegator();
     return genitor.createFromAST(ast);
   }
@@ -132,6 +134,10 @@ public class MFSymbolTableUtil {
     addTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
     addMethodSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
     addFieldSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
+  }
+
+  protected static void addDefaultImports(ASTMFCompilationUnit artifact) {
+    artifact.addImportStatement("java.lang.*");
   }
 
   public static void loadSymbolFile(String filePath) {

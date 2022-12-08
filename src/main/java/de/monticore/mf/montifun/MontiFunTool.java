@@ -126,8 +126,8 @@ public class MontiFunTool extends MontiFunToolTOP {
 
       //parse input files, now known to be available
       List<ASTMFCompilationUnit> inputMontiFuns = new ArrayList<>();
-      for (String inputName : inputNames) {
-        ASTMFCompilationUnit ast = parse(inputName);
+      for (String modelInputName : modelInputNames) {
+        ASTMFCompilationUnit ast = parse(modelInputName);
         inputMontiFuns.add(ast);
       }
 
@@ -186,7 +186,8 @@ public class MontiFunTool extends MontiFunToolTOP {
 
         //load input symbol tables
         for (String symbolInputName : symbolInputNames) {
-          loadSymbols(symbolInputName);
+          IMontiFunArtifactScope symbolScope = loadSymbols(symbolInputName);
+          MontiFunMill.globalScope().addSubScope(symbolScope);
         }
 
         // Complete symbol table
@@ -280,7 +281,7 @@ public class MontiFunTool extends MontiFunToolTOP {
         fileNames.add(input.getAbsolutePath());
       }
       else {
-        Log.error("input provided by -i does not seem to be a file or directory: "
+        Log.error("0xAF381 input provided by -i does not seem to be a file or directory: "
             + input.getAbsolutePath());
       }
     }

@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package a.b;
-
-import a.c.D;
-import a.b.W;
-
-montifun imports {
-  // no code
-}

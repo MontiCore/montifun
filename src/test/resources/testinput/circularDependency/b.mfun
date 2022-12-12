@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
+package circulardependency;
 
-import a;
+import circulardependency.a.*;
 
 montifun b {
 

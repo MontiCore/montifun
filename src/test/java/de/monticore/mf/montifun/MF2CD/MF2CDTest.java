@@ -8,9 +8,11 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.mf.AbstractTest;
+import de.monticore.mf.montifun.MontiFunTool;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -25,12 +27,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
@@ -81,8 +86,30 @@ public class MF2CDTest extends AbstractTest {
     // test Java compilation:
     Optional<File> javaFileOpt = findOutputFile(mfCompilationUnit.getMFArtifact().getName());
     assertTrue(javaFileOpt.isPresent());
-    compile(javaFileOpt.get());
+    compile(Collections.singleton(javaFileOpt.get()));
 
+    assertNoFindings();
+  }
+
+  @Test
+  public void createValidCDCircularDependency() throws IOException {
+    // todo enable after https://git.rwth-aachen.de/monticore/monticore/-/issues/3319
+    assumeFalse(true);
+    // given / when
+    MontiFunTool.main(new String[] {
+        "-i",
+        RELATIVE_MODEL_PATH + "/testinput/circularDependency/a.mfun",
+        RELATIVE_MODEL_PATH + "/testinput/circularDependency/b.mfun",
+        "-gen",
+        OUTPUT_DIR,
+    });
+    // test Java compilation:
+    Collection<File> javaFiles = new ArrayList<>();
+    findOutputFile("a.java").ifPresent(javaFiles::add);
+    findOutputFile("b.java").ifPresent(javaFiles::add);
+    assertEquals(2, javaFiles.size());
+    compile(javaFiles);
+    //then
     assertNoFindings();
   }
 
@@ -94,13 +121,13 @@ public class MF2CDTest extends AbstractTest {
   }
 
   /**
-   * tries to compile the file
+   * tries to compile the files
    * fails the test if there were compilation errors
    *
-   * @param file to be compiled
+   * @param files to be compiled
    * @throws IOException file exception
    */
-  protected void compile(File file) throws IOException {
+  protected void compile(Collection<File> files) throws IOException {
     List<String> options = Arrays.asList(
         "-d",
         OUTPUT_DIR
@@ -111,8 +138,7 @@ public class MF2CDTest extends AbstractTest {
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnosticsCollector,
             null, null);
     ) {
-      Iterable<? extends JavaFileObject> units = fileManager.getJavaFileObjectsFromFiles(
-          Collections.singleton(file));
+      Iterable<? extends JavaFileObject> units = fileManager.getJavaFileObjectsFromFiles(files);
       JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnosticsCollector,
           options, null,
           units);

@@ -14,6 +14,8 @@ import de.monticore.mf.montifun._ast.ASTMFArtifact;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
+import de.monticore.mf.montifun.prettyprint.MontiFunFullPrettyPrinter;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.umlmodifier.UMLModifierMill;
 import de.se_rwth.commons.logging.Log;
@@ -32,6 +34,18 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
 
   public MF2CDVisitor() {
     this.cd4C = CD4C.getInstance();
+  }
+
+  @Override
+  public void visit(ASTMFArtifact mfArtifact) {
+    mainClass = CDBasisMill.cDClassBuilder()
+        .setName(mfArtifact.getName())
+        .setModifier(
+            UMLModifierMill.modifierBuilder()
+                .PUBLIC()
+                .build()
+        )
+        .build();
   }
 
   @Override
@@ -67,22 +81,14 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
     if (mfCompilationUnit.isPresentMCPackageDeclaration()) {
       cdCompilationUnitBuilder.setMCPackageDeclaration(mfCompilationUnit.getMCPackageDeclaration());
     }
-    cdCompilationUnitBuilder.setMCImportStatementsList(
-        mfCompilationUnit.getMCImportStatementList());
     cdCompilationUnitBuilder.setCDDefinition(cdDefinition);
     cdCompilationUnit = cdCompilationUnitBuilder.build();
-  }
-
-  @Override
-  public void visit(ASTMFArtifact mfArtifact) {
-    mainClass = CDBasisMill.cDClassBuilder()
-        .setName(mfArtifact.getName())
-        .setModifier(
-            UMLModifierMill.modifierBuilder()
-                .PUBLIC()
-                .build()
-        )
-        .build();
+    // imports
+    MontiFunFullPrettyPrinter mfPp = new MontiFunFullPrettyPrinter();
+    for (ASTMCImportStatement mfImport : mfCompilationUnit.getMCImportStatementList()) {
+      String importStr = mfPp.prettyprint(mfImport);
+      cd4C.addImport(getMainClass(), importStr);
+    }
   }
 
   @Override

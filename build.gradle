@@ -115,8 +115,10 @@ shadowJar {
     }
     archiveFileName = "MCMontiFun.${archiveExtension.get()}"
     archiveClassifier = "mc-tool"
-    //todo: fix https://git.rwth-aachen.de/monticore/monticore/-/issues/3317
-    //minimize()
+    minimize {
+        //todo https://git.rwth-aachen.de/monticore/monticore/-/issues/3317
+        exclude(dependency('org.freemarker:freemarker:.*'))
+    }
 }
 
 test {

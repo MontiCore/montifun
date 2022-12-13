@@ -69,6 +69,7 @@ public abstract class AbstractTest {
   protected static ASTMFCompilationUnit parse(String fileName) throws IOException {
     MontiFunParser parser = MontiFunMill.parser();
     Optional<ASTMFCompilationUnit> compilationUnitOpt = parser.parse(fileName);
+    assertNoFindings();
     assertFalse(parser.hasErrors());
     assertTrue(compilationUnitOpt.isPresent());
     return compilationUnitOpt.get();

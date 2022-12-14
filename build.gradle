@@ -4,7 +4,7 @@ plugins {
     id "java"
     id "monticore" version "$mc_version" // MontiCore Plugin
     id "maven-publish"
-    id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "com.github.johnrengelman.shadow" version "$shadow_version"
 }
 
 description = "functional programming language"

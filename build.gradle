@@ -36,7 +36,6 @@ sourceSets {
 configurations { grammar }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:20.1.0'
     grammar("de.monticore:monticore-grammar:$mc_version") {
         capabilities {
             requireCapability("de.monticore:monticore-grammar-grammars")
@@ -47,12 +46,10 @@ dependencies {
             requireCapability("de.monticore.lang:ocl-grammars")
         }
     }
-    implementation "com.google.guava:guava:$guava_version"
     implementation "de.monticore:monticore-runtime:$mc_version"
     implementation "de.monticore:monticore-grammar:$mc_version"
     implementation "de.monticore:class2mc:$mc_version"
     implementation "de.se_rwth.commons:se-commons-logging:$mc_version"
-    implementation "de.se_rwth.commons:se-commons-utilities:$mc_version"
     implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
     implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
     implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version

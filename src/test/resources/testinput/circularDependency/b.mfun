@@ -5,7 +5,9 @@ import circulardependency.a.*;
 
 montifun b {
 
-  dependencyB = 42;
-  Integer getDependecy() = dependencyA();
+  dependencyB() = 42;
+  //todo enable after fix of
+  //https://git.rwth-aachen.de/monticore/monticore/-/issues/3221
+  //Integer getDependecy() = dependencyA;
 
 }

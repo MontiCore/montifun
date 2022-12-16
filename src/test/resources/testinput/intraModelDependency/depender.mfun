@@ -9,6 +9,7 @@ montifun depender {
   // https://git.rwth-aachen.de/monticore/monticore/-/issues/3221
   // getDependency() = dependency();
   // fully qualified, no import
-  getDependency2() = pkg.dependee2.dependency2();
+  getDependency2Func() = pkg.dependee2.dependency2Func();
+  getDependency2Const() = pkg.dependee2.dependency2Const;
 
 }

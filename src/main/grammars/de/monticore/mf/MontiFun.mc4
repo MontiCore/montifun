@@ -43,7 +43,7 @@ grammar MontiFun extends MCCommonLiterals,
    */
   MFArtifact implements Diagram =
     "montifun" Name "{"
-      MFFunctionDeclaration*
+      (MFFunctionDeclaration | MFConstantDeclaration)*
     "}"
   ;
 
@@ -73,7 +73,12 @@ grammar MontiFun extends MCCommonLiterals,
    */
   MFFunctionDeclaration implements Function =
     MCReturnType? Name
-    (parenthesis:"(" (MFParameter || ",")* ")")?
+    "(" (MFParameter || ",")* ")"
+    "=" Expression ";"
+  ;
+
+  MFConstantDeclaration implements Variable =
+    MCType? Name
     "=" Expression ";"
   ;
 

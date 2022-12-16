@@ -2,6 +2,7 @@
 package de.monticore.mf.montifun._symboltable;
 
 import de.monticore.mf.montifun._ast.ASTMFArtifact;
+import de.monticore.mf.montifun._ast.ASTMFConstantDeclaration;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.montifun._ast.ASTMFParameter;
 import de.monticore.mf.montifun._visitor.MontiFunHandler;
@@ -41,7 +42,24 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
       node.getSymbol().setType(type.getResult());
     }
     else {
-      Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart());
+      Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
+    }
+  }
+
+  @Override
+  public void endVisit(ASTMFConstantDeclaration node) {
+    TypeCheckResult type;
+    if (node.isPresentMCType()) {
+      type = getSynthesizer().synthesizeType(node.getMCType());
+    }
+    else {
+      type = getDeriver().deriveType(node.getExpression());
+    }
+    if (type.isPresentResult() && !type.getResult().isObscureType()) {
+      node.getSymbol().setType(type.getResult());
+    }
+    else {
+      Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
     }
   }
 

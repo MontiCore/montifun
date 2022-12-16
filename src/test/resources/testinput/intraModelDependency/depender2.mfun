@@ -5,8 +5,12 @@ import pkg.dependee.dependency;
 montifun depender {
 
 // with import
-getDependency() = dependency();
+// todo reactivate after
+// https://git.rwth-aachen.de/monticore/monticore/-/issues/3178
+//getDependencyConst() = dependencyConst;
+//getDependencyFunc() = dependencyFunc();
 // fully qualified, no import
-getDependency2() = pkg.dependee2.dependency2();
+getDependency2Const() = pkg.dependee2.dependency2Const;
+getDependency2Func() = pkg.dependee2.dependency2Func();
 
 }

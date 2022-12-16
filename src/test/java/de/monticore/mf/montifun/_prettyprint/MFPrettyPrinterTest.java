@@ -1,10 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.montifun.prettyprint;
+package de.monticore.mf.montifun._prettyprint;
 
 import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._parser.MontiFunParser;
+import de.monticore.prettyprint.IndentPrinter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -22,7 +23,7 @@ public class MFPrettyPrinterTest extends AbstractTest {
   public void prettyPrintsEquivalent(String fileName) throws IOException {
     // given
     final ASTMFCompilationUnit ast = parse(fileName);
-    final MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter();
+    final MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter(new IndentPrinter());
 
     // when
     String prettyPrinted = prettyPrinter.prettyprint(ast);

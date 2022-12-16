@@ -3,9 +3,11 @@ package de.monticore.mf.montifun._symboltable;
 
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._ast.ASTMFConstantDeclaration;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
+import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.AbstractSynthesize;
 import de.se_rwth.commons.logging.Log;

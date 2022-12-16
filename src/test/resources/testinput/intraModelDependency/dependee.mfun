@@ -2,6 +2,7 @@
 package pkg;
 montifun dependee {
 
-  dependency = 42;
+  dependencyConst = 42;
+  dependencyFunc() = 42;
 
 }

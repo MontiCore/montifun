@@ -13,8 +13,9 @@ import de.monticore.mf.mfexpressions.Expressions2JavaPrinter.MontiFunExpressions
 import de.monticore.mf.montifun._ast.ASTMFArtifact;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
+import de.monticore.mf.montifun._prettyprint.MontiFunFullPrettyPrinter;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
-import de.monticore.mf.montifun.prettyprint.MontiFunFullPrettyPrinter;
+import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.umlmodifier.UMLModifierMill;
@@ -84,7 +85,7 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
     cdCompilationUnitBuilder.setCDDefinition(cdDefinition);
     cdCompilationUnit = cdCompilationUnitBuilder.build();
     // imports
-    MontiFunFullPrettyPrinter mfPp = new MontiFunFullPrettyPrinter();
+    MontiFunFullPrettyPrinter mfPp = new MontiFunFullPrettyPrinter(new IndentPrinter());
     for (ASTMCImportStatement mfImport : mfCompilationUnit.getMCImportStatementList()) {
       String importStr = mfPp.prettyprint(mfImport);
       cd4C.addImport(getMainClass(), importStr);

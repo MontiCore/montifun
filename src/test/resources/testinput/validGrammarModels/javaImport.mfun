@@ -7,7 +7,7 @@ import java.lang.System;
 montifun javaImport {
 
 // not side effect free
-getNanoTime = System.nanoTime();
+getNanoTime() = System.nanoTime();
 getNanoTime(System s) = s.nanoTime();
 toFile(Path p) = p.toFile();
 sqrt(double x) = java.lang.Math.sqrt(x);

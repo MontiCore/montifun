@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun circularDependency {
+
+  //assumes n >= 0
+  boolean odd(int n) = n == 0 ? false : even(n - 1);
+  boolean even(int n) = n == 0? true  : odd(n-1);
+
+}

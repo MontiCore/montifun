@@ -4,6 +4,7 @@ package de.monticore.mf.montifun._symboltable;
 import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._ast.ASTMFConstantDeclaration;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.montifun._parser.MontiFunParser;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
@@ -25,12 +26,19 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
 
   protected final String DEBUG_LOG_NAME = "MontiFunScopesGenitorTest";
 
-  protected static Stream<String> functionProvider() {
+  protected static Stream<String> provideFunctionDefinitions() {
     return Stream.of(
         "boolean getTrue() = true;",
         "boolean not(boolean val) = !val;",
         "int plus(int a, int b) = a + b;",
         "() -> int getInt() = () -> 2;"
+    );
+  }
+
+  protected static Stream<String> provideConstantDefinitions() {
+    return Stream.of(
+        "boolean myTrue = true;",
+        "() -> int getInt = () -> 2;"
     );
   }
 
@@ -44,7 +52,7 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
 
   @ParameterizedTest
   @MethodSource("getParsableModels")
-  public void shouldSetEnclosingScopeOfFunctionDeclaration(String filename) throws IOException {
+  public void shouldSetEnclosingScopeOfDeclaration(String filename) throws IOException {
     // Given
     ASTMFCompilationUnit ast = parse(filename);
     MontiFunScopesGenitorDelegator genitor = MontiFunMill.scopesGenitorDelegator();
@@ -57,13 +65,20 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
       for (ASTMFFunctionDeclaration fun : ast.getMFArtifact().getMFFunctionDeclarationList()) {
         Assertions.assertNotNull(fun.getEnclosingScope(),
             String.format("%s: The ast of the function declaration is missing its enclosing scope.",
-                fun.get_SourcePositionStart()));
+                fun.get_SourcePositionStart(), fun.get_SourcePositionEnd()));
+      }
+    });
+    Assertions.assertAll(() -> {
+      for (ASTMFConstantDeclaration constant : ast.getMFArtifact().getMFConstantDeclarationList()) {
+        Assertions.assertNotNull(constant.getEnclosingScope(),
+            String.format("%s: The ast of the constant declaration is missing its enclosing scope.",
+                constant.get_SourcePositionStart(), constant.get_SourcePositionEnd()));
       }
     });
   }
 
   @ParameterizedTest
-  @MethodSource("functionProvider")
+  @MethodSource("provideFunctionDefinitions")
   @Order(0)
   public void handleFunctionDeclaration_shouldNotModifyScopeStack(String source) {
     // Given
@@ -90,7 +105,7 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
    * @param source the String assumed to be a function declaration
    */
   @ParameterizedTest
-  @MethodSource("functionProvider")
+  @MethodSource("provideFunctionDefinitions")
   @Order(1)
   public void handleFunctionDeclaration_shouldSetEnclosingScope(String source) {
     // Given
@@ -114,13 +129,43 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
   }
 
   /**
+   * Asserts that the enclosing scope of the ast of the constant declaration is present
+   * and matches the expected scope.
+   *
+   * @param source the String assumed to be a constant declaration
+   */
+  @ParameterizedTest
+  @MethodSource("provideConstantDefinitions")
+  @Order(1)
+  public void handleConstantDeclaration_shouldSetEnclosingScope(String source) {
+    // Given
+    ASTMFConstantDeclaration ast = parseConstantDeclaration(source);
+    MontiFunScopesGenitorDelegator genitor = MontiFunMill.scopesGenitorDelegator();
+    IMontiFunArtifactScope artifactScope = MontiFunMill.artifactScope();
+    IMontiFunScope enclosingScope = MontiFunMill.scope();
+    genitor.scopeStack.addLast(artifactScope);
+    genitor.scopeStack.addLast(enclosingScope);
+
+    // When
+    ast.accept(genitor.traverser);
+
+    // Then
+    Assertions.assertAll(() -> {
+      Assertions.assertNotNull(ast.getEnclosingScope(),
+          "The ast of the constant declaration is missing its enclosing scope.");
+      Assertions.assertEquals(enclosingScope, ast.getEnclosingScope(),
+          "The enclosing scope of the ast of the constant declaration does not match the expected scope.");
+    });
+  }
+
+  /**
    * Asserts that the spanned scope of the ast of the function declaration is present
    * and linked with the enclosing scope.
    *
    * @param source the String assumed to be a function declaration
    */
   @ParameterizedTest
-  @MethodSource("functionProvider")
+  @MethodSource("provideFunctionDefinitions")
   @Order(2)
   public void handleFunctionDeclaration_shouldCreateSpannedScope(String source) {
     // Given
@@ -156,7 +201,7 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
    * @param source the String assumed to be an function declaration with name
    */
   @ParameterizedTest
-  @MethodSource("functionProvider")
+  @MethodSource("provideFunctionDefinitions")
   @Order(3)
   public void handleFunctionDeclaration_shouldCreateSymbol(String source) {
     // Given
@@ -219,6 +264,36 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
     assertTrue(ast.isPresent(),
         String.format(
             "The parser did not return an abstract syntax tree for function declaration '%s'. " +
+                "The log lists the following findings: %s", source, Log.getFindings())
+    );
+    return ast.get();
+  }
+
+  /**
+   * Parses the provided string as constant declaration, catching exceptions to the
+   * debug log and throwing runtime errors in case of parser errors.
+   *
+   * @param source the String to parse, assumed to be an function declaration,
+   * @return the ast of the given String
+   */
+  protected ASTMFConstantDeclaration parseConstantDeclaration(String source) {
+    MontiFunParser parser = MontiFunMill.parser();
+    Optional<ASTMFConstantDeclaration> ast;
+    try {
+      ast = parser.parse_StringMFConstantDeclaration(source);
+    }
+    catch (IOException e) {
+      Log.debug("An I/O Exception occurred parsing the invariant `%s`. ", DEBUG_LOG_NAME);
+      Log.debug("Error thrown: " + e, DEBUG_LOG_NAME);
+      throw new IllegalStateException(" An internal error occurred. See the debug log.");
+    }
+    assertFalse(parser.hasErrors(),
+        String.format("There where errors parsing the constant declaration `%s`. " +
+            "The log lists the following findings: %s", source, Log.getFindings())
+    );
+    assertTrue(ast.isPresent(),
+        String.format(
+            "The parser did not return an abstract syntax tree for constant declaration '%s'. " +
                 "The log lists the following findings: %s", source, Log.getFindings())
     );
     return ast.get();

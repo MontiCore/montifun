@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf.montifun._cocos;
 
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;

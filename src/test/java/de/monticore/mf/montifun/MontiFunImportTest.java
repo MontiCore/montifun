@@ -3,9 +3,9 @@ package de.monticore.mf.montifun;
 
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.AbstractTest;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
+import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -26,10 +26,15 @@ public class MontiFunImportTest extends AbstractTest {
         RELATIVE_SYMBOL_OUTPUT_PATH + "/pkg/dependee.mfsym",
         RELATIVE_SYMBOL_OUTPUT_PATH + "/pkg/dependee2.mfsym",
     });
-    // calling main resets the log, so we reset again
-    LogStub.init();
-    Log.enableFailQuick(false);
   }
+
+  @Override
+  @BeforeEach
+  public void setup() {
+    super.setup();
+    MFSymbolTableUtil.prepareMill();
+  }
+
 
   @Test
   public void unidirectionalImportSamePackageTest() throws IOException {

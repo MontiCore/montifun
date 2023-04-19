@@ -46,7 +46,6 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
   @BeforeEach
   public void setup() {
     super.setup();
-    MontiFunMill.globalScope().clear();
     MFSymbolTableUtil.prepareMill();
   }
 

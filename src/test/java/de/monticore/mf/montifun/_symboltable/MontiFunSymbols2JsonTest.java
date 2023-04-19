@@ -15,8 +15,10 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class MontiFunSymbols2JsonTest extends AbstractTest {
 
+  @Override
   @BeforeEach
-  public void initMill() {
+  public void setup() {
+    super.setup();
     MFSymbolTableUtil.prepareMill();
   }
 

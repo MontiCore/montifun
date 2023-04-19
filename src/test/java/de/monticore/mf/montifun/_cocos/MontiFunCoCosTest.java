@@ -2,7 +2,6 @@
 package de.monticore.mf.montifun._cocos;
 
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,6 @@ public class MontiFunCoCosTest extends AbstractTest {
   @BeforeEach
   public void setup() {
     super.setup();
-    MontiFunMill.globalScope().clear();
     MFSymbolTableUtil.prepareMill();
   }
 

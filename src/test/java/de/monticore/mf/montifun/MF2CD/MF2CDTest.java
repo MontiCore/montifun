@@ -50,6 +50,7 @@ public class MF2CDTest extends AbstractTest {
 
   GeneratorSetup generatorSetup;
 
+  @Override
   @BeforeEach
   public void setup() {
     super.setup();

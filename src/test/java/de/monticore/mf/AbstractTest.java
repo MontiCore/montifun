@@ -9,7 +9,6 @@ import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -25,14 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractTest {
 
-  @BeforeAll
-  public static void init() {
-    LogStub.init();
-    Log.enableFailQuick(false);
-  }
 
   @BeforeEach
   public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
     Log.getFindings().clear();
   }
 

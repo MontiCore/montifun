@@ -5,7 +5,9 @@ import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._parser.MontiFunParser;
+import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import de.monticore.prettyprint.IndentPrinter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -17,6 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MFPrettyPrinterTest extends AbstractTest {
 
   protected final MontiFunParser parser = MontiFunMill.parser();
+
+  @Override
+  @BeforeEach
+  public void setup() {
+    super.setup();
+    MFSymbolTableUtil.prepareMill();
+  }
+
 
   @ParameterizedTest
   @MethodSource("getParsableModels")

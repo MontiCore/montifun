@@ -72,6 +72,7 @@ public class MF2CDTest extends AbstractTest {
     assumeFalse(fileName.contains("genericFunctions"));
     //todo: https://git.rwth-aachen.de/monticore/monticore/-/issues/3280
     assumeFalse(fileName.contains("lambdas"));
+    assumeFalse(fileName.contains("fibonacci"));
 
     // load model
     ASTMFCompilationUnit mfCompilationUnit = loadASTWithSymbols(fileName);

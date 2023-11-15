@@ -87,7 +87,7 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
     // imports
     MontiFunFullPrettyPrinter mfPp = new MontiFunFullPrettyPrinter(new IndentPrinter());
     for (ASTMCImportStatement mfImport : mfCompilationUnit.getMCImportStatementList()) {
-      String importStr = mfPp.prettyprint(mfImport);
+      String importStr = mfPp.prettyprint(mfImport).stripTrailing(); // ensure no linebreak after ";"
       cd4C.addImport(getMainClass(), importStr);
     }
   }

@@ -16,8 +16,8 @@ import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.mf.montifun.util.library.MFCollectionType;
 import de.monticore.mf.montifun.util.library.MFListType;
 import de.monticore.mf.montifun.util.library.MFSetType;
-import de.monticore.ocl.oclexpressions._symboltable.OCLExpressionsSymbolTableCompleter;
-import de.monticore.ocl.setexpressions._symboltable.SetExpressionsSymbolTableCompleter;
+import de.monticore.ocl.oclexpressions.symboltable.OCLExpressionsSymbolTableCompleter;
+import de.monticore.ocl.setexpressions.symboltable.SetExpressionsSymbolTableCompleter;
 import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
@@ -27,6 +27,7 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.ISynthesize;
+import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
 import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
@@ -50,6 +51,7 @@ public class MFSymbolTableUtil {
     OOSymbolsMill.globalScope().setSymbolPath(new MCPath(Paths.get("")));
     MontiFunMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
 
+    MCCollectionSymTypeRelations.init();
     addCollectionTypes();
   }
 
@@ -83,20 +85,16 @@ public class MFSymbolTableUtil {
     symTabCompleter.add4MontiFun(montiFunCompleter);
     symTabCompleter.setMontiFunHandler(montiFunCompleter);
 
-    OCLExpressionsSymbolTableCompleter oclExprCompleter = new OCLExpressionsSymbolTableCompleter(
-        ast.getMCImportStatementList(),
-        "unused"
-    );
+    OCLExpressionsSymbolTableCompleter oclExprCompleter =
+        new OCLExpressionsSymbolTableCompleter();
     oclExprCompleter.setDeriver(deriver);
     oclExprCompleter.setSynthesizer(synthesizer);
     symTabCompleter.setOCLExpressionsHandler(oclExprCompleter);
     symTabCompleter.add4BasicSymbols(oclExprCompleter);
     symTabCompleter.add4OCLExpressions(oclExprCompleter);
 
-    SetExpressionsSymbolTableCompleter setExprCompleter = new SetExpressionsSymbolTableCompleter(
-        ast.getMCImportStatementList(),
-        "unused"
-    );
+    SetExpressionsSymbolTableCompleter setExprCompleter =
+        new SetExpressionsSymbolTableCompleter();
     setExprCompleter.setDeriver(deriver);
     setExprCompleter.setSynthesizer(synthesizer);
     symTabCompleter.setSetExpressionsHandler(setExprCompleter);

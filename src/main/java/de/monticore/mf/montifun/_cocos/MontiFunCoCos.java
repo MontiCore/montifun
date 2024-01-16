@@ -4,10 +4,8 @@ package de.monticore.mf.montifun._cocos;
 import de.monticore.mf.montifun.types.check.FullDeriveFromMontiFun;
 import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.ocl.ocl._cocos.ExpressionValidCoCo;
-import de.monticore.ocl.oclexpressions._cocos.IterateExpressionVariableUsageIsCorrect;
-import de.monticore.ocl.setexpressions._cocos.SetComprehensionHasGenerator;
-import de.monticore.ocl.types.check.OCLDeriver;
-import de.monticore.ocl.types.check.OCLSynthesizer;
+import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCorrect;
+import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
 import de.monticore.types.check.IDerive;
 import de.monticore.types.check.ISynthesize;
 

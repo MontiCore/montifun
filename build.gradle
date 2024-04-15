@@ -8,7 +8,6 @@ plugins {
 }
 
 description = "functional programming language"
-sourceCompatibility = JavaVersion.VERSION_11
 buildDir = file("$projectDir/target")
 
 
@@ -101,6 +100,8 @@ tasks.withType(Test) {
 }
 
 tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     options.fork = true
     options.encoding = "UTF-8"
     options.deprecation false

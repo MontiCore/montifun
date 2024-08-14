@@ -21,7 +21,7 @@ public class MontiFunCoCos {
 
     checker.addCoCo(new FunctionDeclarationWithCorrectTypes(derive, synthesize));
 
-    checker.addCoCo(new ExpressionValidCoCo(derive));
+    checker.addCoCo(new ExpressionValidCoCo());
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new SetComprehensionHasGenerator());
 

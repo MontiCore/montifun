@@ -52,19 +52,19 @@ public class MontiFunExpressions2JavaPrinter {
     this.traverser = MontiFunMill.traverser();
 
     // Expressions
-    CommonExpressionsPrinter comExprPrinter = new CommonExpressionsPrinter(printer, naming,
-        deriver, synthesizer);
+    CommonExpressionsPrinter comExprPrinter =
+        new CommonExpressionsPrinter(printer, naming);
     this.traverser.setCommonExpressionsHandler(comExprPrinter);
     this.traverser.add4CommonExpressions(comExprPrinter);
     ExpressionsBasisPrettyPrinter exprBasPrinter = new ExpressionsBasisPrettyPrinter(printer);
     this.traverser.setExpressionsBasisHandler(exprBasPrinter);
     this.traverser.add4ExpressionsBasis(exprBasPrinter);
-    OCLExpressionsPrinter oclExprPrinter = new OCLExpressionsPrinter(printer, naming,
-        deriver, synthesizer);
+    OCLExpressionsPrinter oclExprPrinter =
+        new OCLExpressionsPrinter(printer, naming);
     this.traverser.setOCLExpressionsHandler(oclExprPrinter);
     this.traverser.add4OCLExpressions(oclExprPrinter);
-    SetExpressionsPrinter setExprPrinter = new SetExpressionsPrinter(printer, naming, deriver,
-        synthesizer);
+    SetExpressionsPrinter setExprPrinter =
+        new SetExpressionsPrinter(printer, naming);
     this.traverser.setSetExpressionsHandler(setExprPrinter);
     this.traverser.add4SetExpressions(setExprPrinter);
 

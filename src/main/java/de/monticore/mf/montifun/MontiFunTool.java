@@ -13,19 +13,12 @@ import de.monticore.mf.montifun.MF2CD.MF2CDConverter;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._cocos.MontiFunCoCoChecker;
 import de.monticore.mf.montifun._cocos.MontiFunCoCos;
-import de.monticore.mf.montifun._prettyprint.MontiFunFullPrettyPrinter;
 import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbols2Json;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
-import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -328,7 +321,7 @@ public class MontiFunTool extends MontiFunToolTOP {
 
   @Override
   public void prettyPrint(ASTMFCompilationUnit ast, String file) {
-    String prettyPrintedAST = new MontiFunFullPrettyPrinter(new IndentPrinter()).prettyprint(ast);
+    String prettyPrintedAST = MontiFunMill.prettyPrint(ast, true);
     print(prettyPrintedAST, file);
   }
 

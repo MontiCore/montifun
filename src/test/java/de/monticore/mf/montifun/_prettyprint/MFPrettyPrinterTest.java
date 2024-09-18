@@ -6,7 +6,6 @@ import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._parser.MontiFunParser;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
-import de.monticore.prettyprint.IndentPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,10 +32,9 @@ public class MFPrettyPrinterTest extends AbstractTest {
   public void prettyPrintsEquivalent(String fileName) throws IOException {
     // given
     final ASTMFCompilationUnit ast = parse(fileName);
-    final MontiFunFullPrettyPrinter prettyPrinter = new MontiFunFullPrettyPrinter(new IndentPrinter());
 
     // when
-    String prettyPrinted = prettyPrinter.prettyprint(ast);
+    String prettyPrinted = MontiFunMill.prettyPrint(ast, true);
 
     // then
     Optional<ASTMFCompilationUnit> prettyASTOpt = parser.parse_String(prettyPrinted);

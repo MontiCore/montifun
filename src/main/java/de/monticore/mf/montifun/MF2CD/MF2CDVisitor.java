@@ -3,19 +3,13 @@ package de.monticore.mf.montifun.MF2CD;
 
 import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cdbasis.CDBasisMill;
-import de.monticore.cdbasis._ast.ASTCDClass;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
-import de.monticore.cdbasis._ast.ASTCDCompilationUnitBuilder;
-import de.monticore.cdbasis._ast.ASTCDDefinition;
-import de.monticore.cdbasis._ast.ASTCDPackage;
-import de.monticore.cdbasis._ast.ASTCDPackageBuilder;
+import de.monticore.cdbasis._ast.*;
 import de.monticore.mf.mfexpressions.Expressions2JavaPrinter.MontiFunExpressions2JavaPrinter;
+import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFArtifact;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
-import de.monticore.mf.montifun._prettyprint.MontiFunFullPrettyPrinter;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
-import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedNameBuilder;
 import de.monticore.umlmodifier.UMLModifierMill;
@@ -85,9 +79,8 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
     cdCompilationUnitBuilder.setCDDefinition(cdDefinition);
     cdCompilationUnit = cdCompilationUnitBuilder.build();
     // imports
-    MontiFunFullPrettyPrinter mfPp = new MontiFunFullPrettyPrinter(new IndentPrinter());
     for (ASTMCImportStatement mfImport : mfCompilationUnit.getMCImportStatementList()) {
-      String importStr = mfPp.prettyprint(mfImport).stripTrailing(); // ensure no linebreak after ";"
+      String importStr = MontiFunMill.prettyPrint(mfImport, false).stripTrailing(); // ensure no linebreak after ";"
       cd4C.addImport(getMainClass(), importStr);
     }
   }

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun tuples {
+
+(int, double) pair = (2,3);
+
+(int, double) getPair() = pair;
+
+}

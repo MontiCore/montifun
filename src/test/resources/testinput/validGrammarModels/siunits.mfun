@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun siunits {
+
+[km] marathonLength = 42.2km;
+[h] marathonTime = 2h + 35s;
+[km/h] marathonSpeed = marathonLength / marathonTime;
+
+[N] getForce([kg] mass, [m/s^2] acceleration) = mass * acceleration;
+
+}

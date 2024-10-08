@@ -41,6 +41,8 @@ public class MontiFunSymbols2JsonTest extends AbstractTest {
     // not yet supported
     assumeFalse(fileName.contains("genericFunctions"));
     ASTMFCompilationUnit ast = createASTWithSymTab(fileName);
+    // todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4319
+    assumeFalse(fileName.contains("siunit"));
 
     // given
     MontiFunSymbols2Json mf2json = new MontiFunSymbols2Json();

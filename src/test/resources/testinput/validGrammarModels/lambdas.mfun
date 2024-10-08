@@ -3,10 +3,10 @@
 montifun lambdas {
 
 () -> int getLambda() = () -> 2;
-//int useLambda() = (() -> 2)();
-//int getIntIndirectly() = (() -> getInt())()();
+int useLambda() = (() -> 2)();
+int useLambdaIndirectly() = (() -> useLambda)()();
 
-(int) -> int times2() = (int arg) -> arg * 2;
+int -> int times2() = (int arg) -> arg * 2;
 times3() = (int arg) -> arg * 3;
 
 //(int) -> int potntimes ((int) -> int f, int a) =

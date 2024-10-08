@@ -25,6 +25,8 @@ public class MontiFunCoCosTest extends AbstractTest {
   @ParameterizedTest
   @MethodSource("getParsableModels")
   public void shouldAcceptValidModels(String fileName) throws IOException {
+    // todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4320
+    assumeFalse(fileName.contains("siunit"));
 
     // Given
     ASTMFCompilationUnit ast = createASTWithSymTab(fileName);

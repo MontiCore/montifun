@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class MFPrettyPrinterTest extends AbstractTest {
 
@@ -26,10 +27,12 @@ public class MFPrettyPrinterTest extends AbstractTest {
     MFSymbolTableUtil.prepareMill();
   }
 
-
   @ParameterizedTest
   @MethodSource("getParsableModels")
   public void prettyPrintsEquivalent(String fileName) throws IOException {
+    // todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4318
+    assumeFalse(fileName.contains("siunit"));
+
     // given
     final ASTMFCompilationUnit ast = parse(fileName);
 

@@ -8,9 +8,8 @@ import de.monticore.mf.montifun._ast.ASTMFParameter;
 import de.monticore.mf.montifun._visitor.MontiFunHandler;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.ISynthesize;
-import de.monticore.types.check.TypeCheckResult;
+import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
 public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunHandler {
@@ -18,10 +17,6 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
   protected static final String UNKNOWN_TYPE_ERROR = "0xDC193 unknown type";
 
   protected MontiFunTraverser traverser;
-
-  protected IDerive deriver;
-
-  protected ISynthesize synthesizer;
 
   /**
    * sets the return types for functions that do have them set explicitly
@@ -31,15 +26,15 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
   @Override
   public void endVisit(ASTMFFunctionDeclaration node) {
     // return value
-    TypeCheckResult type;
+    SymTypeExpression type;
     if (node.isPresentMCReturnType()) {
-      type = getSynthesizer().synthesizeType(node.getMCReturnType());
+      type = TypeCheck3.symTypeFromAST(node.getMCReturnType());
     }
     else {
-      type = getDeriver().deriveType(node.getExpression());
+      type = TypeCheck3.typeOf(node.getExpression());
     }
-    if (type.isPresentResult() && !type.getResult().isObscureType()) {
-      node.getSymbol().setType(type.getResult());
+    if (!type.isObscureType()) {
+      node.getSymbol().setType(type);
     }
     else {
       Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
@@ -48,15 +43,15 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
 
   @Override
   public void endVisit(ASTMFConstantDeclaration node) {
-    TypeCheckResult type;
+    SymTypeExpression type;
     if (node.isPresentMCType()) {
-      type = getSynthesizer().synthesizeType(node.getMCType());
+      type = TypeCheck3.symTypeFromAST(node.getMCType());
     }
     else {
-      type = getDeriver().deriveType(node.getExpression());
+      type = TypeCheck3.typeOf(node.getExpression());
     }
-    if (type.isPresentResult() && !type.getResult().isObscureType()) {
-      node.getSymbol().setType(type.getResult());
+    if (!type.isObscureType()) {
+      node.getSymbol().setType(type);
     }
     else {
       Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
@@ -66,9 +61,9 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
   @Override
   public void visit(ASTMFParameter node) {
     if (node.isPresentMCType()) {
-      TypeCheckResult type = getSynthesizer().synthesizeType(node.getMCType());
-      if (type.isPresentResult() && !type.getResult().isObscureType()) {
-        node.getSymbol().setType(type.getResult());
+      SymTypeExpression type = TypeCheck3.symTypeFromAST(node.getMCType());
+      if (!type.isObscureType()) {
+        node.getSymbol().setType(type);
       }
     }
     if (node.getSymbol().getType() == null) {
@@ -91,30 +86,14 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
       derivedNewType = false;
       for (ASTMFFunctionDeclaration fun : node.getMFFunctionDeclarationList()) {
         if (fun.getSymbol().getType() == null) {
-          TypeCheckResult type = deriver.deriveType(fun.getExpression());
-          if (type.isPresentResult() && !type.getResult().isObscureType()) {
-            fun.getSymbol().setType(type.getResult());
+          SymTypeExpression type = TypeCheck3.typeOf(fun.getExpression());
+          if (!type.isObscureType()) {
+            fun.getSymbol().setType(type);
             derivedNewType = true;
           }
         }
       }
     } while (derivedNewType);
-  }
-
-  public IDerive getDeriver() {
-    return deriver;
-  }
-
-  public void setDeriver(IDerive deriver) {
-    this.deriver = deriver;
-  }
-
-  public ISynthesize getSynthesizer() {
-    return synthesizer;
-  }
-
-  public void setSynthesizer(ISynthesize synthesizer) {
-    this.synthesizer = synthesizer;
   }
 
   @Override

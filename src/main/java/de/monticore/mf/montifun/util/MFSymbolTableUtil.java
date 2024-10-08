@@ -80,8 +80,6 @@ public class MFSymbolTableUtil {
     ISynthesize synthesizer = new FullSynthesizeFromMontiFun();
 
     MontiFunSymbolTableCompleter montiFunCompleter = new MontiFunSymbolTableCompleter();
-    montiFunCompleter.setDeriver(deriver);
-    montiFunCompleter.setSynthesizer(synthesizer);
     symTabCompleter.add4MontiFun(montiFunCompleter);
     symTabCompleter.setMontiFunHandler(montiFunCompleter);
 

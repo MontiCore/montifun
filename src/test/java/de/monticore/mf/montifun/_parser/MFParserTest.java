@@ -17,6 +17,7 @@ public class MFParserTest extends AbstractTest {
     super.setup();
     MFSymbolTableUtil.prepareMill();
   }
+
   @ParameterizedTest
   @MethodSource("getParsableModels")
   public void shouldParseValidInput(String fileName) throws IOException {

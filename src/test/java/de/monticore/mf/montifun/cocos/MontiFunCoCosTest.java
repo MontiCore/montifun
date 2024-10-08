@@ -1,5 +1,5 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.montifun._cocos;
+package de.monticore.mf.montifun.cocos;
 
 import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;

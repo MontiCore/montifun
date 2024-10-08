@@ -27,13 +27,14 @@ import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * TypeCheck3 implementation for the OCL language. After calling {@link #init()}, this
- * implementation will be available through the TypeCheck3 interface.
+ * TypeCheck3 implementation for the MontiFun language.
+ * After calling {@link #init()},
+ * this implementation will be available through the TypeCheck3 interface.
  */
 public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
 
   public static void init() {
-    Log.trace("init OCLTypeCheck3", "TypeCheck setup");
+    Log.trace("init MontiFunTypeCheck3", "TypeCheck setup");
 
     MontiFunTraverser traverser = MontiFunMill.traverser();
     Type4Ast type4Ast = new Type4Ast();

@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractTest {
 
-
   @BeforeEach
   public void setup() {
     LogStub.init();

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun typeinference {
+
+  set0() = {3};
+  set1 = {5};
+  Set<double> set2 = {1..5};
+  Set<int> set3 = {};
+  Set<List<List<int>>> set4 = {[],[[]], [[]]};
+
+}

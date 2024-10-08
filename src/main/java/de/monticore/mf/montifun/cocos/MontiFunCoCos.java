@@ -1,13 +1,9 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.montifun._cocos;
+package de.monticore.mf.montifun.cocos;
 
-import de.monticore.mf.montifun.types.check.FullDeriveFromMontiFun;
-import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.ocl.ocl._cocos.ExpressionValidCoCo;
 import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCorrect;
 import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.ISynthesize;
 
 public class MontiFunCoCos {
 
@@ -16,11 +12,17 @@ public class MontiFunCoCos {
    */
   public static MontiFunCoCoChecker getCheckerForAllCoCos() {
     final MontiFunCoCoChecker checker = new MontiFunCoCoChecker();
-    final IDerive derive = new FullDeriveFromMontiFun();
-    final ISynthesize synthesize = new FullSynthesizeFromMontiFun();
 
-    checker.addCoCo(new FunctionDeclarationWithCorrectTypes(derive, synthesize));
+    // CoCos that provide target type information to expressions
+    // Important: As these CoCos are the ones that assure that
+    // correct types are inferred if required,
+    // these CoCos must come before CoCos that
+    // rely on the types of the same expressions.
+    // In this case, this requirement holds due to the AST-structure.
+    checker.addCoCo(new FunctionDeclarationWithCorrectTypes());
+    checker.addCoCo(new ConstantDeclarationWithCorrectTypes());
 
+    // CoCos that may rely on expression types
     checker.addCoCo(new ExpressionValidCoCo());
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new SetComprehensionHasGenerator());

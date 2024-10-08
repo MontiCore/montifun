@@ -19,6 +19,10 @@ import de.monticore.types.check.SynthesizeSymTypeFromMCCollectionTypes;
 import de.monticore.types.check.SynthesizeSymTypeFromMCFunctionTypes;
 import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
 
+/**
+ * use {@link de.monticore.mf.montifun.types3.MontiFunTypeCheck3}
+ */
+@Deprecated
 public class FullDeriveFromMontiFun extends AbstractDerive {
 
   public FullDeriveFromMontiFun() {

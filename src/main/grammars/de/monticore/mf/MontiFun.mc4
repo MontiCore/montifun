@@ -4,6 +4,7 @@ package de.monticore.mf;
 import de.monticore.literals.MCCommonLiterals;
 import de.monticore.types.MCSimpleGenericTypes;
 import de.monticore.types.MCFunctionTypes;
+import de.monticore.types.TypeParameters;
 import de.monticore.symbols.BasicSymbols;
 // note OOSymbols need to be imported such that
 // some Class2MC imported Symbols like Object do have a spanned scope
@@ -15,6 +16,7 @@ import de.monticore.symbols.OOSymbols;
 grammar MontiFun extends MCCommonLiterals,
                    MCSimpleGenericTypes,
                    MCFunctionTypes,
+                   TypeParameters,
                    MFExpressions,
                    OOSymbols,
                    BasicSymbols {
@@ -63,20 +65,28 @@ grammar MontiFun extends MCCommonLiterals,
 
   /**
    * ASTMFFunctionDeclaration describes a first way of defining functions.
-   * (and also constants)
+   * Generic functions are declared by providing type parameters.
    *
    * Examples:   int foo(int a, String b) = ...
-   * If brackets are omitted, the defined value is a normal constant.
+   *             <T> List<T> bar(T t) = ...
    *
    * This nonterminal introduces FunctionSymbols.
-   *
    */
   MFFunctionDeclaration implements Function =
+    TypeParameters?
     MCReturnType? Name
     "(" (MFParameter || ",")* ")"
     "=" Expression ";"
   ;
 
+
+  /**
+   * ASTMFConstantDeclaration describes a first way of defining constants.
+   *
+   * Examples:   double foo = ...
+   *
+   * This nonterminal introduces VariableSymbols.
+   */
   MFConstantDeclaration implements Variable =
     MCType? Name
     "=" Expression ";"

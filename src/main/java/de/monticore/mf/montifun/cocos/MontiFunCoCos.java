@@ -1,9 +1,12 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.montifun.cocos;
 
+import de.monticore.mf.montifun._cocos.MontiFunCoCoChecker;
 import de.monticore.ocl.ocl._cocos.ExpressionValidCoCo;
 import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCorrect;
 import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
+import de.monticore.types.typeparameters.cocos.TypeParameterNoCyclicInheritance;
+import de.monticore.types.typeparameters.cocos.TypeParametersHaveUniqueNames;
 
 public class MontiFunCoCos {
 
@@ -23,6 +26,8 @@ public class MontiFunCoCos {
     checker.addCoCo(new ConstantDeclarationWithCorrectTypes());
 
     // CoCos that may rely on expression types
+    checker.addCoCo(new TypeParametersHaveUniqueNames());
+    checker.addCoCo(new TypeParameterNoCyclicInheritance());
     checker.addCoCo(new ExpressionValidCoCo());
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new SetComprehensionHasGenerator());

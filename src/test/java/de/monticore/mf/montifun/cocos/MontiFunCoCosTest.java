@@ -3,6 +3,7 @@ package de.monticore.mf.montifun.cocos;
 
 import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._cocos.MontiFunCoCoChecker;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,8 +25,6 @@ public class MontiFunCoCosTest extends AbstractTest {
   @ParameterizedTest
   @MethodSource("getParsableModels")
   public void shouldAcceptValidModels(String fileName) throws IOException {
-    // not yet supported
-    assumeFalse(fileName.contains("genericFunctions"));
 
     // Given
     ASTMFCompilationUnit ast = createASTWithSymTab(fileName);

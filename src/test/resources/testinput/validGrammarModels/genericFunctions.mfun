@@ -2,7 +2,11 @@
 
 montifun genericFunctions {
 
-id(x) = x;
-times2(x) = 2 * x;
+<T> T id(T t) = t;
+<T> List<T> asList(T t) = [t];
+
+// usage
+int intId(int n) = id(n);
+List<int> intAsList(int n) = id(asList(id(n)));
 
 }

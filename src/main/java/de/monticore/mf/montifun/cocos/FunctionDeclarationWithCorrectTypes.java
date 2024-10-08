@@ -2,6 +2,7 @@
 package de.monticore.mf.montifun.cocos;
 
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
+import de.monticore.mf.montifun._cocos.MontiFunASTMFFunctionDeclarationCoCo;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.SymTypeRelations;
 import de.monticore.types3.TypeCheck3;

@@ -26,6 +26,7 @@ public class ConstantDeclarationWithCorrectTypes
       // error already logged
       return;
     }
+    // use the type of the constant as target type for the expression
     SymTypeExpression exprType =
         TypeCheck3.typeOf(node.getExpression(), constantType);
     if (exprType.isObscureType()) {

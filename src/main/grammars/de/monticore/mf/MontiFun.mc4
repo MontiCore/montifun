@@ -2,9 +2,8 @@
 package de.monticore.mf;
 
 import de.monticore.literals.MCCommonLiterals;
-import de.monticore.types.MCSimpleGenericTypes;
-import de.monticore.types.MCFunctionTypes;
-import de.monticore.types.TypeParameters;
+import de.monticore.siunit.*;
+import de.monticore.types.*;
 import de.monticore.symbols.BasicSymbols;
 // note OOSymbols need to be imported such that
 // some Class2MC imported Symbols like Object do have a spanned scope
@@ -14,8 +13,12 @@ import de.monticore.symbols.OOSymbols;
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
 grammar MontiFun extends MCCommonLiterals,
+                   SIUnitLiterals,
+                   SIUnitTypes4Computing,
+                   SIUnitTypes4Math,
                    MCSimpleGenericTypes,
                    MCFunctionTypes,
+                   MCStructuralTypes,
                    TypeParameters,
                    MFExpressions,
                    OOSymbols,

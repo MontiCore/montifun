@@ -12,6 +12,7 @@ component grammar MFExpressions extends OCLExpressions,
                                         SetExpressions,
                                         BitExpressions,
                                         LambdaExpressions,
+                                        TupleExpressions,
                                         UglyExpressions,
                                         MCBasicTypes {
  

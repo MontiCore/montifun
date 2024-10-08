@@ -4,6 +4,7 @@ import de.monticore.expressions.bitexpressions.types3.BitExpressionsTypeVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVisitor;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.mf.montifun.MontiFunMill;
@@ -11,10 +12,14 @@ import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
+import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
+import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTypeVisitor;
+import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
+import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.MapBasedTypeCheck3;
@@ -46,6 +51,16 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     WithinScopeBasicSymbolsResolver withinScopeBasicSymbolsResolver =
         new OOWithinScopeBasicSymbolsResolver();
 
+    // Literals
+
+    MCCommonLiteralsTypeVisitor visMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
+    visMCCommonLiterals.setType4Ast(type4Ast);
+    traverser.add4MCCommonLiterals(visMCCommonLiterals);
+
+    SIUnitLiteralsTypeVisitor visSIUnitLiterals = new SIUnitLiteralsTypeVisitor();
+    visSIUnitLiterals.setType4Ast(type4Ast);
+    traverser.add4SIUnitLiterals(visSIUnitLiterals);
+
     // Expressions
 
     BitExpressionsTypeVisitor visBitExpressions = new BitExpressionsTypeVisitor();
@@ -71,9 +86,9 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     visLambdaExpressions.setType4Ast(type4Ast);
     traverser.add4LambdaExpressions(visLambdaExpressions);
 
-    MCCommonLiteralsTypeVisitor visMCCommonLiterals = new MCCommonLiteralsTypeVisitor();
-    visMCCommonLiterals.setType4Ast(type4Ast);
-    traverser.add4MCCommonLiterals(visMCCommonLiterals);
+    TupleExpressionsTypeVisitor visTupleExpressions = new TupleExpressionsTypeVisitor();
+    visTupleExpressions.setType4Ast(type4Ast);
+    traverser.add4TupleExpressions(visTupleExpressions);
 
     OCLExpressionsTypeVisitor visOCLExpressions = new OCLExpressionsTypeVisitor();
     visOCLExpressions.setType4Ast(type4Ast);
@@ -118,6 +133,18 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     MCSimpleGenericTypesTypeVisitor visMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
     visMCSimpleGenericTypes.setType4Ast(type4Ast);
     traverser.add4MCSimpleGenericTypes(visMCSimpleGenericTypes);
+
+    MCStructuralTypesTypeVisitor visMCStructuralTypes = new MCStructuralTypesTypeVisitor();
+    visMCStructuralTypes.setType4Ast(type4Ast);
+    traverser.add4MCStructuralTypes(visMCStructuralTypes);
+
+    SIUnitTypes4ComputingTypeVisitor visSIUnitTypes4Computing = new SIUnitTypes4ComputingTypeVisitor();
+    visSIUnitTypes4Computing.setType4Ast(type4Ast);
+    traverser.add4SIUnitTypes4Computing(visSIUnitTypes4Computing);
+
+    SIUnitTypes4MathTypeVisitor visSIUnitTypes4Math = new SIUnitTypes4MathTypeVisitor();
+    visSIUnitTypes4Math.setType4Ast(type4Ast);
+    traverser.add4SIUnitTypes4Math(visSIUnitTypes4Math);
 
     // create delegate
     MontiFunTypeCheck3 oclTC3 = new MontiFunTypeCheck3(traverser, type4Ast, ctx4Ast);

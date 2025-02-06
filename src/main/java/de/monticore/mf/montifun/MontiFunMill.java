@@ -12,4 +12,9 @@ public class MontiFunMill extends MontiFunMillTOP {
     MontiFunTypeCheck3.init();
   }
 
+  public static void reset() {
+    MontiFunMillTOP.reset();
+    MontiFunTypeCheck3.reset();
+  }
+
 }

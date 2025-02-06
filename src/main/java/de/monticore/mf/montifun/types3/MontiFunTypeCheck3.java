@@ -2,6 +2,7 @@ package de.monticore.mf.montifun.types3;
 
 import de.monticore.expressions.bitexpressions.types3.BitExpressionsTypeVisitor;
 import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVisitor;
+import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
@@ -12,6 +13,8 @@ import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.ocl.oclexpressions.types3.OCLExpressionsTypeVisitor;
 import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
+import de.monticore.ocl.types3.OCLCollectionSymTypeRelations;
+import de.monticore.ocl.types3.OCLSymTypeRelations;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
 import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTypeVisitor;
 import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
@@ -21,6 +24,8 @@ import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
 import de.monticore.types.mcsimplegenerictypes.types3.MCSimpleGenericTypesTypeVisitor;
 import de.monticore.types.mcstructuraltypes.types3.MCStructuralTypesTypeVisitor;
 import de.monticore.types3.Type4Ast;
+import de.monticore.types3.TypeCheck3;
+import de.monticore.types3.generics.TypeParameterRelations;
 import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
@@ -40,10 +45,14 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
   public static void init() {
     Log.trace("init MontiFunTypeCheck3", "TypeCheck setup");
 
+    OCLSymTypeRelations.init();
+    OCLCollectionSymTypeRelations.init();
     OOWithinTypeBasicSymbolsResolver.init();
     OOWithinScopeBasicSymbolsResolver.init();
     TypeContextCalculator.init();
     TypeVisitorOperatorCalculator.init();
+    CommonExpressionsLValueRelations.init();
+    TypeParameterRelations.init();
 
     MontiFunTraverser traverser = MontiFunMill.traverser();
     Type4Ast type4Ast = new Type4Ast();
@@ -140,8 +149,21 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     oclTC3.setThisAsDelegate();
   }
 
+  public static void reset() {
+    TypeCheck3.resetDelegate();
+    OCLSymTypeRelations.reset();
+    OCLCollectionSymTypeRelations.reset();
+    OOWithinTypeBasicSymbolsResolver.reset();
+    OOWithinScopeBasicSymbolsResolver.reset();
+    TypeContextCalculator.reset();
+    TypeVisitorOperatorCalculator.reset();
+    CommonExpressionsLValueRelations.reset();
+    TypeParameterRelations.reset();
+  }
+
   protected MontiFunTypeCheck3(
       ITraverser typeTraverser, Type4Ast type4Ast, InferenceContext4Ast ctx4Ast) {
     super(typeTraverser, type4Ast, ctx4Ast);
   }
+
 }

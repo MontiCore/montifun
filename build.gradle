@@ -2,7 +2,7 @@
 
 plugins {
     id "java"
-    id "monticore" version "$mc_version" // MontiCore Plugin
+    id "de.monticore.generator" version "$mc_version"
     id "maven-publish"
     id "com.github.johnrengelman.shadow" version "$shadow_version"
 }
@@ -35,16 +35,8 @@ sourceSets {
 configurations { grammar }
 
 dependencies {
-    grammar("de.monticore:monticore-grammar:$mc_version") {
-        capabilities {
-            requireCapability("de.monticore:monticore-grammar-grammars")
-        }
-    }
-    grammar("de.monticore.lang:ocl:$mc_version") {
-        capabilities {
-            requireCapability("de.monticore.lang:ocl-grammars")
-        }
-    }
+    grammar("de.monticore:monticore-grammar:$mc_version")
+    grammar("de.monticore.lang:ocl:$mc_version")
     implementation "de.monticore:monticore-runtime:$mc_version"
     implementation "de.monticore:monticore-grammar:$mc_version"
     implementation "de.monticore:class2mc:$mc_version"
@@ -75,23 +67,10 @@ repositories {
     mavenCentral()
 }
 
-task generate {}
-
-// one task per grammar file
-fileTree(grammarDir).matching { include '**/*.mc4' }.each { g ->
-    def taskname = "generateGrammar${g.getName().substring(0, g.getName().lastIndexOf('.'))}"
-    task "$taskname"(type: MCTask) {
-
-        grammar = g
-        outputDir = file grammarOutDir
-        def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
-        outputs.upToDateWhen { incCheck(grammarIncludingPackage) }
-    }
-    generate.dependsOn("$taskname")
+generateMCGrammars {
+  // with Interpreter
+  genINT = true
 }
-
-
-compileJava.dependsOn generate
 
 // Fixes issue with java plugin in projects without resources
 compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }

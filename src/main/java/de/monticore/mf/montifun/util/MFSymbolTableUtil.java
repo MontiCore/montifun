@@ -51,7 +51,6 @@ public class MFSymbolTableUtil {
     OOSymbolsMill.globalScope().setSymbolPath(new MCPath(Paths.get("")));
     MontiFunMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
 
-    MCCollectionSymTypeRelations.init();
     addCollectionTypes();
   }
 

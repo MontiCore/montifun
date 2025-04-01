@@ -1,4 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id "java"
@@ -103,8 +105,20 @@ shadowJar {
 }
 
 test {
-    useJUnitPlatform()
-    //finalizedBy jacocoTestReport
+  useJUnitPlatform()
+  testLogging {
+    // controls whether test output is shown
+    showExceptions true
+    showCauses true
+    showStackTraces true
+    exceptionFormat TestExceptionFormat.FULL
+    info {
+      events TestLogEvent.FAILED,
+             TestLogEvent.PASSED,
+             TestLogEvent.SKIPPED,
+             TestLogEvent.STANDARD_OUT
+    }
+  }
 }
 
 task testReport(type: TestReport) {

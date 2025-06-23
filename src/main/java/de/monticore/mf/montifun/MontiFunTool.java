@@ -27,6 +27,7 @@ import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MontiFunTool extends MontiFunToolTOP {
 
@@ -97,14 +99,14 @@ public class MontiFunTool extends MontiFunToolTOP {
           getInputFileNamesFromInputParameter(List.of(cmd.getOptionValues("i")));
       // did we get an input folder?
       if (inputNames.size() == 1 && Paths.get(inputNames.get(0)).toFile().isDirectory()) {
-        try {
-          inputNames = Files.walk(Paths.get(inputNames.get(0)))
+        try (Stream<Path> files = Files.walk(Paths.get(inputNames.get(0)))) {
+          inputNames = files
               .filter(path -> path.toString().endsWith("." + MODEL_FILE_EXT)
                   || path.toString().endsWith(INPUT_FILE_EXT_END))
               .map(Path::toString)
               .collect(Collectors.toList());
         }
-        catch (IOException e) {
+        catch (IOException | UncheckedIOException e) {
           Log.error("0xAC783 Unable to collect MontiFun input files", e);
         }
       }

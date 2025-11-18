@@ -14,8 +14,6 @@ import de.se_rwth.commons.logging.Log;
 
 public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunHandler {
 
-  protected static final String UNKNOWN_TYPE_ERROR = "0xDC193 unknown type";
-
   protected MontiFunTraverser traverser;
 
   /**
@@ -36,9 +34,7 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
     if (!type.isObscureType()) {
       node.getSymbol().setType(type);
     }
-    else {
-      Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
-    }
+    // else – error already logged
   }
 
   @Override
@@ -53,9 +49,7 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
     if (!type.isObscureType()) {
       node.getSymbol().setType(type);
     }
-    else {
-      Log.error(UNKNOWN_TYPE_ERROR, node.get_SourcePositionStart(), node.get_SourcePositionEnd());
-    }
+    // else – error already logged
   }
 
   @Override

@@ -17,12 +17,6 @@ import java.util.stream.Collectors;
 
 public class MontiFunScopesGenitor extends MontiFunScopesGenitorTOP {
 
-  protected AbstractSynthesize synthesizer;
-
-  public MontiFunScopesGenitor() {
-    this.synthesizer = new FullSynthesizeFromMontiFun();
-  }
-
   @Override
   public IMontiFunArtifactScope createFromAST(ASTMFCompilationUnit node) {
     Log.errorIfNull(node,
@@ -70,43 +64,4 @@ public class MontiFunScopesGenitor extends MontiFunScopesGenitorTOP {
     super.endVisit(compilationUnit);
   }
 
-  @Override
-  public void visit(final ASTMFFunctionDeclaration node) {
-    if (!getCurrentScope().isPresent()) {
-      Log.debug(String.format("%s: Visiting %s, missing scope on scope stack.",
-          node.get_SourcePositionStart(), node.getClass()), "ScopesGenitor");
-      return;
-    }
-    // link the ast with its enclosing scope
-    node.setEnclosingScope(getCurrentScope().get());
-    // create the spanned scope
-    IMontiFunScope scope = createScope(false);
-    // link the ast with the spanned scope
-    scope.setAstNode(node);
-    node.setSpannedScope(scope);
-
-    // create the symbol (without type)
-    FunctionSymbol symbol = MontiFunMill.functionSymbolBuilder()
-        .setName(node.getName())
-        .build();
-    // link the symbol with its enclosing scope
-    getCurrentScope().get().add(symbol);
-    symbol.setEnclosingScope(getCurrentScope().get());
-    // link the symbol with its ast
-    symbol.setAstNode(node);
-    node.setSymbol(symbol);
-    // link the symbol with the spanned scope
-    scope.setSpanningSymbol(symbol);
-    symbol.setSpannedScope(scope);
-
-    putOnStack(scope);
-  }
-
-  public AbstractSynthesize getSynthesizer() {
-    return synthesizer;
-  }
-
-  public void setSynthesizer(AbstractSynthesize synthesizer) {
-    this.synthesizer = synthesizer;
-  }
 }

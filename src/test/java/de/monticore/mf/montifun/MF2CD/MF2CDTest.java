@@ -102,7 +102,7 @@ public class MF2CDTest extends AbstractTest {
     // todo enable after https://git.rwth-aachen.de/monticore/monticore/-/issues/3319
     assumeFalse(true);
     // given / when
-    MontiFunTool.main(new String[] {
+    new MontiFunTool().run(new String[] {
         "-i",
         RELATIVE_MODEL_PATH + "/testinput/circularDependency/a.mfun",
         RELATIVE_MODEL_PATH + "/testinput/circularDependency/b.mfun",

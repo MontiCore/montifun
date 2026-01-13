@@ -18,7 +18,7 @@ public class MontiFunImportTest extends AbstractTest {
   @BeforeAll
   public static void createDependeeSymFiles() {
     // generate symbols to load
-    MontiFunTool.main(new String[] {
+    new MontiFunTool().run(new String[] {
         "-i",
         RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/dependee.mfun",
         RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/dependee2.mfun",
@@ -61,7 +61,7 @@ public class MontiFunImportTest extends AbstractTest {
   @Test
   public void circularDependencyImportTest() throws IOException {
     // given / when
-    MontiFunTool.main(new String[] {
+    new MontiFunTool().run(new String[] {
         "-i",
         RELATIVE_MODEL_PATH + "/testinput/circularDependency/a.mfun",
         RELATIVE_MODEL_PATH + "/testinput/circularDependency/b.mfun",

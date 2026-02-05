@@ -128,7 +128,7 @@ task testReport(type: TestReport) {
 }
 
 java {
-//  withJavadocJar()
+    withJavadocJar()
     withSourcesJar()
     registerFeature('grammars') {
         usingSourceSet(sourceSets.grammars)

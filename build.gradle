@@ -86,8 +86,8 @@ tasks.withType(JavaCompile) {
     targetCompatibility = JavaVersion.VERSION_21
     options.fork = true
     options.encoding = "UTF-8"
-    options.deprecation false
-    options.warnings = false
+    options.deprecation = true
+    options.warnings = true
     options.headerOutputDirectory.convention(null)
 }
 

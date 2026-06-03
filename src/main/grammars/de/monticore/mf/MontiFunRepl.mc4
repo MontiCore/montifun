@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.mf;
+
+import de.monticore.mf.MontiFun;
+import de.monticore.statements.*;
+
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
+/**
+ * Describes a single input of the MontiFun REPL.
+ * Basically, It consists of the elements of the MontiFun grammar,
+ * but or-ed together.
+ * Additionally, expressions can be input directly to evaluate them.
+ */
+grammar MontiFunRepl
+    extends MontiFun {
+
+  /**
+   *  ASTMontiFunREPLInput represents a single input of the REPL
+   */
+  MontiFunREPLInput =
+    MCImportStatement |
+    MFFunctionDeclaration |
+    MFConstantDeclaration |
+    Expression
+  ;
+
+}

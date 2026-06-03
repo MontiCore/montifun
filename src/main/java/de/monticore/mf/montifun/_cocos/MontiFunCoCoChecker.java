@@ -1,19 +1,18 @@
 // (c) https://github.com/MontiCore/monticore
-package de.monticore.mf.montifun.cocos;
+package de.monticore.mf.montifun._cocos;
 
-import de.monticore.mf.montifun._cocos.MontiFunCoCoChecker;
+import de.monticore.mf.montifun.cocos.ConstantDeclarationWithCorrectTypes;
+import de.monticore.mf.montifun.cocos.ConstantDependenciesAreAcyclic;
+import de.monticore.mf.montifun.cocos.FunctionDeclarationWithCorrectTypes;
 import de.monticore.ocl.ocl._cocos.ExpressionValidCoCo;
 import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCorrect;
 import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
 import de.monticore.types.typeparameters.cocos.TypeParameterNoCyclicInheritance;
 import de.monticore.types.typeparameters.cocos.TypeParametersHaveUniqueNames;
 
-public class MontiFunCoCos {
+public class MontiFunCoCoChecker extends MontiFunCoCoCheckerTOP {
 
-  /**
-   * @return an object which may be used to check all CoCos
-   */
-  public static MontiFunCoCoChecker getCheckerForAllCoCos() {
+  public static MontiFunCoCoChecker getCheckerForAllCoCosPhase1() {
     final MontiFunCoCoChecker checker = new MontiFunCoCoChecker();
 
     // CoCos that provide target type information to expressions
@@ -21,16 +20,23 @@ public class MontiFunCoCos {
     // correct types are inferred if required,
     // these CoCos must come before CoCos that
     // rely on the types of the same expressions.
-    // In this case, this requirement holds due to the AST-structure.
     checker.addCoCo(new FunctionDeclarationWithCorrectTypes());
     checker.addCoCo(new ConstantDeclarationWithCorrectTypes());
 
-    // CoCos that may rely on expression types
+    return checker;
+  }
+
+  // CoCos that may rely on expression types
+  public static MontiFunCoCoChecker getCheckerForAllCoCosPhase2() {
+    final MontiFunCoCoChecker checker = new MontiFunCoCoChecker();
+
+    // should not matter, but included for security
+    checker.addCoCo(new ExpressionValidCoCo());
     checker.addCoCo(new TypeParametersHaveUniqueNames());
     checker.addCoCo(new TypeParameterNoCyclicInheritance());
-    checker.addCoCo(new ExpressionValidCoCo());
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new SetComprehensionHasGenerator());
+    checker.addCoCo(new ConstantDependenciesAreAcyclic());
 
     return checker;
   }

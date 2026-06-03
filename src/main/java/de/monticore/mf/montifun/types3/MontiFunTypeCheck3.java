@@ -5,7 +5,7 @@ import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVi
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
-import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsTypeVisitor;
+import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
 import de.monticore.mf.montifun.MontiFunMill;
@@ -54,7 +54,7 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     CommonExpressionsLValueRelations.init();
     TypeParameterRelations.init();
 
-    MontiFunTraverser traverser = MontiFunMill.traverser();
+    MontiFunTraverser traverser = MontiFunMill.inheritanceTraverser();
     Type4Ast type4Ast = new Type4Ast();
     InferenceContext4Ast ctx4Ast = new InferenceContext4Ast();
 
@@ -90,9 +90,11 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     visLambdaExpressions.setType4Ast(type4Ast);
     traverser.add4LambdaExpressions(visLambdaExpressions);
 
-    TupleExpressionsTypeVisitor visTupleExpressions = new TupleExpressionsTypeVisitor();
+    TupleExpressionsCTTIVisitor visTupleExpressions = new TupleExpressionsCTTIVisitor();
     visTupleExpressions.setType4Ast(type4Ast);
+    visTupleExpressions.setContext4Ast(ctx4Ast);
     traverser.add4TupleExpressions(visTupleExpressions);
+    traverser.setTupleExpressionsHandler(visTupleExpressions);
 
     OCLExpressionsTypeVisitor visOCLExpressions = new OCLExpressionsTypeVisitor();
     visOCLExpressions.setType4Ast(type4Ast);

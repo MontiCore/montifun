@@ -62,7 +62,7 @@ public class MF2CDTest extends AbstractTest {
     generatorSetup.setTracing(false);
     generatorSetup.setAdditionalTemplatePaths(Arrays.asList(new File(TEMPLATE_PATH)));
     CD4C.init(generatorSetup);
-    MFSymbolTableUtil.prepareMill();
+    MFSymbolTableUtil.initAndPrepareMill();
   }
 
   @ParameterizedTest

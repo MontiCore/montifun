@@ -15,5 +15,5 @@ component grammar MFExpressions extends OCLExpressions,
                                         TupleExpressions,
                                         UglyExpressions,
                                         MCBasicTypes {
- 
+
 }

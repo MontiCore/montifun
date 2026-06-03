@@ -17,7 +17,7 @@ public class MontiFunSymbolTableTest extends AbstractTest {
   @BeforeEach
   public void setup() {
     super.setup();
-    MFSymbolTableUtil.prepareMill();
+    MFSymbolTableUtil.initAndPrepareMill();
   }
 
   @ParameterizedTest

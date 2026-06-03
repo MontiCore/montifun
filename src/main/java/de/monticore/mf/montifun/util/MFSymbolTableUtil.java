@@ -1,18 +1,18 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.montifun.util;
 
-import de.monticore.class2mc.Class2MCResolver;
-import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes;
+import de.monticore.ast.ASTNode;
+import de.monticore.class2mc.OOClass2MCResolver;
+import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
+import de.monticore.mf.montifun._ast.ASTMontiFunNode;
 import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunScopesGenitorDelegator;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbolTableCompleter;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbols2Json;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
-import de.monticore.mf.montifun.types.check.FullDeriveFromMontiFun;
-import de.monticore.mf.montifun.types.check.FullSynthesizeFromMontiFun;
 import de.monticore.mf.montifun.util.library.MFCollectionType;
 import de.monticore.mf.montifun.util.library.MFListType;
 import de.monticore.mf.montifun.util.library.MFSetType;
@@ -24,10 +24,9 @@ import de.monticore.symbols.basicsymbols._symboltable.TypeSymbolDeSer;
 import de.monticore.symbols.basicsymbols._symboltable.VariableSymbolDeSer;
 import de.monticore.symbols.oosymbols.OOSymbolsMill;
 import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
+import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsGlobalScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer;
-import de.monticore.types.check.IDerive;
-import de.monticore.types.check.ISynthesize;
-import de.monticore.types.mccollectiontypes.types3.MCCollectionSymTypeRelations;
+import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
 import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
@@ -37,24 +36,31 @@ import java.nio.file.Paths;
  */
 public class MFSymbolTableUtil {
 
-  static public void prepareMill() {
-    Class2MCResolver resolver = new Class2MCResolver();
-
-    OOSymbolsMill.reset();
-    OOSymbolsMill.init();
+  static public void initMill() {
     MontiFunMill.reset();
     MontiFunMill.init();
     MontiFunMill.globalScope().clear();
+  }
 
+  static public void initAndPrepareMill() {
+    initMill();
+    prepareMillWithoutInit();
+  }
+
+  static public void prepareMillWithoutInit() {
     BasicSymbolsMill.initializePrimitives();
-
-    OOSymbolsMill.globalScope().setSymbolPath(new MCPath(Paths.get("")));
-    MontiFunMill.globalScope().addAdaptedTypeSymbolResolver(resolver);
-
+    addClass2MC();
     addCollectionTypes();
   }
 
-  protected static void addCollectionTypes() {
+  static public void addClass2MC() {
+    IOOSymbolsGlobalScope globalScope = OOSymbolsMill.globalScope();
+    OOClass2MCResolver resolver = new OOClass2MCResolver();
+    globalScope.addAdaptedOOTypeSymbolResolver(resolver);
+    globalScope.addAdaptedTypeSymbolResolver(resolver);
+  }
+
+  public static void addCollectionTypes() {
     MFCollectionType c = new MFCollectionType();
     MFListType l = new MFListType();
     MFSetType s = new MFSetType();
@@ -73,10 +79,8 @@ public class MFSymbolTableUtil {
     return genitor.createFromAST(ast);
   }
 
-  static public void runSymTabCompleter(ASTMFCompilationUnit ast) {
-    MontiFunTraverser symTabCompleter = MontiFunMill.traverser();
-    IDerive deriver = new FullDeriveFromMontiFun();
-    ISynthesize synthesizer = new FullSynthesizeFromMontiFun();
+  static public void runSymTabCompleter(ASTNode ast) {
+    MontiFunTraverser symTabCompleter = MontiFunMill.inheritanceTraverser();
 
     MontiFunSymbolTableCompleter montiFunCompleter = new MontiFunSymbolTableCompleter();
     symTabCompleter.add4MontiFun(montiFunCompleter);
@@ -84,22 +88,18 @@ public class MFSymbolTableUtil {
 
     OCLExpressionsSymbolTableCompleter oclExprCompleter =
         new OCLExpressionsSymbolTableCompleter();
-    oclExprCompleter.setDeriver(deriver);
-    oclExprCompleter.setSynthesizer(synthesizer);
     symTabCompleter.setOCLExpressionsHandler(oclExprCompleter);
     symTabCompleter.add4BasicSymbols(oclExprCompleter);
     symTabCompleter.add4OCLExpressions(oclExprCompleter);
 
     SetExpressionsSymbolTableCompleter setExprCompleter =
         new SetExpressionsSymbolTableCompleter();
-    setExprCompleter.setDeriver(deriver);
-    setExprCompleter.setSynthesizer(synthesizer);
     symTabCompleter.setSetExpressionsHandler(setExprCompleter);
     symTabCompleter.add4BasicSymbols(setExprCompleter);
     symTabCompleter.add4SetExpressions(setExprCompleter);
 
-    LambdaExpressionsSTCompleteTypes lambdaExprCompleter =
-        new LambdaExpressionsSTCompleteTypes(new FullSynthesizeFromMontiFun());
+    LambdaExpressionsSTCompleteTypes2 lambdaExprCompleter =
+        new LambdaExpressionsSTCompleteTypes2();
     symTabCompleter.add4LambdaExpressions(lambdaExprCompleter);
 
     ast.accept(symTabCompleter);
@@ -107,6 +107,10 @@ public class MFSymbolTableUtil {
 
   protected static void addTypeSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new TypeSymbolDeSer());
+  }
+
+  protected static void addOOTypeSymbol(String symbolFqn) {
+    MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new OOTypeSymbolDeSer());
   }
 
   protected static void addFunctionSymbol(String symbolFqn) {
@@ -126,7 +130,7 @@ public class MFSymbolTableUtil {
   }
 
   public static void addCD4CSymbols() {
-    addTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
+    addOOTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
     addMethodSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");
     addFieldSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
   }

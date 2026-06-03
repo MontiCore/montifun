@@ -43,13 +43,8 @@ dependencies {
     implementation "de.monticore:monticore-grammar:$mc_version"
     implementation "de.monticore:class2mc:$mc_version"
     implementation "de.se_rwth.commons:se-commons-logging:$mc_version"
-    implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
     implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
     implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
-    implementation "commons-cli:commons-cli:$commons_cli_version"
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: commons_lang3_version
-    implementation group: 'commons-io', name: 'commons-io', version: commons_io_version
-    implementation "ch.qos.logback:logback-classic:$logback_version"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_jupiter_version"

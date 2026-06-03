@@ -15,8 +15,8 @@ import de.monticore.mf.montifun._cocos.MontiFunCoCoChecker;
 import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbols2Json;
-import de.monticore.mf.montifun.cocos.MontiFunCoCos;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
+import de.monticore.mf.montifun.util.MontiFunRepl;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -54,7 +54,7 @@ public class MontiFunTool extends MontiFunToolTOP {
   @Override
   public void init() {
     super.init();
-    MFSymbolTableUtil.prepareMill();
+    MFSymbolTableUtil.initAndPrepareMill();
   }
 
   /**
@@ -86,6 +86,11 @@ public class MontiFunTool extends MontiFunToolTOP {
       }
       else {
         Log.init();
+      }
+
+      if (cmd.hasOption("interpreter")) {
+        runInterpreterMode(cmd);
+        return;
       }
 
       //if -i input is missing: also print help and stop
@@ -200,7 +205,13 @@ public class MontiFunTool extends MontiFunToolTOP {
         // CoCos
         Log.enableFailQuick(false);
         for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
-          MontiFunCoCoChecker checker = MontiFunCoCos.getCheckerForAllCoCos();
+          MontiFunCoCoChecker checker =
+              MontiFunCoCoChecker.getCheckerForAllCoCosPhase1();
+          checker.checkAll(compUnit);
+        }
+        for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
+          MontiFunCoCoChecker checker =
+              MontiFunCoCoChecker.getCheckerForAllCoCosPhase2();
           checker.checkAll(compUnit);
         }
         //to not proceed if CoCos fail
@@ -449,7 +460,7 @@ public class MontiFunTool extends MontiFunToolTOP {
         .hasArgs()
         .desc("Processes the list of input artifacts. " +
             "Argument list is space separated. CoCos are not checked automatically (see -c).")
-        .build();
+        .get();
     options.addOption(parse);
 
     // model paths
@@ -485,7 +496,7 @@ public class MontiFunTool extends MontiFunToolTOP {
             + "Arguments are separated by spaces. "
             + "If no arguments are given, output is stored to "
             + "'target/symbols/{packageName}/{artifactName}.mfsym'.")
-        .build();
+        .get();
     options.addOption(symboltable);
     return options;
   }
@@ -502,7 +513,7 @@ public class MontiFunTool extends MontiFunToolTOP {
     Option cocos = Option.builder("c")
         .longOpt("coco")
         .desc("Checks the CoCos for the input.")
-        .build();
+        .get();
     options.addOption(cocos);
 
     // convert to state pattern CD
@@ -513,7 +524,7 @@ public class MontiFunTool extends MontiFunToolTOP {
         .numberOfArgs(1)
         .desc(
             "Prints the montifun model to stdout or the generated java classes to the specified folder (optional)")
-        .build());
+        .get());
 
     // developer level logging
     Option cd4c = new Option("cd4c",
@@ -523,7 +534,27 @@ public class MontiFunTool extends MontiFunToolTOP {
     cd4c.setLongOpt("cd4code");
     options.addOption(cd4c);
 
+    Option interpreter = Option.builder()
+        .longOpt("interpreter")
+        .desc("Starts the interactive interpreter.")
+        .get();
+    options.addOption(interpreter);
+
     return options;
+  }
+
+  protected void runInterpreterMode(CommandLine cmd) {
+    MontiFunRepl repl = new MontiFunRepl();
+    if (cmd.hasOption("i")) {
+      List<String> inputNames = getInputFileNamesFromInputParameter(
+          List.of(cmd.getOptionValues("i"))
+      );
+      for (String inputName : inputNames) {
+        // could be extended to import all at once or circular dependencies
+        repl.importModelFile(Paths.get(inputName));
+      }
+    }
+    repl.run();
   }
 
 }

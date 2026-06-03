@@ -9,8 +9,11 @@ montifun javaImport {
 // not side effect free
 getNanoTime() = System.nanoTime();
 getNanoTime(System s) = s.nanoTime();
-toFile(Path p) = p.toFile();
-sqrt(double x) = java.lang.Math.sqrt(x);
+// todo broken due to TC1 Code Bugs used in IOOSymbolsScope
+//  while searching for toFile in p, it finds the toFile in this artifact instead
+//  thus, renamed to toFile2
+toFile2(Path p) = p.toFile();
+sqrt2(double x) = java.lang.Math.sqrt(x);
 //todo enable after fix of
 //https://git.rwth-aachen.de/monticore/monticore/-/issues/3176
 //getPath(String p) = Paths.get(p);

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun CyclicConstants {
+
+  int a = b;
+  int b = foo();
+  int foo() = bar();
+  int bar() = a;
+
+}
+

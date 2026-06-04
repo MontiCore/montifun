@@ -4,7 +4,6 @@ package de.monticore.mf;
 import de.monticore.mf.MontiFun;
 import de.monticore.statements.*;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
 /**
  * Describes a single input of the MontiFun REPL.

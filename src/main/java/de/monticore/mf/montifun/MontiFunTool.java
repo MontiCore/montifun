@@ -185,10 +185,7 @@ public class MontiFunTool extends MontiFunToolTOP {
           );
         }
         MontiFunMill.globalScope().setSymbolPath(symbolPath);
-
-        if (cmd.hasOption("cd4c")) {
-          MFSymbolTableUtil.addCD4CSymbols();
-        }
+        MFSymbolTableUtil.addCD4CSymbols();
 
         //load input symbol tables
         for (String symbolInputName : symbolInputNames) {
@@ -525,14 +522,6 @@ public class MontiFunTool extends MontiFunToolTOP {
         .desc(
             "Prints the montifun model to stdout or the generated java classes to the specified folder (optional)")
         .get());
-
-    // developer level logging
-    Option cd4c = new Option("cd4c",
-        "Load symbol kinds from CD4C. Shortcut for loading CDTypeSymbol as TypeSymbol, "
-            + "CDMethodSignatureSymbol as FunctionSymbol, and FieldSymbol as VariableSymbol. "
-    );
-    cd4c.setLongOpt("cd4code");
-    options.addOption(cd4c);
 
     Option interpreter = Option.builder()
         .longOpt("interpreter")

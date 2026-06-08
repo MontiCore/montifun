@@ -10,7 +10,7 @@ plugins {
 }
 
 description = "functional programming language"
-buildDir = file("$projectDir/target")
+layout.buildDirectory = layout.projectDirectory.dir("target")
 
 
 def grammarDir = layout.projectDirectory.dir("src/main/grammars")
@@ -43,8 +43,8 @@ dependencies {
     implementation "de.monticore:monticore-grammar:$mc_version"
     implementation "de.monticore:class2mc:$mc_version"
     implementation "de.se_rwth.commons:se-commons-logging:$mc_version"
-    implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
-    implementation group: 'de.monticore.lang', name: 'ocl', version: mc_version
+    implementation "de.monticore.lang:cd4analysis:$mc_version"
+    implementation "de.monticore.lang:ocl:$mc_version"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_jupiter_version"
@@ -68,11 +68,11 @@ repositories {
 // Fixes issue with java plugin in projects without resources
 compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     maxParallelForks = Runtime.runtime.availableProcessors() ?: 1
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
     options.fork = true
@@ -115,7 +115,7 @@ test {
 tasks.register('testReport', TestReport) {
     destinationDirectory = layout.buildDirectory.dir("reports/allTests")
     // Include the results from the 'test' task
-    reportOn tasks.withType(Test)
+    getTestResults().from(tasks.withType(Test))
 }
 
 java {

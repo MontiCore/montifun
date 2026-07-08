@@ -1,28 +1,40 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf;
 
-import de.monticore.literals.MCCommonLiterals;
+import de.monticore.ocl.*;
+import de.monticore.expressions.*;
 import de.monticore.siunit.*;
 import de.monticore.types.*;
-import de.monticore.symbols.BasicSymbols;
-// note OOSymbols need to be imported such that
-// some Class2MC imported Symbols like Object do have a spanned scope
-// https://git.rwth-aachen.de/monticore/monticore/-/issues/3212
+import de.monticore.literals.MCCommonLiterals;
+import de.monticore.regex.RegExType;
 import de.monticore.symbols.OOSymbols;
 
 /* Alpha-version: This is intended to become a MontiCore stable grammar. */
 
-grammar MontiFun extends MCCommonLiterals,
+grammar MontiFun extends
+                   // literals
+                   MCCommonLiterals,
                    SIUnitLiterals,
+                   // expressions
+                   BitExpressions,
+                   OCLExpressions,
+                   OptionalOperators,
+                   LambdaExpressions,
+                   SetExpressions,
+                   StreamExpressions,
+                   TupleExpressions,
+                   UglyExpressions,
+                   // types
+                   MCArrayTypes,
+                   MCFunctionTypes,
+                   MCSimpleGenericTypes,
+                   MCStructuralTypes,
+                   RegExType,
                    SIUnitTypes4Computing,
                    SIUnitTypes4Math,
-                   MCSimpleGenericTypes,
-                   MCFunctionTypes,
-                   MCStructuralTypes,
                    TypeParameters,
-                   MFExpressions,
-                   OOSymbols,
-                   BasicSymbols {
+                   // symbols
+                   OOSymbols {
   
   /**
    *  ASTMFCompilationUnit represents the entire content of an MF model

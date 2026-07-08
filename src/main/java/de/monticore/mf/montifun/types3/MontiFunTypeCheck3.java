@@ -5,6 +5,7 @@ import de.monticore.expressions.commonexpressions.types3.CommonExpressionsCTTIVi
 import de.monticore.expressions.commonexpressions.types3.util.CommonExpressionsLValueRelations;
 import de.monticore.expressions.expressionsbasis.types3.ExpressionBasisCTTIVisitor;
 import de.monticore.expressions.lambdaexpressions.types3.LambdaExpressionsTypeVisitor;
+import de.monticore.expressions.streamexpressions.types3.StreamExpressionsTypeVisitor;
 import de.monticore.expressions.tupleexpressions.types3.TupleExpressionsCTTIVisitor;
 import de.monticore.expressions.uglyexpressions.types3.UglyExpressionsCTTIVisitor;
 import de.monticore.literals.mccommonliterals.types3.MCCommonLiteralsTypeVisitor;
@@ -15,9 +16,11 @@ import de.monticore.ocl.optionaloperators.types3.OptionalOperatorsTypeVisitor;
 import de.monticore.ocl.setexpressions.types3.SetExpressionsCTTIVisitor;
 import de.monticore.ocl.types3.OCLCollectionSymTypeRelations;
 import de.monticore.ocl.types3.OCLSymTypeRelations;
+import de.monticore.regex.regextype.types3.RegExTypeTypeVisitor;
 import de.monticore.siunit.siunitliterals.types3.SIUnitLiteralsTypeVisitor;
 import de.monticore.siunit.siunittypes4computing.types3.SIUnitTypes4ComputingTypeVisitor;
 import de.monticore.siunit.siunittypes4math.types3.SIUnitTypes4MathTypeVisitor;
+import de.monticore.types.mcarraytypes.types3.MCArrayTypesTypeVisitor;
 import de.monticore.types.mcbasictypes.types3.MCBasicTypesTypeVisitor;
 import de.monticore.types.mccollectiontypes.types3.MCCollectionTypesTypeVisitor;
 import de.monticore.types.mcfunctiontypes.types3.MCFunctionTypesTypeVisitor;
@@ -90,12 +93,6 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     visLambdaExpressions.setType4Ast(type4Ast);
     traverser.add4LambdaExpressions(visLambdaExpressions);
 
-    TupleExpressionsCTTIVisitor visTupleExpressions = new TupleExpressionsCTTIVisitor();
-    visTupleExpressions.setType4Ast(type4Ast);
-    visTupleExpressions.setContext4Ast(ctx4Ast);
-    traverser.add4TupleExpressions(visTupleExpressions);
-    traverser.setTupleExpressionsHandler(visTupleExpressions);
-
     OCLExpressionsTypeVisitor visOCLExpressions = new OCLExpressionsTypeVisitor();
     visOCLExpressions.setType4Ast(type4Ast);
     traverser.add4OCLExpressions(visOCLExpressions);
@@ -110,6 +107,16 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     traverser.add4SetExpressions(visSetExpressions);
     traverser.setSetExpressionsHandler(visSetExpressions);
 
+    StreamExpressionsTypeVisitor visStreamExpressions = new StreamExpressionsTypeVisitor();
+    visStreamExpressions.setType4Ast(type4Ast);
+    traverser.add4StreamExpressions(visStreamExpressions);
+
+    TupleExpressionsCTTIVisitor visTupleExpressions = new TupleExpressionsCTTIVisitor();
+    visTupleExpressions.setType4Ast(type4Ast);
+    visTupleExpressions.setContext4Ast(ctx4Ast);
+    traverser.add4TupleExpressions(visTupleExpressions);
+    traverser.setTupleExpressionsHandler(visTupleExpressions);
+
     UglyExpressionsCTTIVisitor visUglyExpressions = new UglyExpressionsCTTIVisitor();
     visUglyExpressions.setType4Ast(type4Ast);
     visUglyExpressions.setContext4Ast(ctx4Ast);
@@ -122,6 +129,10 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     visMCBasicTypes.setType4Ast(type4Ast);
     traverser.add4MCBasicTypes(visMCBasicTypes);
 
+    MCArrayTypesTypeVisitor visMCArrayTypes = new MCArrayTypesTypeVisitor();
+    visMCArrayTypes.setType4Ast(type4Ast);
+    traverser.add4MCArrayTypes(visMCArrayTypes);
+
     MCCollectionTypesTypeVisitor visMCCollectionTypes = new MCCollectionTypesTypeVisitor();
     visMCCollectionTypes.setType4Ast(type4Ast);
     traverser.add4MCCollectionTypes(visMCCollectionTypes);
@@ -129,6 +140,10 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     MCFunctionTypesTypeVisitor visMCFunctionTypes = new MCFunctionTypesTypeVisitor();
     visMCFunctionTypes.setType4Ast(type4Ast);
     traverser.add4MCFunctionTypes(visMCFunctionTypes);
+
+    RegExTypeTypeVisitor visRegExType = new RegExTypeTypeVisitor();
+    visRegExType.setType4Ast(type4Ast);
+    traverser.add4RegExType(visRegExType);
 
     MCSimpleGenericTypesTypeVisitor visMCSimpleGenericTypes = new MCSimpleGenericTypesTypeVisitor();
     visMCSimpleGenericTypes.setType4Ast(type4Ast);

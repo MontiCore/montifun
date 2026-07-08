@@ -2,6 +2,7 @@ target/
 *.iml
 .idea/
 /.gradle/
+/build/
 .metals/
 out/
 src/jmh/generated/

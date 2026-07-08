@@ -121,8 +121,13 @@ public class MF2CDTest extends AbstractTest {
 
   protected ASTMFCompilationUnit loadASTWithSymbols(String fileName) throws IOException {
     ASTMFCompilationUnit ast = parse(fileName);
+    assertNoFindings();
     MFSymbolTableUtil.runSymTabGenitor(ast);
+    assertNoFindings();
     MFSymbolTableUtil.runSymTabCompleter(ast);
+    assertNoFindings();
+    checkAllCoCos(ast);
+    assertNoFindings();
     return ast;
   }
 

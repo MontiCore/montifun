@@ -149,8 +149,18 @@ public class MF2CDTest extends AbstractTest {
           options, null,
           units);
       if (!task.call()) {
-        fail(diagnostics2String(
-            Collections.unmodifiableList(diagnosticsCollector.getDiagnostics())));
+        String result = diagnostics2String(
+            unmodifiableList(diagnosticsCollector.getDiagnostics())
+        );
+        for (JavaFileObject unit : units) {
+          result += System.lineSeparator()
+              + System.lineSeparator()
+              + System.lineSeparator()
+              + "***** " + unit.getName() + " *****"
+              + System.lineSeparator()
+              + unit.getCharContent(false);
+        }
+        fail(result);
       }
     }
   }

@@ -4,6 +4,7 @@ package de.monticore.mf.montifun.MF2CD;
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.unmodifiableList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -46,21 +48,20 @@ public class MF2CDTest extends AbstractTest {
 
   protected final String TEMPLATE_PATH = "src/main/resources";
 
-  GlobalExtensionManagement glex;
-
   GeneratorSetup generatorSetup;
 
   @Override
   @BeforeEach
   public void setup() {
     super.setup();
-    glex = new GlobalExtensionManagement();
+    GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     generatorSetup = new GeneratorSetup();
     generatorSetup.setGlex(glex);
     generatorSetup.setOutputDirectory(new File(OUTPUT_DIR));
     generatorSetup.setTracing(false);
     generatorSetup.setAdditionalTemplatePaths(Arrays.asList(new File(TEMPLATE_PATH)));
+    CD4CodeMill.init();
     CD4C.init(generatorSetup);
     MFSymbolTableUtil.initAndPrepareMill();
   }
@@ -69,14 +70,9 @@ public class MF2CDTest extends AbstractTest {
   @MethodSource("getParsableModels")
   public void createValidCD(String fileName) throws IOException {
     //not yet supported
-    assumeFalse(fileName.contains("genericFunctions"));
     assumeFalse(fileName.contains("typeInference"));
     assumeFalse(fileName.contains("siunits"));
-    assumeFalse(fileName.contains("tuples"));
     assumeFalse(fileName.contains("unions"));
-    //todo: https://git.rwth-aachen.de/monticore/monticore/-/issues/3280
-    assumeFalse(fileName.contains("lambdas"));
-    assumeFalse(fileName.contains("fibonacci"));
 
     // load model
     ASTMFCompilationUnit mfCompilationUnit = loadASTWithSymbols(fileName);
@@ -85,9 +81,11 @@ public class MF2CDTest extends AbstractTest {
     // note: creating CDGenerator BEFORE MF2CDConverter::convert!
     CDGenerator cdGenerator = new CDGenerator(generatorSetup);
     MF2CDConverter mf2CDConverter = new MF2CDConverter();
-    ASTCDCompilationUnit cdCompilationUnit = mf2CDConverter.convert(mfCompilationUnit,
-        generatorSetup.getGlex());
+    ASTCDCompilationUnit cdCompilationUnit =
+        mf2CDConverter.convert(mfCompilationUnit, generatorSetup);
+    assertNoFindings();
     cdGenerator.generate(cdCompilationUnit);
+    assertNoFindings();
 
     // test Java compilation:
     Optional<File> javaFileOpt = findOutputFile(mfCompilationUnit.getMFArtifact().getName());

@@ -438,7 +438,8 @@ public class MontiFunTool extends MontiFunToolTOP {
 
     CDGenerator cdGenerator = new CDGenerator(generatorSetup);
     MF2CDConverter mf2CDConverter = new MF2CDConverter();
-    ASTCDCompilationUnit cdCompilationUnit = mf2CDConverter.convert(ast, generatorSetup.getGlex());
+    ASTCDCompilationUnit cdCompilationUnit =
+        mf2CDConverter.convert(ast, generatorSetup);
     cdGenerator.generate(cdCompilationUnit);
   }
 

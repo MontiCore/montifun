@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.mf.montifun._ast;
 
-import de.monticore.mf.montifun._parser.MontiFunParser;
+import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCQualifiedName;
 import de.se_rwth.commons.logging.Log;
@@ -36,7 +36,7 @@ public class ASTMFCompilationUnit extends ASTMFCompilationUnitTOP {
       importSignature += ";";
     }
     try {
-      Optional<ASTMCImportStatement> importStatementOpt = new MontiFunParser()
+      Optional<ASTMCImportStatement> importStatementOpt = MontiFunMill.parser()
           .parseMCImportStatement(new StringReader(importSignature));
       this.addMCImportStatement(importStatementOpt.get());
     }

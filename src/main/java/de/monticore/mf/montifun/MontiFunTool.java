@@ -42,9 +42,6 @@ public class MontiFunTool extends MontiFunToolTOP {
 
   protected static final String SYMBOLS_OUT_DIRECTORY = "target" + File.separator + "symbols";
 
-  protected static final String PRETTYPRINTED_OUT_DIRECTORY =
-      "target" + File.separator + "prettyprinted";
-
   public static final String MODEL_FILE_EXT = "mfun";
 
   public static final String SYMBOL_FILE_EXT = "mfsym";
@@ -141,7 +138,8 @@ public class MontiFunTool extends MontiFunToolTOP {
       if (cmd.hasOption("pp")) {
         if (cmd.getOptionValues("pp") == null || cmd.getOptionValues("pp").length == 0) {
           for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-            prettyPrintInFolder(compilationUnit, PRETTYPRINTED_OUT_DIRECTORY);
+            System.out.println();
+            System.out.println(MontiFunMill.prettyPrint(compilationUnit, true));
           }
         }
         else if (cmd.getOptionValues("pp").length == 1 &&
@@ -521,7 +519,7 @@ public class MontiFunTool extends MontiFunToolTOP {
         .optionalArg(true)
         .numberOfArgs(1)
         .desc(
-            "Prints the montifun model to stdout or the generated java classes to the specified folder (optional)")
+            "Generates java classes to the specified folder (optional)")
         .get());
 
     Option interpreter = Option.builder()

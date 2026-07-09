@@ -49,6 +49,7 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
     if (!type.isObscureType()) {
       node.getSymbol().setType(type);
     }
+    node.getSymbol().setIsReadOnly(true);
     // else – error already logged
   }
 

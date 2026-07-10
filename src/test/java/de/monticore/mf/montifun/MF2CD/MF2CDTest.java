@@ -2,12 +2,8 @@
 package de.monticore.mf.montifun.MF2CD;
 
 import de.monticore.cd.codegen.CDGenerator;
-import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd.methodtemplates.CD4C;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun.MontiFunTool;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
@@ -48,21 +44,10 @@ public class MF2CDTest extends AbstractTest {
 
   protected final String TEMPLATE_PATH = "src/main/resources";
 
-  GeneratorSetup generatorSetup;
-
   @Override
   @BeforeEach
   public void setup() {
     super.setup();
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(new File(OUTPUT_DIR));
-    generatorSetup.setTracing(false);
-    generatorSetup.setAdditionalTemplatePaths(Arrays.asList(new File(TEMPLATE_PATH)));
-    CD4CodeMill.init();
-    CD4C.init(generatorSetup);
     MFSymbolTableUtil.initAndPrepareMill();
   }
 
@@ -79,11 +64,15 @@ public class MF2CDTest extends AbstractTest {
 
     // MontiFun -> CD, CD -> Java
     // note: creating CDGenerator BEFORE MF2CDConverter::convert!
-    CDGenerator cdGenerator = new CDGenerator(generatorSetup);
+    GeneratorSetup generatorSetup = MF2CDConverter.getDefaultGeneratorSetup(
+        new File(OUTPUT_DIR),
+        List.of(new File(TEMPLATE_PATH))
+    );
     MF2CDConverter mf2CDConverter = new MF2CDConverter();
     ASTCDCompilationUnit cdCompilationUnit =
         mf2CDConverter.convert(mfCompilationUnit, generatorSetup);
     assertNoFindings();
+    CDGenerator cdGenerator = new CDGenerator(generatorSetup);
     cdGenerator.generate(cdCompilationUnit);
     assertNoFindings();
 

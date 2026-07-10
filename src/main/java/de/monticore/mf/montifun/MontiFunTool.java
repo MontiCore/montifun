@@ -2,11 +2,9 @@
 package de.monticore.mf.montifun;
 
 import de.monticore.cd.codegen.CDGenerator;
-import de.monticore.cd.codegen.CdUtilsPrinter;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.montifun.MF2CD.MF2CDConverter;
@@ -415,12 +413,11 @@ public class MontiFunTool extends MontiFunToolTOP {
     CD4CodeMill.reset();
     CD4CodeMill.init();
 
-    GlobalExtensionManagement glex = new GlobalExtensionManagement();
-    glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
-    GeneratorSetup generatorSetup = new GeneratorSetup();
-    generatorSetup.setGlex(glex);
-    generatorSetup.setOutputDirectory(new File(outputDirectory));
-    generatorSetup.setTracing(false);
+    GeneratorSetup generatorSetup = MF2CDConverter
+        .getDefaultGeneratorSetup(
+            new File(outputDirectory),
+            Collections.emptyList()
+        );
     if (!handcodedPath.isEmpty()) {
       generatorSetup.setHandcodedPath(new MCPath(handcodedPath));
     }
@@ -436,10 +433,10 @@ public class MontiFunTool extends MontiFunToolTOP {
       generatorSetup.setOutputDirectory(targetDir);
     }
 
-    CDGenerator cdGenerator = new CDGenerator(generatorSetup);
     MF2CDConverter mf2CDConverter = new MF2CDConverter();
     ASTCDCompilationUnit cdCompilationUnit =
         mf2CDConverter.convert(ast, generatorSetup);
+    CDGenerator cdGenerator = new CDGenerator(generatorSetup);
     cdGenerator.generate(cdCompilationUnit);
   }
 

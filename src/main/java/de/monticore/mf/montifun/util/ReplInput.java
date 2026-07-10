@@ -22,20 +22,24 @@ public class ReplInput implements AutoCloseable {
   public String readUserInput() {
     while (true) {
       StringBuilder currentCommandBuilder = new StringBuilder();
-      boolean lastLine = false;
+      boolean isLastLine;
       do {
         System.out.print(currentCommandBuilder.isEmpty() ? "> " : "  ");
         System.out.flush();
 
+        if (!scanner.hasNextLine()) {
+          // ctrl + c
+          return ":exit";
+        }
         String line = scanner.nextLine();
-        lastLine = !line.endsWith("\\");
-        if (!lastLine) {
+        isLastLine = !line.endsWith("\\");
+        if (!isLastLine) {
           line = line.substring(0, line.length() - 1)
               .trim()
               + System.lineSeparator();
         }
         currentCommandBuilder.append(line);
-      } while (!lastLine);
+      } while (!isLastLine);
 
       // check if someone was just pressing enter
       String currentCommand = currentCommandBuilder.toString();

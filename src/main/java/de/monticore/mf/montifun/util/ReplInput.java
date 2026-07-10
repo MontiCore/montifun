@@ -28,8 +28,7 @@ public class ReplInput implements AutoCloseable {
         System.out.flush();
 
         if (!scanner.hasNextLine()) {
-          // ctrl + c
-          return ":exit";
+          return "";
         }
         String line = scanner.nextLine();
         isLastLine = !line.endsWith("\\");

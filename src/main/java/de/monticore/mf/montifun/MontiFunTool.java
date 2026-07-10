@@ -3,7 +3,7 @@ package de.monticore.mf.montifun;
 
 import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd.methodtemplates.CD4C;
+import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
@@ -411,6 +411,10 @@ public class MontiFunTool extends MontiFunToolTOP {
       String templatePath,
       String handcodedPath) {
 
+    // switch to CD4C
+    CD4CodeMill.reset();
+    CD4CodeMill.init();
+
     GlobalExtensionManagement glex = new GlobalExtensionManagement();
     glex.setGlobalValue("cdPrinter", new CdUtilsPrinter());
     GeneratorSetup generatorSetup = new GeneratorSetup();
@@ -431,8 +435,6 @@ public class MontiFunTool extends MontiFunToolTOP {
       }
       generatorSetup.setOutputDirectory(targetDir);
     }
-
-    CD4C.init(generatorSetup);
 
     CDGenerator cdGenerator = new CDGenerator(generatorSetup);
     MF2CDConverter mf2CDConverter = new MF2CDConverter();

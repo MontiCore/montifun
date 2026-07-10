@@ -3,7 +3,6 @@ package de.monticore.mf.montifun.MF2CD;
 
 import com.google.common.base.Preconditions;
 import de.monticore.cd.codegen.CD2JavaTemplates;
-import de.monticore.cd.methodtemplates.CD4C;
 import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cd4codebasis._ast.ASTCDMethod;
 import de.monticore.cd4codebasis._ast.ASTCDParameter;
@@ -54,18 +53,12 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
 
   protected ASTCDClass mainClass;
 
-  protected final CD4C cd4C;
-
   protected GeneratorSetup generatorSetup;
 
   protected TraverserBasedCodeGenerator exprGen;
 
   public MF2CDVisitor(GeneratorSetup setup) {
     generatorSetup = Preconditions.checkNotNull(setup);
-    if (!CD4C.isInitialized()) {
-      CD4C.init(setup);
-    }
-    this.cd4C = CD4C.getInstance();
     this.exprGen = new MontiFunExpressionJavaGenerator(new IndentPrinter());
   }
 
@@ -118,8 +111,7 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
     cdCompilationUnit = cdCompilationUnitBuilder.build();
     // imports
     for (ASTMCImportStatement mfImport : mfCompilationUnit.getMCImportStatementList()) {
-      String importStr = MontiFunMill.prettyPrint(mfImport, false).stripTrailing(); // ensure no linebreak after ";"
-      cd4C.addImport(getMainClass(), importStr);
+      cdCompilationUnit.addMCImportStatement(mfImport);
     }
   }
 

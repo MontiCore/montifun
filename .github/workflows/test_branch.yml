@@ -1,0 +1,63 @@
+# (c) https://github.com/MontiCore/monticore
+name: Test Proposed Changes
+
+concurrency: # run this test workflow only once per "branch"
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push: # run this pipeline on every push
+    paths-ignore:
+      - "*.md" # do not run this pipeline if the only change was to markdown files
+    branches-ignore: [ "dev" ] # Do not run this on the default branch
+  pull_request: # run on (remote) pull requests
+    types: [opened, synchronize]
+env:
+  GRADLE_VERSION: 8.14.4 # Gradle version used
+  JAVA_VERSION: 21 # Java version used
+  GRADLE_CLI_OPTS: "-Pci --build-cache --refresh-dependencies " # CLI options passed to Gradle
+  GRADLE_BUILD_ACTION_CACHE_KEY_JOB: "test-cache-${{ github.head_ref }}.${{ github.sha }}"
+
+permissions:
+  contents: read 
+
+
+jobs:
+  build:
+    # do not run on pull requests in the same project (only on PRs from external sources)
+    if: ${{github.event_name  != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{env.GRADLE_VERSION}}
+      - name: Gradle build
+        run: gradle build ${{env.GRADLE_CLI_OPTS}}
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: always() # always run even if the previous step fails
+        with:
+          name: junit-test-results
+          path: '**/target/test-results/test/TEST-*.xml'
+          retention-days: 1
+  
+
+  # Run the MontiVerse pipeline (tests this change on a suite of projects)
+  trigger-montiverse:
+    # do not run on PRs. Forked PRs are handled via report_proposed_changes[workflow_run].
+    if: ${{github.event_name  == 'push'}}
+    needs: [ build ]
+    uses: MontiCore/monticore/.github/workflows/call_montiverse_branch.yml@dev
+    with:
+      project: "MF"
+    permissions: # allow this action to give feedback on its checks
+      pull-requests: write
+    secrets: inherit

@@ -45,6 +45,7 @@ The command line tool of MontiFun provides functionality such as
 * a REPL (read-eval-print-loop) for interactive use (alpha)
 * code generation (alpha)
 
+<!--
 ### Downloading the Latest Version of the Tool as a JAR
 
 The latest version of the tool can be downloaded
@@ -52,7 +53,7 @@ in the form of an executable JAR file at
 [**this download link**][tool-jar].
 
 TODO: publish the tool and add the link
-
+-->
 ### Building the Tool from Source
 
 You can build the tool yourself.

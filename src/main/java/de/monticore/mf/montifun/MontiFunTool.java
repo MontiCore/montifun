@@ -17,11 +17,8 @@ import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import de.monticore.mf.montifun.util.MontiFunRepl;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,212 +53,186 @@ public class MontiFunTool extends MontiFunToolTOP {
    * Processes user input from command line and delegates to the corresponding
    * tools.
    *
-   * @param args The input parameters for configuring the tool.
+   * @param cmd The command line arguments for configuring the tool.
    */
   @Override
-  public void run(String[] args) {
-    init();
-
+  public void doRun(CommandLine cmd) {
     Options options = initOptions();
-    try {
-      //create CLI Parser and parse input options from commandline
-      CommandLineParser cliparser = new DefaultParser();
-      CommandLine cmd = cliparser.parse(options, args);
 
-      //help: when --help
-      if (cmd.hasOption("h")) {
-        printHelp(options);
-        //do not continue, when help is printed.
-        return;
+    if (cmd.hasOption("interpreter")) {
+      runInterpreterMode(cmd);
+      return;
+    }
+
+    //if -i input is missing: also print help and stop
+    if (!cmd.hasOption("i")) {
+      printHelp(options);
+      return;
+    }
+
+    //parse input file, now known to be available
+    List<String> inputNames =
+        getInputFileNamesFromInputParameter(List.of(cmd.getOptionValues("i")));
+    // did we get an input folder?
+    if (inputNames.size() == 1 && Paths.get(inputNames.get(0)).toFile().isDirectory()) {
+      try (Stream<Path> files = Files.walk(Paths.get(inputNames.get(0)))) {
+        inputNames = files
+            .filter(path -> path.toString().endsWith("." + MODEL_FILE_EXT)
+                || path.toString().endsWith(INPUT_FILE_EXT_END))
+            .map(Path::toString)
+            .collect(Collectors.toList());
       }
-
-      // -option developer logging
-      if (cmd.hasOption("d")) {
-        Log.initDEBUG();
+      catch (IOException | UncheckedIOException e) {
+        Log.error("0xAC783 Unable to collect MontiFun input files", e);
+      }
+    }
+    // split input into models and symbol files
+    List<String> modelInputNames = new ArrayList<>();
+    List<String> symbolInputNames = new ArrayList<>();
+    for (String inputName : inputNames) {
+      if (isLikelySymbolInputFilePath(inputName)) {
+        symbolInputNames.add(inputName);
       }
       else {
-        Log.init();
+        modelInputNames.add(inputName);
+      }
+    }
+    if (modelInputNames.isEmpty()) {
+      Log.error("0xAC984 -i does not seem to contain any montifun models");
+    }
+
+    //parse input files, now known to be available
+    List<ASTMFCompilationUnit> inputMontiFuns = new ArrayList<>();
+    for (String modelInputName : modelInputNames) {
+      ASTMFCompilationUnit ast = parse(modelInputName);
+      inputMontiFuns.add(ast);
+    }
+
+    // -option pretty print
+    if (cmd.hasOption("pp")) {
+      if (cmd.getOptionValues("pp") == null || cmd.getOptionValues("pp").length == 0) {
+        for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+          System.out.println();
+          System.out.println(MontiFunMill.prettyPrint(compilationUnit, true));
+        }
+      }
+      else if (cmd.getOptionValues("pp").length == 1 &&
+          isLikelyFolderPath(cmd.getOptionValue("pp"))) {
+        for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+          prettyPrintInFolder(compilationUnit, cmd.getOptionValue("pp"));
+        }
+      }
+      else if (cmd.getOptionValues("pp").length == inputMontiFuns.size()
+          && cmd.getOptionValues("pp").length == cmd.getOptionValues("pp").length) {
+        for (int i = 0; i < inputMontiFuns.size(); i++) {
+          prettyPrint(inputMontiFuns.get(i), cmd.getOptionValues("pp")[i]);
+        }
+      }
+      else {
+        Log.error(String.format("Received '%s' output files for the prettyprint option. "
+                + "Expected that '%s' many output files are specified. "
+                + "If output files for the prettyprint option are specified, then the number "
+                + "of specified output files must be equal to the number of specified input files, "
+                + "or one outputfolder should be specified.",
+            cmd.getOptionValues("pp").length, inputMontiFuns.size()));
+      }
+    }
+
+    //
+    // Parsing and pretty printing can be done without a symbol table
+    // but executing the following options requires a symbol table
+    //
+
+    if (cmd.hasOption("c")
+        || cmd.hasOption("s")
+        || cmd.hasOption("gen")
+    ) {
+
+      // we need the global scope for symbols and cocos
+      MCPath symbolPath = new MCPath(Paths.get(""));
+      if (cmd.hasOption("p")) {
+        symbolPath = new MCPath(Arrays.stream(cmd.getOptionValues("p"))
+            .map(Paths::get)
+            .collect(Collectors.toList())
+        );
+      }
+      MontiFunMill.globalScope().setSymbolPath(symbolPath);
+      MFSymbolTableUtil.addCD4CSymbols();
+
+      //load input symbol tables
+      for (String symbolInputName : symbolInputNames) {
+        IMontiFunArtifactScope symbolScope = loadSymbols(symbolInputName);
+        MontiFunMill.globalScope().addSubScope(symbolScope);
       }
 
-      if (cmd.hasOption("interpreter")) {
-        runInterpreterMode(cmd);
+      // Complete symbol table
+      for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
+        MFSymbolTableUtil.runSymTabGenitor(compilationUnit);
+        MFSymbolTableUtil.runSymTabCompleter(compilationUnit);
+      }
+
+      // CoCos
+      Log.enableFailQuick(false);
+      for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
+        MontiFunCoCoChecker checker =
+            MontiFunCoCoChecker.getCheckerForAllCoCosPhase1();
+        checker.checkAll(compUnit);
+      }
+      for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
+        MontiFunCoCoChecker checker =
+            MontiFunCoCoChecker.getCheckerForAllCoCosPhase2();
+        checker.checkAll(compUnit);
+      }
+      //to not proceed if CoCos fail
+      if (Log.getErrorCount() > 0) {
+        Log.warn("encountered errors, will not generate symbol tables/java code/etc.");
         return;
       }
+      Log.enableFailQuick(true);
 
-      //if -i input is missing: also print help and stop
-      if (!cmd.hasOption("i")) {
-        printHelp(options);
-        return;
-      }
-
-      //parse input file, now known to be available
-      List<String> inputNames =
-          getInputFileNamesFromInputParameter(List.of(cmd.getOptionValues("i")));
-      // did we get an input folder?
-      if (inputNames.size() == 1 && Paths.get(inputNames.get(0)).toFile().isDirectory()) {
-        try (Stream<Path> files = Files.walk(Paths.get(inputNames.get(0)))) {
-          inputNames = files
-              .filter(path -> path.toString().endsWith("." + MODEL_FILE_EXT)
-                  || path.toString().endsWith(INPUT_FILE_EXT_END))
-              .map(Path::toString)
-              .collect(Collectors.toList());
-        }
-        catch (IOException | UncheckedIOException e) {
-          Log.error("0xAC783 Unable to collect MontiFun input files", e);
-        }
-      }
-      // split input into models and symbol files
-      List<String> modelInputNames = new ArrayList<>();
-      List<String> symbolInputNames = new ArrayList<>();
-      for (String inputName : inputNames) {
-        if (isLikelySymbolInputFilePath(inputName)) {
-          symbolInputNames.add(inputName);
-        }
-        else {
-          modelInputNames.add(inputName);
-        }
-      }
-      if (modelInputNames.isEmpty()) {
-        Log.error("0xAC984 -i does not seem to contain any montifun models");
-      }
-
-      //parse input files, now known to be available
-      List<ASTMFCompilationUnit> inputMontiFuns = new ArrayList<>();
-      for (String modelInputName : modelInputNames) {
-        ASTMFCompilationUnit ast = parse(modelInputName);
-        inputMontiFuns.add(ast);
-      }
-
-      // -option pretty print
-      if (cmd.hasOption("pp")) {
-        if (cmd.getOptionValues("pp") == null || cmd.getOptionValues("pp").length == 0) {
+      // store symbols
+      if (cmd.hasOption("s")) {
+        if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
           for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-            System.out.println();
-            System.out.println(MontiFunMill.prettyPrint(compilationUnit, true));
+            storeSymbolsInFolder(compilationUnit, SYMBOLS_OUT_DIRECTORY);
           }
         }
-        else if (cmd.getOptionValues("pp").length == 1 &&
-            isLikelyFolderPath(cmd.getOptionValue("pp"))) {
-          for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-            prettyPrintInFolder(compilationUnit, cmd.getOptionValue("pp"));
-          }
+        else if (cmd.getOptionValues("s").length == 1 &&
+            isLikelyFolderPath(cmd.getOptionValue("s"))) {
+          inputMontiFuns.forEach(
+              compUnit -> this.storeSymbolsInFolder(compUnit, cmd.getOptionValue("s")));
         }
-        else if (cmd.getOptionValues("pp").length == inputMontiFuns.size()
-            && cmd.getOptionValues("pp").length == cmd.getOptionValues("pp").length) {
+        else if (cmd.getOptionValues("s").length == inputMontiFuns.size()
+            && cmd.getOptionValues("s").length == cmd.getOptionValues("i").length) {
           for (int i = 0; i < inputMontiFuns.size(); i++) {
-            prettyPrint(inputMontiFuns.get(i), cmd.getOptionValues("pp")[i]);
+            storeSymbols(
+                (MontiFunArtifactScope) inputMontiFuns.get(i).getEnclosingScope(),
+                cmd.getOptionValues("s")[i]
+            );
           }
         }
         else {
-          Log.error(String.format("Received '%s' output files for the prettyprint option. "
+          Log.error(String.format("Received '%s' output files for the storesymbols option. "
                   + "Expected that '%s' many output files are specified. "
-                  + "If output files for the prettyprint option are specified, then the number "
+                  + "If output files for the storesymbols option are specified, then the number "
                   + "of specified output files must be equal to the number of specified input files, "
                   + "or one outputfolder should be specified.",
-              cmd.getOptionValues("pp").length, inputMontiFuns.size()));
+              cmd.getOptionValues("s").length, inputMontiFuns.size()));
         }
       }
 
-      //
-      // Parsing and pretty printing can be done without a symbol table
-      // but executing the following options requires a symbol table
-      //
+      // -option generate to Java (using CD)
+      if (cmd.hasOption("gen")) {
+        String path = cmd.getOptionValue("gen", "");
+        String templatePath = cmd.getOptionValue("fp", "");
+        String handcodedPath = cmd.getOptionValue("hcp", "");
 
-      if (cmd.hasOption("c")
-          || cmd.hasOption("s")
-          || cmd.hasOption("gen")
-      ) {
-
-        // we need the global scope for symbols and cocos
-        MCPath symbolPath = new MCPath(Paths.get(""));
-        if (cmd.hasOption("p")) {
-          symbolPath = new MCPath(Arrays.stream(cmd.getOptionValues("p"))
-              .map(Paths::get)
-              .collect(Collectors.toList())
-          );
-        }
-        MontiFunMill.globalScope().setSymbolPath(symbolPath);
-        MFSymbolTableUtil.addCD4CSymbols();
-
-        //load input symbol tables
-        for (String symbolInputName : symbolInputNames) {
-          IMontiFunArtifactScope symbolScope = loadSymbols(symbolInputName);
-          MontiFunMill.globalScope().addSubScope(symbolScope);
-        }
-
-        // Complete symbol table
         for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-          MFSymbolTableUtil.runSymTabGenitor(compilationUnit);
-          MFSymbolTableUtil.runSymTabCompleter(compilationUnit);
+          generateJava(compilationUnit, path, templatePath, handcodedPath);
         }
-
-        // CoCos
-        Log.enableFailQuick(false);
-        for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
-          MontiFunCoCoChecker checker =
-              MontiFunCoCoChecker.getCheckerForAllCoCosPhase1();
-          checker.checkAll(compUnit);
-        }
-        for (ASTMFCompilationUnit compUnit : inputMontiFuns) {
-          MontiFunCoCoChecker checker =
-              MontiFunCoCoChecker.getCheckerForAllCoCosPhase2();
-          checker.checkAll(compUnit);
-        }
-        //to not proceed if CoCos fail
-        if (Log.getErrorCount() > 0) {
-          Log.warn("encountered errors, will not generate symbol tables/java code/etc.");
-          return;
-        }
-        Log.enableFailQuick(true);
-
-        // store symbols
-        if (cmd.hasOption("s")) {
-          if (cmd.getOptionValues("s") == null || cmd.getOptionValues("s").length == 0) {
-            for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-              storeSymbolsInFolder(compilationUnit, SYMBOLS_OUT_DIRECTORY);
-            }
-          }
-          else if (cmd.getOptionValues("s").length == 1 &&
-              isLikelyFolderPath(cmd.getOptionValue("s"))) {
-            inputMontiFuns.forEach(
-                compUnit -> this.storeSymbolsInFolder(compUnit, cmd.getOptionValue("s")));
-          }
-          else if (cmd.getOptionValues("s").length == inputMontiFuns.size()
-              && cmd.getOptionValues("s").length == cmd.getOptionValues("i").length) {
-            for (int i = 0; i < inputMontiFuns.size(); i++) {
-              storeSymbols(
-                  (MontiFunArtifactScope) inputMontiFuns.get(i).getEnclosingScope(),
-                  cmd.getOptionValues("s")[i]
-              );
-            }
-          }
-          else {
-            Log.error(String.format("Received '%s' output files for the storesymbols option. "
-                    + "Expected that '%s' many output files are specified. "
-                    + "If output files for the storesymbols option are specified, then the number "
-                    + "of specified output files must be equal to the number of specified input files, "
-                    + "or one outputfolder should be specified.",
-                cmd.getOptionValues("s").length, inputMontiFuns.size()));
-          }
-        }
-
-        // -option generate to Java (using CD)
-        if (cmd.hasOption("gen")) {
-          String path = cmd.getOptionValue("gen", "");
-          String templatePath = cmd.getOptionValue("fp", "");
-          String handcodedPath = cmd.getOptionValue("hcp", "");
-
-          for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-            generateJava(compilationUnit, path, templatePath, handcodedPath);
-          }
-        }
-
       }
     }
-    catch (ParseException e) {
-      // e.getMessage displays the incorrect input-parameters
-      Log.error("0xA5C73 Could not process CLI parameters: " + e.getMessage());
-    }
+
   }
 
   /**

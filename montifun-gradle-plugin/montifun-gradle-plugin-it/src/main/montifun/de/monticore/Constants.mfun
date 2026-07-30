@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+montifun Constants {
+
+  PI = 3.14159;
+
+}

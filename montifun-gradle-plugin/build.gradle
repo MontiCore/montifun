@@ -1,0 +1,48 @@
+plugins {
+  id 'java-library'
+  id 'java-gradle-plugin'
+  id 'maven-publish'
+}
+
+layout.buildDirectory = rootProject.layout.buildDirectory.dir(project.name).get()
+
+dependencies {
+  implementation "de.se_rwth.commons:se-commons-gradle:$mc_version"
+  compileOnly project(":")
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_jupiter_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_jupiter_version"
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username = mavenUser
+    credentials.password = mavenPassword
+    url = sePublicRepo
+  }
+  mavenCentral()
+}
+
+gradlePlugin {
+  plugins {
+    montifunPlugin {
+      id = 'de.monticore.montifun'
+      implementationClass = 'de.monticore.mf.montifun.gradleplugin.MontiFunGradlePlugin'
+    }
+  }
+}
+
+tasks.register('writeMCBuildInfo', de.monticore.gradle.common.MCBuildInfoTask.class) {
+  getVersion().set(project.provider(() -> project.getVersion().toString()))
+}
+processResources {
+  dependsOn tasks.named('writeMCBuildInfo')
+}
+
+tasks.withType(Test).configureEach {
+  useJUnitPlatform()
+}

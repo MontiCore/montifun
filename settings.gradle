@@ -17,3 +17,5 @@ plugins {
 }
 
 rootProject.name = 'montifun'
+
+include 'montifun-gradle-plugin'

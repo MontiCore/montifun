@@ -3,15 +3,14 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    id "java"
-    id "de.monticore.generator" version "$mc_version"
-    id "maven-publish"
-    id "com.gradleup.shadow" version "$shadow_version"
+  id "java"
+  id "de.monticore.generator" version "$mc_version"
+  id "maven-publish"
+  id "com.gradleup.shadow" version "$shadow_version"
 }
 
 description = "functional programming language"
 layout.buildDirectory = layout.projectDirectory.dir("target")
-
 
 def grammarDir = layout.projectDirectory.dir("src/main/grammars")
 def grammarOutDir = layout.buildDirectory.dir("generated-sources/mc")
@@ -20,80 +19,80 @@ def reportsDir = layout.buildDirectory.dir("generated-sources/monticore/sourceco
 
 // configure non-standard source sets
 sourceSets {
-    main {
-        java.srcDirs += [grammarOutDir]
+  main {
+    java.srcDirs += [grammarOutDir]
+  }
+  test {
+    java.srcDirs += [testGrammarOutDir]
+  }
+  grammars {
+    resources {
+      srcDirs = [grammarDir]
+      include "**/*.mc4"
     }
-    test {
-        java.srcDirs += [testGrammarOutDir]
-    }
-    grammars {
-        resources {
-            srcDirs = [grammarDir]
-            include "**/*.mc4"
-        }
-    }
+  }
 }
 
 configurations { grammar }
 
 dependencies {
-    grammar("de.monticore:monticore-grammar:$mc_version")
-    grammar("de.monticore.lang:ocl:$mc_version")
-    implementation "de.monticore:monticore-runtime:$mc_version"
-    implementation "de.monticore:monticore-grammar:$mc_version"
-    implementation "de.monticore:class2mc:$mc_version"
-    implementation "de.se_rwth.commons:se-commons-logging:$mc_version"
-    implementation "de.monticore.lang:cd4analysis:$mc_version"
-    implementation "de.monticore.lang:ocl:$mc_version"
+  grammar("de.monticore:monticore-grammar:$mc_version")
+  grammar("de.monticore.lang:ocl:$mc_version")
+  implementation "de.monticore:monticore-runtime:$mc_version"
+  implementation "de.monticore:monticore-grammar:$mc_version"
+  implementation "de.monticore:class2mc:$mc_version"
+  implementation "de.se_rwth.commons:se-commons-logging:$mc_version"
+  implementation "de.monticore.lang:cd4analysis:$mc_version"
+  implementation "de.monticore.lang:ocl:$mc_version"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_jupiter_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_jupiter_version"
-    testImplementation "de.monticore:monticore-runtime:$mc_version"
-    testImplementation "de.monticore:javagen-runtime:$mc_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
+  testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_jupiter_version"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_jupiter_version"
+  testImplementation "de.monticore:monticore-runtime:$mc_version"
+  testImplementation "de.monticore:javagen-runtime:$mc_version"
 }
 
 repositories {
-    if (("true").equals(getProperty('useLocalRepo'))) {
-        mavenLocal()
-    }
-    maven {
-        credentials.username = mavenUser
-        credentials.password = mavenPassword
-        url = sePublicRepo
-    }
-    mavenCentral()
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven {
+    credentials.username = mavenUser
+    credentials.password = mavenPassword
+    url = sePublicRepo
+  }
+  mavenCentral()
 }
 
 // Fixes issue with java plugin in projects without resources
 compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
 
 tasks.withType(Test).configureEach {
-    maxParallelForks = Runtime.runtime.availableProcessors() ?: 1
+  maxParallelForks = Runtime.runtime.availableProcessors() ?: 1
 }
 
 tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-    options.fork = true
-    options.encoding = "UTF-8"
-    options.deprecation = true
-    options.warnings = true
-    options.headerOutputDirectory.convention(null)
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+  options.fork = true
+  options.encoding = "UTF-8"
+  options.deprecation = true
+  options.warnings = true
+  options.headerOutputDirectory.convention(null)
 }
 
 // all in one cli-jar
 shadowJar {
-    manifest {
-        attributes "Main-Class": "de.monticore.mf.montifun.MontiFunTool"
-    }
-    archiveFileName = "MCMontiFun.${archiveExtension.get()}"
-    archiveClassifier = "mc-tool"
-    minimize {
-        //todo https://git.rwth-aachen.de/monticore/monticore/-/issues/3317
-        exclude(dependency('org.freemarker:freemarker:.*'))
-    }
+  manifest {
+    attributes "Main-Class": "de.monticore.mf.montifun.MontiFunTool"
+  }
+  archiveFileName = "MCMontiFun.${archiveExtension.get()}"
+  archiveClassifier = "mc-tool"
+  minimize {
+    //todo https://git.rwth-aachen.de/monticore/monticore/-/issues/3317
+    exclude(dependency('org.freemarker:freemarker:.*'))
+  }
 }
 
 test {
@@ -106,57 +105,57 @@ test {
     exceptionFormat = TestExceptionFormat.FULL
     info {
       events TestLogEvent.FAILED,
-             TestLogEvent.PASSED,
-             TestLogEvent.SKIPPED,
-             TestLogEvent.STANDARD_OUT
+          TestLogEvent.PASSED,
+          TestLogEvent.SKIPPED,
+          TestLogEvent.STANDARD_OUT
     }
   }
 }
 
 tasks.register('testReport', TestReport) {
-    destinationDirectory = layout.buildDirectory.dir("reports/allTests")
-    // Include the results from the 'test' task
-    getTestResults().from(tasks.withType(Test))
+  destinationDirectory = layout.buildDirectory.dir("reports/allTests")
+  // Include the results from the 'test' task
+  getTestResults().from(tasks.withType(Test))
 }
 
 java {
-    withJavadocJar()
-    withSourcesJar()
-    registerFeature('grammars') {
-        usingSourceSet(sourceSets.grammars)
-    }
+  withJavadocJar()
+  withSourcesJar()
+  registerFeature('grammars') {
+    usingSourceSet(sourceSets.grammars)
+  }
 }
 
 jar.dependsOn grammarsJar, shadowJar
 
 // configure deployment
 allprojects {
-    plugins.withId('maven-publish') {
-        publishing {
-            repositories {
-                maven {
-                    name = "$SE_Nexus_ID"
-                    credentials.username = mavenUser
-                    credentials.password = mavenPassword
-                    def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-                    def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-                    url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-                }
-            }
+  plugins.withId('maven-publish') {
+    publishing {
+      repositories {
+        maven {
+          name = "$SE_Nexus_ID"
+          credentials.username = mavenUser
+          credentials.password = mavenPassword
+          def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+          def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+          url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
         }
+      }
     }
+  }
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
     }
+  }
 }
 
 tasks.register('buildAll', GradleBuild) {
-    tasks = ['build']
+  tasks = ['build']
 }
 
 defaultTasks('build')

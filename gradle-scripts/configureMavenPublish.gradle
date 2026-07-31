@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+// configure deployment
+allprojects {
+  plugins.withId('maven-publish') {
+    publishing {
+      repositories {
+        maven {
+          name = "SE-nexus"
+          credentials.username = mavenUser
+          credentials.password = mavenPassword
+          url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+      }
+    }
+  }
+}

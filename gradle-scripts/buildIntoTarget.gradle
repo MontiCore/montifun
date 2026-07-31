@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+allprojects {
+  layout.buildDirectory = layout.projectDirectory.dir("target")
+}

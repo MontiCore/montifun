@@ -10,7 +10,10 @@ plugins {
 }
 
 description = "functional programming language"
-layout.buildDirectory = layout.projectDirectory.dir("target")
+
+apply from: 'gradle-scripts/buildIntoTarget.gradle'
+apply from: 'gradle-scripts/repositories.gradle'
+apply from: 'gradle-scripts/configureMavenPublish.gradle'
 
 def grammarDir = layout.projectDirectory.dir("src/main/grammars")
 def grammarOutDir = layout.buildDirectory.dir("generated-sources/mc")
@@ -51,18 +54,6 @@ dependencies {
   testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_jupiter_version"
   testImplementation "de.monticore:monticore-runtime:$mc_version"
   testImplementation "de.monticore:javagen-runtime:$mc_version"
-}
-
-repositories {
-  if (("true").equals(getProperty('useLocalRepo'))) {
-    mavenLocal()
-  }
-  maven {
-    credentials.username = mavenUser
-    credentials.password = mavenPassword
-    url = sePublicRepo
-  }
-  mavenCentral()
 }
 
 // Fixes issue with java plugin in projects without resources
@@ -127,24 +118,6 @@ java {
 }
 
 jar.dependsOn grammarsJar, shadowJar
-
-// configure deployment
-allprojects {
-  plugins.withId('maven-publish') {
-    publishing {
-      repositories {
-        maven {
-          name = "$SE_Nexus_ID"
-          credentials.username = mavenUser
-          credentials.password = mavenPassword
-          def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-          def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-          url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-        }
-      }
-    }
-  }
-}
 
 publishing {
   publications {

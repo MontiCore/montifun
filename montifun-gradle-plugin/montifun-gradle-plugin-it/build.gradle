@@ -5,6 +5,14 @@ plugins {
   id 'java'
 }
 
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven { url 'https://nexus.se.rwth-aachen.de/content/groups/public' }
+  mavenCentral()
+}
+
 dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"

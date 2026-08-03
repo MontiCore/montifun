@@ -7,12 +7,10 @@ pluginManagement {
     if (("true").equals(getProperty('useLocalRepo'))) {
       mavenLocal()
     }
+    maven { url 'https://nexus.se.rwth-aachen.de/content/groups/public' }
     mavenCentral()
     gradlePluginPortal()
-
-    maven {
-      url "https://nexus.se.rwth-aachen.de/content/groups/public"
-    }
   }
 }
+
 rootProject.name = 'montifun-gradle-plugin-it'

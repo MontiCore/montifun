@@ -31,5 +31,6 @@ processResources {
 }
 
 tasks.withType(Test).configureEach {
+  dependsOn rootProject.tasks.named('jar')
   useJUnitPlatform()
 }

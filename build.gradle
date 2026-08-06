@@ -15,38 +15,11 @@ apply from: 'gradle-scripts/buildIntoTarget.gradle'
 apply from: 'gradle-scripts/repositories.gradle'
 apply from: 'gradle-scripts/configureMavenPublish.gradle'
 
-def grammarDir = layout.projectDirectory.dir("src/main/grammars")
-def grammarOutDir = layout.buildDirectory.dir("generated-sources/mc")
-def testGrammarOutDir = layout.buildDirectory.dir("generated-test-sources/mc")
-def reportsDir = layout.buildDirectory.dir("generated-sources/monticore/sourcecode/reports")
-
-// configure non-standard source sets
-sourceSets {
-  main {
-    java.srcDirs += [grammarOutDir]
-  }
-  test {
-    java.srcDirs += [testGrammarOutDir]
-  }
-  grammars {
-    resources {
-      srcDirs = [grammarDir]
-      include "**/*.mc4"
-    }
-  }
-}
-
-configurations { grammar }
 
 dependencies {
-  grammar("de.monticore:monticore-grammar:$mc_version")
   grammar("de.monticore.lang:ocl:$mc_version")
-  implementation "de.monticore:monticore-runtime:$mc_version"
-  implementation "de.monticore:monticore-grammar:$mc_version"
   implementation "de.monticore:class2mc:$mc_version"
-  implementation "de.se_rwth.commons:se-commons-logging:$mc_version"
   implementation "de.monticore.lang:cd4analysis:$mc_version"
-  implementation "de.monticore.lang:ocl:$mc_version"
 
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
   testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_jupiter_version"
@@ -112,12 +85,9 @@ tasks.register('testReport', TestReport) {
 java {
   withJavadocJar()
   withSourcesJar()
-  registerFeature('grammars') {
-    usingSourceSet(sourceSets.grammars)
-  }
 }
 
-jar.dependsOn grammarsJar, shadowJar
+jar.dependsOn shadowJar
 
 publishing {
   publications {

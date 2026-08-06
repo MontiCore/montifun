@@ -14,6 +14,16 @@ repositories {
 }
 
 dependencies {
+
+  if (project.hasProperty("montifunJarFile")) {
+    montifunTool files(project.montifunJarFile) // only required for the test to use the local file!
+
+    // Also add transitive dependencies of the montifunJarFile
+    montifunTool("de.monticore.lang:ocl:$version")
+    montifunTool "de.monticore:class2mc:$version"
+    montifunTool "de.monticore.lang:cd4analysis:$version"
+  }
+
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
   testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_jupiter_version"

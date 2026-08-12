@@ -33,4 +33,8 @@ processResources {
 tasks.withType(Test).configureEach {
   dependsOn rootProject.tasks.named('jar')
   useJUnitPlatform()
+
+  // For the MontiVerse
+  systemProperty "maven.repo.local", System.getProperty("maven.repo.local")
+  systemProperty "useLocalRepo", findProperty("useLocalRepo")
 }

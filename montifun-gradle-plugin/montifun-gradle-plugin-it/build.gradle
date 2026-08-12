@@ -31,9 +31,4 @@ dependencies {
 
 test {
   useJUnitPlatform()
-
-
-  // For the MontiVerse
-  systemProperty "maven.repo.local", System.getProperty("maven.repo.local")
-  systemProperty "useLocalRepo", findProperty("useLocalRepo")
 }

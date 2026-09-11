@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun DuplicateFunctions {
+
+int id(int value) = value;
+int id(int value) = value;
+
+}

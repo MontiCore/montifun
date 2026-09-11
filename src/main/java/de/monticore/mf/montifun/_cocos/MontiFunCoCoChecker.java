@@ -1,9 +1,11 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.montifun._cocos;
 
+import de.monticore.mf.montifun.cocos.ConstantDeclarationNameAlreadyDefinedInScope;
 import de.monticore.mf.montifun.cocos.ConstantDeclarationWithCorrectTypes;
 import de.monticore.mf.montifun.cocos.ConstantDependenciesAreAcyclic;
 import de.monticore.mf.montifun.cocos.FunctionDeclarationWithCorrectTypes;
+import de.monticore.mf.montifun.cocos.FunctionsWithSameNameHaveDifferentTypes;
 import de.monticore.ocl.ocl._cocos.ExpressionValidCoCo;
 import de.monticore.ocl.oclexpressions.cocos.IterateExpressionVariableUsageIsCorrect;
 import de.monticore.ocl.setexpressions.cocos.SetComprehensionHasGenerator;
@@ -37,6 +39,8 @@ public class MontiFunCoCoChecker extends MontiFunCoCoCheckerTOP {
     checker.addCoCo(new IterateExpressionVariableUsageIsCorrect());
     checker.addCoCo(new SetComprehensionHasGenerator());
     checker.addCoCo(new ConstantDependenciesAreAcyclic());
+    checker.addCoCo(new FunctionsWithSameNameHaveDifferentTypes());
+    checker.addCoCo(new ConstantDeclarationNameAlreadyDefinedInScope());
 
     return checker;
   }

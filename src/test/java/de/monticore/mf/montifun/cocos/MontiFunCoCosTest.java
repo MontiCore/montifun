@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class MontiFunCoCosTest extends AbstractTest {
@@ -48,6 +49,52 @@ public class MontiFunCoCosTest extends AbstractTest {
 
     assertFalse(Log.getFindings().isEmpty(),
         "Expected findings for invalid model: " + fileName);
+  }
+
+  /**
+   * The functions in these models have the same name and the same type,
+   * although the types are written differently,
+   * e.g., (A | B) is the same type as (B | A),
+   * and (A | B) is the same type as A, if B is a subtype of A.
+   */
+  protected static String[] getDuplicateFunctionModels() {
+    return new String[] {
+        RELATIVE_INVALID_COCO_MODEL_PATH + "/DuplicateFunctions.mfun",
+        RELATIVE_INVALID_COCO_MODEL_PATH + "/DuplicateFunctionsWithUnionTypes.mfun",
+        RELATIVE_INVALID_COCO_MODEL_PATH + "/DuplicateFunctionsWithSubsumedTypes.mfun",
+    };
+  }
+
+  @ParameterizedTest
+  @MethodSource("getDuplicateFunctionModels")
+  public void shouldRejectDuplicateFunctions(String fileName) throws IOException {
+    // Given
+    ASTMFCompilationUnit ast = createASTWithSymTab(fileName);
+    // When
+    checkAllCoCos(ast);
+    // Then
+    assertTrue(Log.getFindings().stream()
+            .anyMatch(finding -> finding.buildMsg().contains("0xF2007")),
+        "Expected a finding of error code 0xF2007 for model: " + fileName);
+  }
+
+  protected static String[] getDuplicateConstantModels() {
+    return new String[] {
+        RELATIVE_INVALID_COCO_MODEL_PATH + "/DuplicateConstants.mfun",
+    };
+  }
+
+  @ParameterizedTest
+  @MethodSource("getDuplicateConstantModels")
+  public void shouldRejectDuplicateConstants(String fileName) throws IOException {
+    // Given
+    ASTMFCompilationUnit ast = createASTWithSymTab(fileName);
+    // When
+    checkAllCoCos(ast);
+    // Then
+    assertTrue(Log.getFindings().stream()
+            .anyMatch(finding -> finding.buildMsg().contains("0xA0923")),
+        "Expected a finding of error code 0xA0923 for model: " + fileName);
   }
 
 }

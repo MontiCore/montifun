@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+montifun overloadingWithUnions {
+
+  (int | String) foo(int x) = x;
+  (int | float) foo(int x) = x;
+
+}

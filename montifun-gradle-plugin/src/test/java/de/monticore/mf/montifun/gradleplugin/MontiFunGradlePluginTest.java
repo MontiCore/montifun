@@ -71,10 +71,6 @@ class MontiFunGradlePluginTest {
     ret.add("--info");
     ret.add("--stacktrace");
 
-    @Nullable String mavenRepo = System.getProperty("maven.repo.local");
-    if (mavenRepo != null && !mavenRepo.isEmpty()) {
-      ret.add("-Dmaven.repo.local=" + mavenRepo);
-    }
 
     @Nullable String useLocalRepo = System.getProperty("useLocalRepo");
     if (useLocalRepo != null && !useLocalRepo.isEmpty()) {

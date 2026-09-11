@@ -9,6 +9,7 @@ import de.monticore.generating.templateengine.GlobalExtensionManagement;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
 import java.io.File;
 import java.util.List;
@@ -22,6 +23,8 @@ public class MF2CDConverter {
     // switch to CD4Code
     CD4CodeMill.reset();
     CD4CodeMill.init();
+    // Re-create the global scope
+    BasicSymbolsMill.initializePrimitives();
 
     MontiFunTraverser traverser = MontiFunMill.traverser();
     MF2CDVisitor mf2CDVisitor = new MF2CDVisitor(generatorSetup);

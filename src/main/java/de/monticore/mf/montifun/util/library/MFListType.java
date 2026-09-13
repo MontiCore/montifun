@@ -1,8 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.montifun.util.library;
 
-import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.ocl.util.library.ListType;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -14,31 +14,31 @@ public class MFListType extends ListType {
 
   @Override
   public void addListType() {
-    typeVarSymbol = MontiFunMill.typeVarSymbolBuilder().setName("X").build();
+    typeVarSymbol = BasicSymbolsMill.typeVarSymbolBuilder().setName("X").build();
 
     SymTypeOfGenerics superType = SymTypeExpressionFactory
         .createGenerics(SymTypeExpressionFactory.createPrimitive("Collection").getTypeInfo(),
             SymTypeExpressionFactory.createTypeVariable(typeVarSymbol));
 
-    listSymbol = MontiFunMill.typeSymbolBuilder()
+    listSymbol = BasicSymbolsMill.typeSymbolBuilder()
         .setName("List")
-        .setEnclosingScope(MontiFunMill.globalScope())
-        .setSpannedScope(MontiFunMill.scope())
+        .setEnclosingScope(BasicSymbolsMill.globalScope())
+        .setSpannedScope(BasicSymbolsMill.scope())
         .addSuperTypes(superType)
         .build();
     listSymbol.getSpannedScope().setName("List");
     listSymbol.addTypeVarSymbol(typeVarSymbol);
 
-    MontiFunMill.globalScope().add(listSymbol);
-    MontiFunMill.globalScope().addSubScope(listSymbol.getSpannedScope());
+    BasicSymbolsMill.globalScope().add(listSymbol);
+    BasicSymbolsMill.globalScope().addSubScope(listSymbol.getSpannedScope());
   }
 
   @Override
   protected FunctionSymbol createMethod(String name) {
-    return MontiFunMill.functionSymbolBuilder()
+    return BasicSymbolsMill.functionSymbolBuilder()
         .setName(name)
         .setEnclosingScope(listSymbol.getSpannedScope())
-        .setSpannedScope(MontiFunMill.scope())
+        .setSpannedScope(BasicSymbolsMill.scope())
         .build();
   }
 

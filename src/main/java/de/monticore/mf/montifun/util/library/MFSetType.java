@@ -1,8 +1,8 @@
 // (c) https://github.com/MontiCore/monticore
 package de.monticore.mf.montifun.util.library;
 
-import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.ocl.util.library.SetType;
+import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 import de.monticore.symbols.basicsymbols._symboltable.FunctionSymbol;
 import de.monticore.types.check.SymTypeExpressionFactory;
 import de.monticore.types.check.SymTypeOfGenerics;
@@ -14,31 +14,31 @@ public class MFSetType extends SetType {
 
   @Override
   public void addSetType() {
-    typeVarSymbol = MontiFunMill.typeVarSymbolBuilder().setName("X").build();
+    typeVarSymbol = BasicSymbolsMill.typeVarSymbolBuilder().setName("X").build();
 
     SymTypeOfGenerics superType = SymTypeExpressionFactory
         .createGenerics(SymTypeExpressionFactory.createPrimitive("Collection").getTypeInfo(),
             SymTypeExpressionFactory.createTypeVariable(typeVarSymbol));
 
-    setSymbol = MontiFunMill.typeSymbolBuilder()
+    setSymbol = BasicSymbolsMill.typeSymbolBuilder()
         .setName("Set")
-        .setEnclosingScope(MontiFunMill.globalScope())
-        .setSpannedScope(MontiFunMill.scope())
+        .setEnclosingScope(BasicSymbolsMill.globalScope())
+        .setSpannedScope(BasicSymbolsMill.scope())
         .addSuperTypes(superType)
         .build();
     setSymbol.getSpannedScope().setName("Set");
     setSymbol.addTypeVarSymbol(typeVarSymbol);
 
-    MontiFunMill.globalScope().add(setSymbol);
-    MontiFunMill.globalScope().addSubScope(setSymbol.getSpannedScope());
+    BasicSymbolsMill.globalScope().add(setSymbol);
+    BasicSymbolsMill.globalScope().addSubScope(setSymbol.getSpannedScope());
   }
 
   @Override
   protected FunctionSymbol createMethod(String name) {
-    return MontiFunMill.functionSymbolBuilder()
+    return BasicSymbolsMill.functionSymbolBuilder()
         .setName(name)
         .setEnclosingScope(setSymbol.getSpannedScope())
-        .setSpannedScope(MontiFunMill.scope())
+        .setSpannedScope(BasicSymbolsMill.scope())
         .build();
   }
 

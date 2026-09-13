@@ -2,19 +2,43 @@
 package de.monticore.mf.montifun._symboltable;
 
 import de.monticore.mf.montifun._ast.ASTMFArtifact;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFConstantDeclaration;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.montifun._ast.ASTMFParameter;
 import de.monticore.mf.montifun._visitor.MontiFunHandler;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
+import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunHandler {
 
   protected MontiFunTraverser traverser;
+
+  @Override
+  public void visit(ASTMFCompilationUnit node) {
+    IMontiFunArtifactScope artifactScope =
+        (IMontiFunArtifactScope) node.getEnclosingScope();
+    // set scope name
+    artifactScope.setName(node.getMFArtifact().getName());
+    // set package name
+    if (node.isPresentMCPackageDeclaration()) {
+      artifactScope.setPackageName(
+          node.getMCPackageDeclaration().getMCQualifiedName().getQName()
+      );
+    }
+    // add imports
+    List<ImportStatement> imports = node.getMCImportStatementList().stream()
+        .map(imp -> new ImportStatement(imp.getQName(), imp.isStar()))
+        .collect(Collectors.toList());
+    artifactScope.setImportsList(imports);
+  }
 
   /**
    * sets the return types for functions that do have them set explicitly

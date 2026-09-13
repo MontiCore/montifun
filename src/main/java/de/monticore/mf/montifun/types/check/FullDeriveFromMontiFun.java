@@ -22,7 +22,8 @@ import de.monticore.types.check.SynthesizeSymTypeFromMCSimpleGenericTypes;
 /**
  * use {@link de.monticore.mf.montifun.types3.MontiFunTypeCheck3}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
+@SuppressWarnings("removal")
 public class FullDeriveFromMontiFun extends AbstractDerive {
 
   public FullDeriveFromMontiFun() {

@@ -105,30 +105,58 @@ public class MFSymbolTableUtil {
     ast.accept(symTabCompleter);
   }
 
+  /**
+   * @deprecated Not needed since 7.10
+   */
+  @Deprecated
   protected static void addTypeSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new TypeSymbolDeSer());
   }
 
+  /**
+   * @deprecated Not needed since 7.10
+   */
+  @Deprecated
   protected static void addOOTypeSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new OOTypeSymbolDeSer());
   }
 
+  /**
+   * @deprecated Not needed since 7.10
+   */
+  @Deprecated
   protected static void addFunctionSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new FunctionSymbolDeSer());
   }
 
+  /**
+   * @deprecated Not needed since 7.10
+   */
+  @Deprecated
   protected static void addMethodSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new MethodSymbolDeSer());
   }
 
+  /**
+   * @deprecated Not needed since 7.10
+   */
+  @Deprecated
   protected static void addVariableSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new VariableSymbolDeSer());
   }
 
+  /**
+   * @deprecated Not needed since 7.10
+   */
+  @Deprecated
   protected static void addFieldSymbol(String symbolFqn) {
     MontiFunMill.globalScope().putSymbolDeSer(symbolFqn, new FieldSymbolDeSer());
   }
 
+  /**
+   * @deprecated Not needed since 7.10
+   */
+  @Deprecated
   public static void addCD4CSymbols() {
     addOOTypeSymbol("de.monticore.cdbasis._symboltable.CDTypeSymbol");
     addMethodSymbol("de.monticore.cd4codebasis._symboltable.CDMethodSignatureSymbol");

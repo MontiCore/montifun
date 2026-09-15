@@ -9,3 +9,4 @@ src/jmh/generated/
 gradlew
 gradlew.bat
 gradle/
+graphify-out/

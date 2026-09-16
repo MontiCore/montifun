@@ -37,4 +37,10 @@ tasks.withType(Test).configureEach {
   // For the MontiVerse
   systemProperty "maven.repo.local", System.getProperty("maven.repo.local")
   systemProperty "useLocalRepo", findProperty("useLocalRepo")
+
+  // the plugin test uses the source of the main project
+  // -> mark explicitly as input for gradle result chaching
+  inputs.dir("${rootProject.projectDir}/src/main")
+      .withPropertyName("mainSourcesForTests")
+      .withPathSensitivity(PathSensitivity.RELATIVE)
 }

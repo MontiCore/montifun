@@ -45,15 +45,12 @@ The command line tool of MontiFun provides functionality such as
 * a REPL (read-eval-print-loop) for interactive use (alpha)
 * code generation (alpha)
 
-<!--
 ### Downloading the Latest Version of the Tool as a JAR
 
 The latest version of the tool can be downloaded
 in the form of an executable JAR file at
 [**this download link**][tool-jar].
 
-TODO: publish the tool and add the link
--->
 ### Building the Tool from Source
 
 You can build the tool yourself.
@@ -188,5 +185,5 @@ An input can span multiple lines by ending the lines with `\`
 * [Type System](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/java/de/monticore/types3/TypeSystem3.md)
 
 [expressions]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/expressions/Expressions.md
-
 [types]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/types/Types.md
+[tool-jar]: https://www.monticore.de/download/MCMontiFun.jar

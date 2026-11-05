@@ -37,7 +37,6 @@ import de.monticore.values.MCValue;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -156,17 +155,7 @@ public class MontiFunRepl {
     }
     else {
       Optional<ASTMontiFunREPLInput> astOpt = withTiming(() -> {
-            try {
-              return MontiFunReplMill.parser().parse_StringMontiFunREPLInput(input);
-            }
-            catch (IOException e) {
-              // not expected to ever happen
-              Log.error(
-                  "0xFD793 IOException while parsing the input: "
-                      + e.getMessage()
-              );
-              return Optional.empty();
-            }
+            return MontiFunReplMill.parser().parse_StringMontiFunREPLInput(input);
           },
           "Parsing"
       );

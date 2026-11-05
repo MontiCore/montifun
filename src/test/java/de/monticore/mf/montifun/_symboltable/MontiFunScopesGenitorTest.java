@@ -248,14 +248,7 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
   protected ASTMFFunctionDeclaration parseFunctionDeclaration(String source) {
     MontiFunParser parser = MontiFunMill.parser();
     Optional<ASTMFFunctionDeclaration> ast;
-    try {
-      ast = parser.parse_StringMFFunctionDeclaration(source);
-    }
-    catch (IOException e) {
-      Log.debug("An I/O Exception occurred parsing the invariant `%s`. ", DEBUG_LOG_NAME);
-      Log.debug("Error thrown: " + e, DEBUG_LOG_NAME);
-      throw new IllegalStateException(" An internal error occurred. See the debug log.");
-    }
+    ast = parser.parse_StringMFFunctionDeclaration(source);
     assertFalse(parser.hasErrors(),
         String.format("There where errors parsing the function declaration `%s`. " +
             "The log lists the following findings: %s", source, Log.getFindings())
@@ -278,14 +271,7 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
   protected ASTMFConstantDeclaration parseConstantDeclaration(String source) {
     MontiFunParser parser = MontiFunMill.parser();
     Optional<ASTMFConstantDeclaration> ast;
-    try {
-      ast = parser.parse_StringMFConstantDeclaration(source);
-    }
-    catch (IOException e) {
-      Log.debug("An I/O Exception occurred parsing the invariant `%s`. ", DEBUG_LOG_NAME);
-      Log.debug("Error thrown: " + e, DEBUG_LOG_NAME);
-      throw new IllegalStateException(" An internal error occurred. See the debug log.");
-    }
+    ast = parser.parse_StringMFConstantDeclaration(source);
     assertFalse(parser.hasErrors(),
         String.format("There where errors parsing the constant declaration `%s`. " +
             "The log lists the following findings: %s", source, Log.getFindings())

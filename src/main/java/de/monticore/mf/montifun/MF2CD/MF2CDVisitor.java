@@ -37,7 +37,6 @@ import de.monticore.types.typeparameters.TypeParametersMill;
 import de.monticore.types.typeparameters._ast.ASTTypeParameter;
 import de.monticore.umlmodifier.UMLModifierMill;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,63 +116,58 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
 
   @Override
   public void endVisit(ASTMFFunctionDeclaration mfFunctionDeclaration) {
-    try {
-      // return type
-      SymTypeExpression returnType =
-          normalize(mfFunctionDeclaration.getSymbol().getType());
-      String returnTypeJavaStr = convertSymTypeExpr2Java(returnType);
-      ASTMCReturnType returnTypeJava;
-      returnTypeJava = MontiFunMill.parser()
-          .parse_StringMCReturnType(returnTypeJavaStr).get();
+    // return type
+    SymTypeExpression returnType =
+        normalize(mfFunctionDeclaration.getSymbol().getType());
+    String returnTypeJavaStr = convertSymTypeExpr2Java(returnType);
+    ASTMCReturnType returnTypeJava;
+    returnTypeJava = MontiFunMill.parser()
+        .parse_StringMCReturnType(returnTypeJavaStr).get();
 
-      List<ASTCDParameter> parsJava = mfFunctionDeclaration
-          .streamMFParameters()
-          .map(this::convertParam2Java)
-          .toList();
+    List<ASTCDParameter> parsJava = mfFunctionDeclaration
+        .streamMFParameters()
+        .map(this::convertParam2Java)
+        .toList();
 
-      String javaExpr = printExprConverted(
-          returnType,
-          mfFunctionDeclaration.getExpression()
-      );
+    String javaExpr = printExprConverted(
+        returnType,
+        mfFunctionDeclaration.getExpression()
+    );
 
-      ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
-          .setModifier(
-              CD4CodeMill.modifierBuilder()
-                  .PUBLIC()
-                  .STATIC()
-                  .build()
-          )
-          .setMCReturnType(returnTypeJava)
-          .setName(mfFunctionDeclaration.getName())
-          .setCDParametersList(parsJava)
-          .build();
-
-      // type parameters
-      if (mfFunctionDeclaration.isPresentTypeParameters()) {
-        List<ASTTypeParameter> typeParsJava = new ArrayList<>();
-        for (ASTTypeParameter typeParAST :
-            mfFunctionDeclaration.getTypeParameters().getTypeParameterList()
-        ) {
-          typeParsJava.add(convertTypeParameter2Java(typeParAST));
-        }
-        method.setTypeParameters(
-            TypeParametersMill.typeParametersBuilder()
-                .setTypeParametersList(typeParsJava)
+    ASTCDMethod method = CD4CodeMill.cDMethodBuilder()
+        .setModifier(
+            CD4CodeMill.modifierBuilder()
+                .PUBLIC()
+                .STATIC()
                 .build()
-        );
+        )
+        .setMCReturnType(returnTypeJava)
+        .setName(mfFunctionDeclaration.getName())
+        .setCDParametersList(parsJava)
+        .build();
+
+    // type parameters
+    if (mfFunctionDeclaration.isPresentTypeParameters()) {
+      List<ASTTypeParameter> typeParsJava = new ArrayList<>();
+      for (ASTTypeParameter typeParAST :
+          mfFunctionDeclaration.getTypeParameters().getTypeParameterList()
+      ) {
+        typeParsJava.add(convertTypeParameter2Java(typeParAST));
       }
-
-      getMainClass().addCDMember(method);
-
-      getGlex().replaceTemplate(
-          CD2JavaTemplates.EMPTY_BODY,
-          method,
-          new StringHookPoint("return " + javaExpr + ";")
+      method.setTypeParameters(
+          TypeParametersMill.typeParametersBuilder()
+              .setTypeParametersList(typeParsJava)
+              .build()
       );
     }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+
+    getMainClass().addCDMember(method);
+
+    getGlex().replaceTemplate(
+        CD2JavaTemplates.EMPTY_BODY,
+        method,
+        new StringHookPoint("return " + javaExpr + ";")
+    );
   }
 
   @Override
@@ -181,14 +175,9 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
     SymTypeExpression constantType =
         normalize(mfConstantDeclaration.getSymbol().getType());
     ASTMCType javaMCType;
-    try {
-      String javaTypeStr =
-          convertSymTypeExpr2Java(constantType);
-      javaMCType = MontiFunMill.parser().parse_StringMCType(javaTypeStr).get();
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    String javaTypeStr =
+        convertSymTypeExpr2Java(constantType);
+    javaMCType = MontiFunMill.parser().parse_StringMCType(javaTypeStr).get();
 
     String javaExpr = printExprConverted(
         constantType,
@@ -236,40 +225,30 @@ public class MF2CDVisitor implements MontiFunVisitor2 {
   protected ASTTypeParameter convertTypeParameter2Java(
       ASTTypeParameter modelTypePar
   ) {
-    try {
-      // simplified implementation ignoring intersection types
-      List<ASTMCType> javaBounds = new ArrayList<>();
-      for (ASTMCType modelBoundAST : modelTypePar.getMCTypeList()) {
-        SymTypeExpression modelBound = normalize(symTypeFromAST(modelBoundAST));
-        String javaBoundStr = convertSymTypeExpr2Java(modelBound);
-        ASTMCType javaBound = MontiFunMill.parser().parse_StringMCType(javaBoundStr).get();
-        javaBounds.add(javaBound);
-      }
-      return MontiFunMill.typeParameterBuilder()
-          .setName(modelTypePar.getName())
-          .setMCTypesList(javaBounds)
-          .build();
+    // simplified implementation ignoring intersection types
+    List<ASTMCType> javaBounds = new ArrayList<>();
+    for (ASTMCType modelBoundAST : modelTypePar.getMCTypeList()) {
+      SymTypeExpression modelBound = normalize(symTypeFromAST(modelBoundAST));
+      String javaBoundStr = convertSymTypeExpr2Java(modelBound);
+      ASTMCType javaBound = MontiFunMill.parser().parse_StringMCType(javaBoundStr).get();
+      javaBounds.add(javaBound);
     }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return MontiFunMill.typeParameterBuilder()
+        .setName(modelTypePar.getName())
+        .setMCTypesList(javaBounds)
+        .build();
   }
 
   protected ASTCDParameter convertParam2Java(ASTMFParameter modelParam) {
-    try {
-      SymTypeExpression modelType =
-          normalize(symTypeFromAST(modelParam.getMCType()));
-      String javaTypeStr = convertSymTypeExpr2Java(modelType);
-      ASTMCType javaType =
-          MontiFunMill.parser().parse_StringMCType(javaTypeStr).get();
-      return CD4CodeMill.cDParameterBuilder()
-          .setName(modelParam.getName())
-          .setMCType(javaType)
-          .build();
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    SymTypeExpression modelType =
+        normalize(symTypeFromAST(modelParam.getMCType()));
+    String javaTypeStr = convertSymTypeExpr2Java(modelType);
+    ASTMCType javaType =
+        MontiFunMill.parser().parse_StringMCType(javaTypeStr).get();
+    return CD4CodeMill.cDParameterBuilder()
+        .setName(modelParam.getName())
+        .setMCType(javaType)
+        .build();
   }
 
   protected String printExprConverted(

@@ -57,6 +57,16 @@ class MontiFunReplTest extends AbstractTest {
     assertEquals(4, readVariable("y").asInt());
   }
 
+  @Test
+  void replEvaluateNameTest() {
+    List<String> output = runRepl(
+        "int x = 2;",
+        "x"
+    );
+
+    assertEquals("2", output.get(output.size() - 1), String.join("\n", output));
+  }
+
   //should be enabled again after implementing the interpreter for if-then-else
   @Disabled
   @Test

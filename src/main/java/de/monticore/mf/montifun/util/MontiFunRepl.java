@@ -33,6 +33,7 @@ import de.monticore.symbols.basicsymbols._symboltable.VariableSymbol;
 import de.monticore.symbols.basicsymbols.interpreter.frames.MIFrameLayoutForBasicSymbols;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
 import de.monticore.values.MCValue;
 import de.monticore.visitor.ITraverser;
 import de.se_rwth.commons.logging.Log;
@@ -204,8 +205,12 @@ public class MontiFunRepl {
     if (!passedChecks) {
       System.out.println("Cannot evaluate expression");
     }
+    // restructure the AST according to the type check,
+    // this may replace the expression itself, e.g., a single name
+    ASTExpression restructuredExpr = (ASTExpression) PostTypeCheckNodeReplacer
+        .replace(MontiFunMill::inheritanceTraverser, expr);
     MCValue value = withTiming(
-        () -> interpreter.interpret(expr),
+        () -> interpreter.interpret(restructuredExpr),
         "Interpretation"
     );
     printEvaluationResult(value);
@@ -393,9 +398,15 @@ public class MontiFunRepl {
       return false;
     }
     MontiFunCoCoChecker.getCheckerForAllCoCosPhase2().checkAll(ast);
+    // restructure the AST according to the type check, e.g., for the interpreter
+    PostTypeCheckNodeReplacer.replace(MontiFunMill::inheritanceTraverser, ast);
     return Log.getErrorCount() == 0;
   }
 
+  /**
+   * note: the expression is restructured by the caller,
+   * as the expression itself may be replaced
+   */
   protected boolean completeSymTabAndCheckCoCos(ASTExpression ast) {
     MFSymbolTableUtil.runSymTabCompleter(ast);
     if (Log.getErrorCount() > 0) {

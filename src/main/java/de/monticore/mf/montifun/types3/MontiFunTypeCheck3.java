@@ -33,6 +33,7 @@ import de.monticore.types3.generics.context.InferenceContext4Ast;
 import de.monticore.types3.util.MapBasedTypeCheck3;
 import de.monticore.types3.util.OOWithinScopeBasicSymbolsResolver;
 import de.monticore.types3.util.OOWithinTypeBasicSymbolsResolver;
+import de.monticore.types3.util.PostTypeCheckNodeReplacer;
 import de.monticore.types3.util.TypeContextCalculator;
 import de.monticore.types3.util.TypeVisitorOperatorCalculator;
 import de.monticore.visitor.ITraverser;
@@ -53,6 +54,7 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     OOWithinTypeBasicSymbolsResolver.init();
     OOWithinScopeBasicSymbolsResolver.init();
     TypeContextCalculator.init();
+    PostTypeCheckNodeReplacer.init();
     TypeVisitorOperatorCalculator.init();
     CommonExpressionsLValueRelations.init();
     TypeParameterRelations.init();
@@ -173,6 +175,7 @@ public class MontiFunTypeCheck3 extends MapBasedTypeCheck3 {
     OOWithinTypeBasicSymbolsResolver.reset();
     OOWithinScopeBasicSymbolsResolver.reset();
     TypeContextCalculator.reset();
+    PostTypeCheckNodeReplacer.reset();
     TypeVisitorOperatorCalculator.reset();
     CommonExpressionsLValueRelations.reset();
     TypeParameterRelations.reset();

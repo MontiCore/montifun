@@ -84,27 +84,13 @@ public class MontiFunRepl {
 
   protected MontiFunTraverser createInterpreter(InterpreterDataForBasicSymbols iData) {
     MontiFunTraverser traverser = MontiFunMill.inheritanceTraverser();
-    traverser.setExpressionsBasisHandler(
-        new ExpressionsBasisInterpreter(iData)
-    );
-    traverser.setCommonExpressionsHandler(
-        new CommonExpressionsInterpreter(iData)
-    );
-    traverser.setMCCommonLiteralsHandler(
-        new MCCommonLiteralsInterpreter(iData)
-    );
-    traverser.setSetExpressionsHandler(
-        new SetExpressionsInterpreter(iData)
-    );
-    traverser.setBitExpressionsHandler(
-        new BitExpressionsInterpreter(iData)
-    );
-    traverser.setOptionalOperatorsHandler(
-        new OptionalOperatorsInterpreter(iData)
-    );
-    traverser.setLambdaExpressionsHandler(
-        new LambdaExpressionsInterpreter(iData)
-    );
+    traverser.setMCCommonLiteralsHandler(new MCCommonLiteralsInterpreter(iData));
+    traverser.setBitExpressionsHandler(new BitExpressionsInterpreter(iData));
+    traverser.setCommonExpressionsHandler(new CommonExpressionsInterpreter(iData));
+    traverser.setExpressionsBasisHandler(new ExpressionsBasisInterpreter(iData));
+    traverser.setLambdaExpressionsHandler(new LambdaExpressionsInterpreter(iData));
+    traverser.setOptionalOperatorsHandler(new OptionalOperatorsInterpreter(iData));
+    traverser.setSetExpressionsHandler(new SetExpressionsInterpreter(iData));
     return traverser;
   }
 

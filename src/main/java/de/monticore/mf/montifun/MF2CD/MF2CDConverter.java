@@ -2,31 +2,28 @@
 package de.monticore.mf.montifun.MF2CD;
 
 import de.monticore.cd.codegen.CdUtilsPrinter;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.mf.montifun.MontiFunMill;
+import de.monticore.mf.mf2cd.MF2CDMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
-import de.monticore.symbols.basicsymbols.BasicSymbolsMill;
 
 import java.io.File;
 import java.util.List;
 
 public class MF2CDConverter {
 
+  /**
+   * Converts a MontiFun model to a CD.
+   *
+   * Note: this expects {@link MF2CDMill} to already be the active mill
+   */
   public ASTCDCompilationUnit convert(
       ASTMFCompilationUnit mfCompilationUnit,
       GeneratorSetup generatorSetup) {
 
-    // switch to CD4Code
-    CD4CodeMill.reset();
-    CD4CodeMill.init();
-    // Re-create the global scope
-    BasicSymbolsMill.initializePrimitives();
-
-    MontiFunTraverser traverser = MontiFunMill.traverser();
+    MontiFunTraverser traverser = MF2CDMill.inheritanceTraverser();
     MF2CDVisitor mf2CDVisitor = new MF2CDVisitor(generatorSetup);
     traverser.add4MontiFun(mf2CDVisitor);
     mfCompilationUnit.accept(traverser);

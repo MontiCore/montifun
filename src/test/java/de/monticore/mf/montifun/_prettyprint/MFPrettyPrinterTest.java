@@ -3,46 +3,24 @@ package de.monticore.mf.montifun._prettyprint;
 
 import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun.MontiFunMill;
-import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._parser.MontiFunParser;
-import de.monticore.mf.montifun.util.MFSymbolTableUtil;
-import org.junit.jupiter.api.BeforeEach;
+import de.monticore.runtime.junit.PrettyPrinterTester;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-
 public class MFPrettyPrinterTest extends AbstractTest {
-
-  protected final MontiFunParser parser = MontiFunMill.parser();
-
-  @Override
-  @BeforeEach
-  public void setup() {
-    super.setup();
-    MFSymbolTableUtil.initAndPrepareMill();
-  }
 
   @ParameterizedTest
   @MethodSource("getParsableModels")
-  public void prettyPrintsEquivalent(String fileName) throws IOException {
-    // todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4318
-    assumeFalse(fileName.contains("siunit"));
+  public void prettyPrintsEquivalent(String fileName) {
+    String model = readFile(fileName);
+    MontiFunParser parser = MontiFunMill.parser();
 
-    // given
-    final ASTMFCompilationUnit ast = parse(fileName);
-
-    // when
-    String prettyPrinted = MontiFunMill.prettyPrint(ast, true);
-
-    // then
-    Optional<ASTMFCompilationUnit> prettyASTOpt = parser.parse_String(prettyPrinted);
-    assertTrue(prettyASTOpt.isPresent());
-    assertTrue(ast.deepEquals(prettyASTOpt.get()));
-    assertNoFindings();
+    PrettyPrinterTester.testPrettyPrinter(
+        model,
+        parser,
+        parser::parse_String,
+        ast -> MontiFunMill.prettyPrint(ast, true)
+    );
   }
 }

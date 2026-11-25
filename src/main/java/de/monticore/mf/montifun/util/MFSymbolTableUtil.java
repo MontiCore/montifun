@@ -4,10 +4,9 @@ package de.monticore.mf.montifun.util;
 import de.monticore.ast.ASTNode;
 import de.monticore.class2mc.OOClass2MCResolver;
 import de.monticore.expressions.lambdaexpressions._symboltable.LambdaExpressionsSTCompleteTypes2;
-import de.monticore.io.paths.MCPath;
+import de.monticore.mf.mf2cd.MF2CDMill;
 import de.monticore.mf.montifun.MontiFunMill;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
-import de.monticore.mf.montifun._ast.ASTMontiFunNode;
 import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunScopesGenitorDelegator;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbolTableCompleter;
@@ -27,9 +26,10 @@ import de.monticore.symbols.oosymbols._symboltable.FieldSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.IOOSymbolsGlobalScope;
 import de.monticore.symbols.oosymbols._symboltable.MethodSymbolDeSer;
 import de.monticore.symbols.oosymbols._symboltable.OOTypeSymbolDeSer;
+import de.monticore.symboltable.ImportStatement;
 import de.se_rwth.commons.logging.Log;
 
-import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Contains helpers that execute MontiCore API that are almost always called together
@@ -37,13 +37,28 @@ import java.nio.file.Paths;
 public class MFSymbolTableUtil {
 
   static public void initMill() {
-    MontiFunMill.reset();
-    MontiFunMill.init();
-    MontiFunMill.globalScope().clear();
+    initMill(false);
+  }
+
+  static public void initMill(boolean withCD4C) {
+    if (withCD4C) {
+      MF2CDMill.reset();
+      MF2CDMill.init();
+      MF2CDMill.globalScope().clear();
+    }
+    else {
+      MontiFunMill.reset();
+      MontiFunMill.init();
+      MontiFunMill.globalScope().clear();
+    }
   }
 
   static public void initAndPrepareMill() {
-    initMill();
+    initAndPrepareMill(false);
+  }
+
+  static public void initAndPrepareMill(boolean withCD4C) {
+    initMill(withCD4C);
     prepareMillWithoutInit();
   }
 
@@ -72,6 +87,7 @@ public class MFSymbolTableUtil {
     s.addMethodsAndFields();
   }
 
+  @Deprecated
   static public IMontiFunArtifactScope runSymTabGenitor(ASTMFCompilationUnit ast) {
     //todo remove if java.lang.* is default imported in cd4a again
     addDefaultImports(ast);
@@ -163,8 +179,16 @@ public class MFSymbolTableUtil {
     addFieldSymbol("de.monticore.symbols.oosymbols._symboltable.FieldSymbol");
   }
 
-  protected static void addDefaultImports(ASTMFCompilationUnit artifact) {
+  /**
+   * @deprecated use {@link #getDefaultImports()} instead
+   */
+  @Deprecated
+  public static void addDefaultImports(ASTMFCompilationUnit artifact) {
     artifact.addImportStatement("java.lang.*");
+  }
+
+  public static List<ImportStatement> getDefaultImports() {
+    return List.of(new ImportStatement("java.lang", true));
   }
 
   public static void loadSymbolFile(String filePath) {

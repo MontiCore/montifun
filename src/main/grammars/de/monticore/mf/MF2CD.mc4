@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.mf;
+
+import de.monticore.mf.MontiFun;
+import de.monticore.CD4Code;
+
+/**
+ * MF2CD combines MontiFun and CD4Code into a single language.
+ * It is used to allow usage of both languages for
+ * MontiFun to CD generation
+ */
+grammar MF2CD extends MontiFun, CD4Code {
+
+  start MFCompilationUnit;
+
+}

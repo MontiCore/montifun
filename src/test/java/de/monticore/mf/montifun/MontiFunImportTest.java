@@ -3,13 +3,13 @@ package de.monticore.mf.montifun;
 
 import de.monticore.io.paths.MCPath;
 import de.monticore.mf.AbstractTest;
-import de.monticore.mf.montifun.util.MFSymbolTableUtil;
+import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.nio.file.Paths;
+
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 
 public class MontiFunImportTest extends AbstractTest {
 
@@ -28,38 +28,28 @@ public class MontiFunImportTest extends AbstractTest {
     });
   }
 
-  @Override
-  @BeforeEach
-  public void setup() {
-    super.setup();
-    MFSymbolTableUtil.initAndPrepareMill();
-  }
-
-
   @Test
-  public void unidirectionalImportSamePackageTest() throws IOException {
-    // given
-    createASTWithSymTab(
-        RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender.mfun",
-        symbolPath
-    );
-    //then
-    assertNoFindings();
+  public void unidirectionalImportSamePackageTest() {
+    ASTMFCompilationUnit ast = getTool().parse(readFile(
+        RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender.mfun"
+    ));
+    MontiFunMill.globalScope().setSymbolPath(symbolPath);
+    getTool().createSymbolTable(ast);
+    getTool().completeSymbolTable(ast);
   }
 
   @Test
-  public void unidirectionalImportDifferentPackageTest() throws IOException {
-    // given / when
-    createASTWithSymTab(
-        RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender2.mfun",
-        symbolPath
-    );
-    //then
-    assertNoFindings();
+  public void unidirectionalImportDifferentPackageTest() {
+    ASTMFCompilationUnit ast = getTool().parse(readFile(
+        RELATIVE_MODEL_PATH + "/testinput/intraModelDependency/depender2.mfun"
+    ));
+    MontiFunMill.globalScope().setSymbolPath(symbolPath);
+    getTool().createSymbolTable(ast);
+    getTool().completeSymbolTable(ast);
   }
 
   @Test
-  public void circularDependencyImportTest() throws IOException {
+  public void circularDependencyImportTest() {
     // given / when
     new MontiFunTool().run(new String[] {
         "-i",

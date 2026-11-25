@@ -7,10 +7,8 @@ import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._ast.ASTMFConstantDeclaration;
 import de.monticore.mf.montifun._ast.ASTMFFunctionDeclaration;
 import de.monticore.mf.montifun._parser.MontiFunParser;
-import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import de.se_rwth.commons.logging.Log;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,18 +40,11 @@ public class MontiFunScopesGenitorTest extends AbstractTest {
     );
   }
 
-  @Override
-  @BeforeEach
-  public void setup() {
-    super.setup();
-    MFSymbolTableUtil.initAndPrepareMill();
-  }
-
   @ParameterizedTest
   @MethodSource("getParsableModels")
-  public void shouldSetEnclosingScopeOfDeclaration(String filename) throws IOException {
+  public void shouldSetEnclosingScopeOfDeclaration(String filename) {
     // Given
-    ASTMFCompilationUnit ast = parse(filename);
+    ASTMFCompilationUnit ast = getTool().parse(readFile(filename));
     MontiFunScopesGenitorDelegator genitor = MontiFunMill.scopesGenitorDelegator();
 
     // When

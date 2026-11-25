@@ -2,16 +2,16 @@
 package de.monticore.mf.montifun;
 
 import de.monticore.cd.codegen.CDGenerator;
-import de.monticore.cd4code.CD4CodeMill;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
+import de.monticore.mf.mf2cd.MF2CDMill;
+import de.monticore.mf.mf2cd._symboltable.IMF2CDArtifactScope;
+import de.monticore.mf.mf2cd._symboltable.MF2CDSymbols2Json;
 import de.monticore.mf.montifun.MF2CD.MF2CDConverter;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun._cocos.MontiFunCoCoChecker;
 import de.monticore.mf.montifun._symboltable.IMontiFunArtifactScope;
-import de.monticore.mf.montifun._symboltable.MontiFunArtifactScope;
 import de.monticore.mf.montifun._symboltable.MontiFunSymbols2Json;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import de.monticore.mf.montifun.util.MontiFunRepl;
@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,11 +45,14 @@ public class MontiFunTool extends MontiFunToolTOP {
 
   protected static final String INPUT_FILE_EXT_END = "sym";
 
-  @Override
-  public void init() {
-    super.init();
-    MFSymbolTableUtil.initAndPrepareMill();
-  }
+  // the following functions are given either by MontiFunMill or MF2CDMill,
+  // as they don't have a delegation depending on the Mill.
+
+  protected Function<String, IMontiFunArtifactScope> symbolsLoader;
+
+  protected BiConsumer<IMontiFunArtifactScope, String> symbolsStorer;
+
+  protected Function<ASTMFCompilationUnit, IMontiFunArtifactScope> symbolTableGenitor;
 
   /**
    * Processes user input from command line and delegates to the corresponding
@@ -69,6 +74,28 @@ public class MontiFunTool extends MontiFunToolTOP {
       printHelp(options);
       return;
     }
+
+    // scopesGenitorDelegator() is the one mill product that does not
+    // auto-forward from MontiFunMill to MF2CDMill (unlike parser(),
+    // globalScope(), traverser(), etc. -- see the generated
+    // MontiFunMillForMF2CD), so both branches call it directly on the mill
+    // they select, rather than through a shared helper.
+    boolean willGenerate = cmd.hasOption("gen");
+    if (!willGenerate) {
+      symbolsLoader = path -> new MontiFunSymbols2Json().load(path);
+      symbolsStorer = (scope, path) ->
+          new MontiFunSymbols2Json().store(scope, path);
+      symbolTableGenitor = ast ->
+          MontiFunMill.scopesGenitorDelegator().createFromAST(ast);
+    }
+    else {
+      symbolsLoader = path -> new MF2CDSymbols2Json().load(path);
+      symbolsStorer = (scope, path) ->
+          new MF2CDSymbols2Json().store((IMF2CDArtifactScope) scope, path);
+      symbolTableGenitor = ast ->
+          MF2CDMill.scopesGenitorDelegator().createFromAST(ast);
+    }
+    MFSymbolTableUtil.initAndPrepareMill(willGenerate);
 
     //parse input file, now known to be available
     List<String> inputNames =
@@ -157,7 +184,6 @@ public class MontiFunTool extends MontiFunToolTOP {
         );
       }
       MontiFunMill.globalScope().setSymbolPath(symbolPath);
-      MFSymbolTableUtil.addCD4CSymbols();
 
       //load input symbol tables
       for (String symbolInputName : symbolInputNames) {
@@ -167,7 +193,7 @@ public class MontiFunTool extends MontiFunToolTOP {
 
       // Complete symbol table
       for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-        MFSymbolTableUtil.runSymTabGenitor(compilationUnit);
+        symbolTableGenitor.apply(compilationUnit);
         MFSymbolTableUtil.runSymTabCompleter(compilationUnit);
       }
 
@@ -206,7 +232,7 @@ public class MontiFunTool extends MontiFunToolTOP {
             && cmd.getOptionValues("s").length == cmd.getOptionValues("i").length) {
           for (int i = 0; i < inputMontiFuns.size(); i++) {
             storeSymbols(
-                (MontiFunArtifactScope) inputMontiFuns.get(i).getEnclosingScope(),
+                (IMontiFunArtifactScope) inputMontiFuns.get(i).getEnclosingScope(),
                 cmd.getOptionValues("s")[i]
             );
           }
@@ -271,10 +297,12 @@ public class MontiFunTool extends MontiFunToolTOP {
    * @param filename        The name of the produced symbol file.
    */
   public void storeSymbols(ASTMFCompilationUnit compilationUnit, String filename) {
-    MontiFunSymbols2Json symbols2Json = new MontiFunSymbols2Json();
-    String serialized = symbols2Json.serialize(
-        (MontiFunArtifactScope) compilationUnit.getEnclosingScope());
-    FileReaderWriter.storeInFile(Paths.get(filename), serialized);
+    storeSymbols((IMontiFunArtifactScope) compilationUnit.getEnclosingScope(), filename);
+  }
+
+  @Override
+  public void storeSymbols(IMontiFunArtifactScope scope, String path) {
+    symbolsStorer.accept(scope, path);
   }
 
   /**
@@ -297,8 +325,7 @@ public class MontiFunTool extends MontiFunToolTOP {
    * @return the symbol table
    */
   public IMontiFunArtifactScope loadSymbols(String filename) {
-    MontiFunSymbols2Json symbols2Json = new MontiFunSymbols2Json();
-    return symbols2Json.load(filename);
+    return symbolsLoader.apply(filename);
   }
 
   @Override
@@ -380,10 +407,6 @@ public class MontiFunTool extends MontiFunToolTOP {
       String templatePath,
       String handcodedPath) {
 
-    // switch to CD4C
-    CD4CodeMill.reset();
-    CD4CodeMill.init();
-
     GeneratorSetup generatorSetup = MF2CDConverter
         .getDefaultGeneratorSetup(
             new File(outputDirectory),
@@ -412,13 +435,27 @@ public class MontiFunTool extends MontiFunToolTOP {
   }
 
   @Override
-  public Options addStandardOptions(Options options) {
+  public Options initOptions() {
+    Options options = new Options();
+    Options standardOptions = addStandardOptions(new Options());
+    // filter some out
+    standardOptions.getOptions().stream()
+        .filter(o -> o.getOpt() == null || !(
+            // currently no implementation
+            o.getOpt().equals("v") ||
+                o.getOpt().equals("r") ||
+                // different argument/description
+                o.getOpt().equals("i") ||
+                o.getOpt().equals("path") ||
+                o.getOpt().equals("pp") ||
+                o.getOpt().equals("s")
+        )).forEach(options::addOption);
+    options = addStandardOptionsWithChanges(options);
+    options = addAdditionalOptions(options);
+    return options;
+  }
 
-    // help dialog
-    Option help = new Option("h", "Prints this help dialog");
-    help.setLongOpt("help");
-    options.addOption(help);
-
+  protected Options addStandardOptionsWithChanges(Options options) {
     // parse input file
     Option parse = Option.builder("i")
         .longOpt("input")
@@ -474,7 +511,6 @@ public class MontiFunTool extends MontiFunToolTOP {
    */
   @Override
   public Options addAdditionalOptions(Options options) {
-
     // check CoCos
     Option cocos = Option.builder("c")
         .longOpt("coco")

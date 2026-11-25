@@ -18,6 +18,7 @@ apply from: 'gradle-scripts/configureMavenPublish.gradle'
 
 dependencies {
   grammar("de.monticore.lang:ocl:$mc_version")
+  grammar("de.monticore.lang:cd4analysis:$mc_version")
   implementation "de.monticore:class2mc:$mc_version"
   implementation "de.monticore.lang:cd4analysis:$mc_version"
 
@@ -26,6 +27,7 @@ dependencies {
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
   testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_jupiter_version"
   testImplementation "de.monticore:monticore-runtime:$mc_version"
+  testImplementation(testFixtures("de.monticore:monticore-runtime:$mc_version"))
   testImplementation "de.monticore:javagen-runtime:$mc_version"
 }
 
@@ -60,6 +62,7 @@ shadowJar {
 }
 
 test {
+  dependsOn shadowJar
   useJUnitPlatform()
   testLogging {
     // controls whether test output is shown

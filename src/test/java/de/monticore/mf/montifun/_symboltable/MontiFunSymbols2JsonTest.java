@@ -4,23 +4,13 @@ package de.monticore.mf.montifun._symboltable;
 import de.monticore.mf.AbstractTest;
 import de.monticore.mf.montifun._ast.ASTMFCompilationUnit;
 import de.monticore.mf.montifun.util.MFSymbolTableUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static de.monticore.runtime.junit.MCAssertions.assertNoFindings;
 
 public class MontiFunSymbols2JsonTest extends AbstractTest {
-
-  @Override
-  @BeforeEach
-  public void setup() {
-    super.setup();
-    MFSymbolTableUtil.initAndPrepareMill();
-  }
 
   @Test
   public void testInit2Json() {
@@ -37,14 +27,11 @@ public class MontiFunSymbols2JsonTest extends AbstractTest {
 
   @ParameterizedTest
   @MethodSource("getParsableModels")
-  public void shouldSerializeAndDeserializeSymTab(String fileName) throws IOException {
-    // not yet supported
-    assumeFalse(fileName.contains("genericFunctions"));
-    ASTMFCompilationUnit ast = createASTWithSymTab(fileName);
-    // todo https://git.rwth-aachen.de/monticore/monticore/-/issues/4319
-    assumeFalse(fileName.contains("siunit"));
-
+  public void shouldSerializeAndDeserializeSymTab(String fileName) {
     // given
+    ASTMFCompilationUnit ast = getTool().parse(readFile(fileName));
+    getTool().createSymbolTable(ast);
+    getTool().completeSymbolTable(ast);
     MontiFunSymbols2Json mf2json = new MontiFunSymbols2Json();
     mf2json.init();
     assertNoFindings();

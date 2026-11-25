@@ -9,13 +9,15 @@ import de.monticore.mf.montifun._ast.ASTMFParameter;
 import de.monticore.mf.montifun._visitor.MontiFunHandler;
 import de.monticore.mf.montifun._visitor.MontiFunTraverser;
 import de.monticore.mf.montifun._visitor.MontiFunVisitor2;
+import de.monticore.mf.montifun.util.MFSymbolTableUtil;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.types.check.SymTypeExpression;
+import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.types3.TypeCheck3;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunHandler {
 
@@ -34,9 +36,11 @@ public class MontiFunSymbolTableCompleter implements MontiFunVisitor2, MontiFunH
       );
     }
     // add imports
-    List<ImportStatement> imports = node.getMCImportStatementList().stream()
-        .map(imp -> new ImportStatement(imp.getQName(), imp.isStar()))
-        .collect(Collectors.toList());
+    List<ImportStatement> imports = new ArrayList<>();
+    imports.addAll(MFSymbolTableUtil.getDefaultImports());
+    for (ASTMCImportStatement imp : node.getMCImportStatementList()) {
+      imports.add(new ImportStatement(imp.getQName(), imp.isStar()));
+    }
     artifactScope.setImportsList(imports);
   }
 

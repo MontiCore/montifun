@@ -5,7 +5,6 @@ import de.monticore.cd.codegen.CDGenerator;
 import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.io.paths.MCPath;
-import de.monticore.mf.mf2cd.MF2CDMill;
 import de.monticore.mf.mf2cd._symboltable.IMF2CDArtifactScope;
 import de.monticore.mf.mf2cd._symboltable.MF2CDSymbols2Json;
 import de.monticore.mf.montifun.MF2CD.MF2CDConverter;
@@ -52,8 +51,6 @@ public class MontiFunTool extends MontiFunToolTOP {
 
   protected BiConsumer<IMontiFunArtifactScope, String> symbolsStorer;
 
-  protected Function<ASTMFCompilationUnit, IMontiFunArtifactScope> symbolTableGenitor;
-
   /**
    * Processes user input from command line and delegates to the corresponding
    * tools.
@@ -75,25 +72,16 @@ public class MontiFunTool extends MontiFunToolTOP {
       return;
     }
 
-    // scopesGenitorDelegator() is the one mill product that does not
-    // auto-forward from MontiFunMill to MF2CDMill (unlike parser(),
-    // globalScope(), traverser(), etc. -- see the generated
-    // MontiFunMillForMF2CD), so both branches call it directly on the mill
-    // they select, rather than through a shared helper.
     boolean willGenerate = cmd.hasOption("gen");
     if (!willGenerate) {
       symbolsLoader = path -> new MontiFunSymbols2Json().load(path);
       symbolsStorer = (scope, path) ->
           new MontiFunSymbols2Json().store(scope, path);
-      symbolTableGenitor = ast ->
-          MontiFunMill.scopesGenitorDelegator().createFromAST(ast);
     }
     else {
       symbolsLoader = path -> new MF2CDSymbols2Json().load(path);
       symbolsStorer = (scope, path) ->
           new MF2CDSymbols2Json().store((IMF2CDArtifactScope) scope, path);
-      symbolTableGenitor = ast ->
-          MF2CDMill.scopesGenitorDelegator().createFromAST(ast);
     }
     MFSymbolTableUtil.initAndPrepareMill(willGenerate);
 
@@ -193,7 +181,7 @@ public class MontiFunTool extends MontiFunToolTOP {
 
       // Complete symbol table
       for (ASTMFCompilationUnit compilationUnit : inputMontiFuns) {
-        symbolTableGenitor.apply(compilationUnit);
+        MontiFunMill.scopesGenitorDelegator().createFromAST(compilationUnit);
         MFSymbolTableUtil.runSymTabCompleter(compilationUnit);
       }
 

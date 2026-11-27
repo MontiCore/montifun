@@ -9,8 +9,6 @@ import de.monticore.CD4Code;
  * It is used to allow usage of both languages for
  * MontiFun to CD generation
  */
-grammar MF2CD extends MontiFun, CD4Code {
-
-  start MFCompilationUnit;
+component grammar MF2CD extends MontiFun, CD4Code {
 
 }
